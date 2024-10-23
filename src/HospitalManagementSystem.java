@@ -1,44 +1,37 @@
-
-// HospitalManagementSystem.java
 import java.util.Scanner;
 import authentication.LoginSystem;
-import users.Patient;
-import users.Doctor;
-import appointments.Appointment;
+import users.User;
+import users.Patient; // Include your user classes
+// import users.Doctor; // Uncomment if you have this user class
 
 public class HospitalManagementSystem {
     private static LoginSystem loginSystem = new LoginSystem();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean loggedIn = false;
-        String userId = "";
-        String role = "";
+        User currentUser = null;
 
         // Login loop
-        while (!loggedIn) {
+        while (currentUser == null) {
             System.out.println("Welcome to the Hospital Management System");
             System.out.print("Enter user ID: ");
-            userId = scanner.nextLine();
+            String userId = scanner.nextLine();
             System.out.print("Enter password: ");
             String password = scanner.nextLine();
 
-            loggedIn = loginSystem.login(userId, password);
-            if (loggedIn) {
-                role = loginSystem.getUserRole(userId);
-                System.out.println("Login successful! Role: " + role);
-            } else {
-                System.out.println("Login failed. Please try again.");
-            }
+            // Currently added this patient into the set for testing: Patient("patient1",
+            // "John Doe", "notpassword")
+            currentUser = loginSystem.login(userId, password);
         }
 
         // After login, present options based on role
         boolean running = true;
         while (running) {
+            String role = currentUser.getRole();
             if (role.equals("Patient")) {
-                runPatientMenu(scanner, userId);
+                runPatientMenu(scanner, (Patient) currentUser);
             } else if (role.equals("Doctor")) {
-                runDoctorMenu(scanner, userId);
+                // runDoctorMenu(scanner, (Doctor) currentUser);
             } else {
                 System.out.println("Invalid role. Logging out.");
                 running = false;
@@ -50,8 +43,7 @@ public class HospitalManagementSystem {
     }
 
     // Patient menu options
-    private static void runPatientMenu(Scanner scanner, String userId) {
-        Patient patient = new Patient(userId, "PatientName"); // Simulate loading patient from database
+    private static void runPatientMenu(Scanner scanner, Patient patient) {
         boolean patientRunning = true;
 
         while (patientRunning) {
@@ -71,10 +63,10 @@ public class HospitalManagementSystem {
                     break;
                 case 2:
                     System.out.println("Scheduling logic not implemented yet...");
-                    // Schedule appointment logic (could interact with Appointment class)
+                    // Schedule appointment logic
                     break;
                 case 3:
-                    patient.viewMedicalRecord();
+                    patient.viewMedicalRecord(); // Ensure you have this method
                     break;
                 case 4:
                     System.out.println("Logging out...");
@@ -86,10 +78,8 @@ public class HospitalManagementSystem {
         }
     }
 
-    // Doctor menu options
-    // private static void runDoctorMenu(Scanner scanner, String userId) {
-    // Doctor doctor = new Doctor(userId, "DoctorName"); // Simulate loading doctor
-    // from database
+    // // Doctor menu options (implementation commented out for now)
+    // private static void runDoctorMenu(Scanner scanner, Doctor doctor) {
     // boolean doctorRunning = true;
 
     // while (doctorRunning) {
@@ -109,11 +99,11 @@ public class HospitalManagementSystem {
     // break;
     // case 2:
     // System.out.println("Viewing patient records...");
-    // // View patient records logic (could interact with MedicalRecord class)
+    // // View patient records logic
     // break;
     // case 3:
     // System.out.println("Updating patient records...");
-    // // Update patient records logic (could interact with MedicalRecord class)
+    // // Update patient records logic
     // break;
     // case 4:
     // System.out.println("Logging out...");

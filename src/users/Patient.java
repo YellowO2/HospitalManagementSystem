@@ -1,7 +1,7 @@
 package users;
 
 // import medicalrecords.MedicalRecord;
-import appointments.Appointment;
+// import appointments.Appointment;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ public class Patient extends User {
     // private List<Appointment> appointments; // List of patient's appointments
 
     // Constructor
-    public Patient(String id, String name) {
-        super(id, name, "Patient");
+    public Patient(String id, String name, String password) {
+        super(id, name, "Patient", password);
         // this.medicalRecord = new MedicalRecord(id); // Create a new medical record
         // for the patient
         // this.appointments = new ArrayList<>(); // Initialize the appointments list
@@ -39,10 +39,11 @@ public class Patient extends User {
     // medicalRecord.addPrescription(prescription);
     // }
 
-    // // View medical record
-    // public void viewMedicalRecord() {
-    // medicalRecord.viewMedicalRecord();
-    // }
+    // View medical record
+    public void viewMedicalRecord() {
+        System.out.println("Patient Medical Record: not implemented yet");
+        // medicalRecord.viewMedicalRecord();
+    }
 
     // // Schedule an appointment
     // public void scheduleAppointment(Appointment appointment) {
