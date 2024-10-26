@@ -18,7 +18,7 @@ public class Administrator extends User {
         System.out.println("Viewing details of appointment: " + appointmentID);
         System.out.println("Patient ID: " + record.getPatientID());
         System.out.println("Doctor ID: " + record.get DoctorID());
-        System.out.println("Appointment Status: " + record.getAppointmentStatus);
+        System.out.println("Appointment Status: " + record.getAppointmentStatus());
         System.out.println("Appointment Date: " + record.getAppointmentDate());
         System.out.println("Appointment Time: " + record.getAppointmentTime());
         System.out.println("Appointment Outcome Record: " + record.getOutcomeRecord());
