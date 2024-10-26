@@ -26,8 +26,27 @@ public class Administrator extends User {
 
     // Method to update inventory
     public void updateInventory(String item, int quantity) {
-        System.out.println("Updating inventory for item: " + item + " with quantity: " + quantity);
-        // Implementation to update the inventory levels
+    	int input = 0;
+    	Scanner sc = new Scanner(System.in);
+    	System.out.println("Choose option");
+    	input = sc.nextInt();
+    	switch (input) {
+    	case 1:
+    		System.out.println("Adding inventory for medication: " + item + " with quantity: " + quantity);
+    		break;
+    	case 2:
+    		System.out.println("Updating inventory for medication: " + item + " with quantity: " + quantity);
+    		break;
+    	case 3:
+    		System.out.println("Removing inventory for medication: " + item + " with quantity: " + quantity);
+    		break;
+    	default:
+    		System.out.println("Error Input");
+    		
+    	}
+    	
+        
+        
     }
 
     // Method to request replenishment
@@ -38,8 +57,11 @@ public class Administrator extends User {
 
     // Method to approve replenishment requests
     public void approveReplenishment(String requestID) {
-        System.out.println("Approving replenishment request with ID: " + requestID);
-        // Implementation for approving requests
+    	if (inventory.isLow(medicationId)) {
+    		System.out.println("Approving replenishment request with ID: " + requestID);;
+        } else {
+            System.out.println("Stock levels are sufficient.");
+        }
     }
 }
 
