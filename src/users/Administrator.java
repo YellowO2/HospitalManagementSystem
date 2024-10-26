@@ -1,4 +1,4 @@
-package HospitalManagementSystem;
+package users;
 
 public class Administrator extends User {
 
