@@ -24,18 +24,31 @@ public class Patient extends User {
     }
 
     // Add a diagnosis to the patient's medical record
-    public void addDiagnosis(Diagnosis diagnosis) {
-        medicalRecord.addDiagnosis(diagnosis);
+    public void addDiagnosis(Diagnosis diagnosis, Doctor doctor) {
+        if (doctor != null){
+            medicalRecord.addDiagnosis(diagnosis);
+        } else {
+            throw new SecurityException("Only doctors can add diagnoses.");
+        }
+
     }
 
     // Add a prescription to the patient's medical record
-    public void addPrescription(Prescription prescription) {
-        medicalRecord.addPrescription(prescription);
+    public void addPrescription(Prescription prescription, Doctor doctor) {
+        if (doctor != null){
+            medicalRecord.addPrescription(prescription);
+        } else {
+            throw new SecurityException("Only doctors can add diagnoses.");
+        }
     }
 
     // Add a treatment to the patient's medical record
-    public void addTreatment(Treatment treatment) {
-        medicalRecord.addTreatment(treatment);
+    public void addTreatment(Treatment treatment, Doctor doctor) {
+        if (doctor != null){
+            medicalRecord.addTreatment(treatment);
+        } else {
+            throw new SecurityException("Only doctors can add diagnoses.");
+        }
     }
 
     // Accessor for medical record

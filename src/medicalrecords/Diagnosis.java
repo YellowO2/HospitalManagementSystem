@@ -11,7 +11,7 @@ public class Diagnosis {
     // Constructor
     public Diagnosis(String diagnosisName, String severity, LocalDate diagnosisDate, String doctorName) {
         this.diagnosisName = diagnosisName;
-        this.severity = severity;
+        this.severity = severity; 
         this.diagnosisDate = diagnosisDate;
         this.doctorName = doctorName;
     }
@@ -35,7 +35,6 @@ public class Diagnosis {
 
     // Method to display diagnosis details
     public String getDiagnosisDetails() {
-
         return "Diagnosis: " + diagnosisName + "\nSeverity: " + severity + "\nDate: " + diagnosisDate
                 + "\nDoctor: " + doctorName;
     }
