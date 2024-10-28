@@ -1,23 +1,39 @@
 package users;
 
-public abstract class User {
-    private String id;
-    private String name;
-    private String role; // "Patient", "Doctor", "Pharmacist", "Administrator"
-    private String password; // Store user password
+import java.time.LocalDate;
 
-    public User(String id, String name, String role, String password) {
+public abstract class User {
+    private String id; // Unique hospital ID
+    private String name; // Full name
+    private String role; // User role (Patient, Doctor, etc.)
+    private String password; // Store user password
+    private String phoneNumber; // Contact number
+    private String emailAddress; // Email address
+    private String bloodType; // Blood type
+    private LocalDate dateOfBirth; // Date of birth
+    private String gender; // Gender
+
+    // Constructor with all properties
+    public User(String id, String name, String role, String password, String phoneNumber, String emailAddress,
+            String bloodType, LocalDate dateOfBirth, String gender) {
         this.id = id;
         this.name = name;
         this.role = role;
         this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.emailAddress = emailAddress;
+        this.bloodType = bloodType;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
     }
 
     // Constructor with default password
-    public User(String id, String name, String role) {
-        this(id, name, role, "password"); // Default password
+    public User(String id, String name, String role, String phoneNumber, String emailAddress, String bloodType,
+            LocalDate dateOfBirth, String gender) {
+        this(id, name, role, "password", phoneNumber, emailAddress, bloodType, dateOfBirth, gender); // Default password
     }
 
+    // Getters
     public String getId() {
         return id;
     }
@@ -30,14 +46,45 @@ public abstract class User {
         return role;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    // Setters (optional)
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    // Password methods
     public boolean changePassword(String newPassword) {
+        if (newPassword == null || newPassword.isEmpty()) {
+            return false; // Password must be non-empty
+        }
         this.password = newPassword;
-        return true; // You might add more logic here for validation
+        return true;
     }
 
     public boolean validatePassword(String password) {
         return this.password.equals(password);
     }
-
-    public abstract void viewProfile(); // To be implemented by child classes
 }
