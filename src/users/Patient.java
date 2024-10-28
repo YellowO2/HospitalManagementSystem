@@ -42,4 +42,13 @@ public class Patient extends User {
     public MedicalRecord getMedicalRecord() {
         return medicalRecord;
     }
+
+    // Update patient information
+    public void updatePersonalInformation(String newPhoneNumber, String newEmailAddress) {
+        setPhoneNumber(newPhoneNumber);
+        setEmailAddress(newEmailAddress);
+
+        medicalRecord.updateContactInfo(newPhoneNumber, newEmailAddress);
+
+    }
 }

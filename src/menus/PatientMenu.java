@@ -84,8 +84,38 @@ public class PatientMenu {
     }
 
     private void updatePersonalInformation() {
-        System.out.println("Updating personal information...");
-        // Implement logic to update email, phone number, etc.
+        System.out.println("Do you want to update your email or phone number?");
+        System.out.println("1. Email");
+        System.out.println("2. Phone Number");
+
+        int choice = -1;
+
+        // Validate input for choice
+        while (choice < 1 || choice > 2) {
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (choice < 1 || choice > 2) {
+                    System.out.println("Please enter 1 for Email or 2 for Phone Number.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number (1 or 2):");
+                scanner.next(); // Consume invalid input
+            }
+        }
+
+        String newValue = null;
+        if (choice == 1) {
+            System.out.print("Enter new email: ");
+            newValue = scanner.nextLine().trim(); // Get and trim input
+            patient.updatePersonalInformation(newValue, null); // Update email
+        } else if (choice == 2) {
+            System.out.print("Enter new phone number: ");
+            newValue = scanner.nextLine().trim(); // Get and trim input
+            patient.updatePersonalInformation(null, newValue); // Update phone number
+        }
+
+        System.out.println("Personal information updated successfully.");
     }
 
     private void viewAvailableAppointmentSlots() {
