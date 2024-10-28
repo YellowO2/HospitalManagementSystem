@@ -8,14 +8,11 @@ The Hospital Management System (HMS) is a software application designed to manag
 ### Compiling and Running the Application
 To compile the Java source files, run the following command:
 
-   `javac -d ../out *.java authentication/*.java users/*.java`
-   
-   
-   (Rmb to include more folders as we build more stuff)
-   
-After compilation, you can run the Hospital Management System with:
-   
-   `java -cp ../out HospitalManagementSystem`
+```
+javac -d out src/**/*.java
+java -cp out HospitalManagementSystem
+```
+
 ## **Packages Overview**
 
 ### **User Package**

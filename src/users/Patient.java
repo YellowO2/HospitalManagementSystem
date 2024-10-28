@@ -8,6 +8,7 @@ package users;
 import medicalrecords.Diagnosis;
 import medicalrecords.MedicalRecord;
 import medicalrecords.Prescription;
+import medicalrecords.Treatment;
 
 import java.time.LocalDate;
 
@@ -30,6 +31,11 @@ public class Patient extends User {
     // Add a prescription to the patient's medical record
     public void addPrescription(Prescription prescription) {
         medicalRecord.addPrescription(prescription);
+    }
+
+    // Add a treatment to the patient's medical record
+    public void addTreatment(Treatment treatment) {
+        medicalRecord.addTreatment(treatment);
     }
 
     // Accessor for medical record

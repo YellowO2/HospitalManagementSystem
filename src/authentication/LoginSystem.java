@@ -8,6 +8,11 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Scanner;
 
+import medicalrecords.Diagnosis;
+import medicalrecords.Prescription;
+import medicalrecords.MedicalRecord;
+import medicalrecords.Treatment;
+
 public class LoginSystem {
     private Map<String, User> users = new HashMap<>();
     private Scanner scanner;
@@ -16,8 +21,13 @@ public class LoginSystem {
         // Sample users for testing
         // TODO: Ensure unique IDs
         String yx_id = "P69";
-        users.put(yx_id, new Patient(yx_id, "Patient YX", "yxpass", "123456789", "patientyx@example.com", "AB+",
-                LocalDate.of(2000, 1, 1), "Male", null));
+        Patient yx = new Patient(yx_id, "Patient YX", "yxpass", "123456789", "patientyx@example.com", "AB+",
+                LocalDate.of(2000, 1, 1), "Male", null);
+        yx.addDiagnosis(new Diagnosis("Big balls disease", "Moderate", LocalDate.of(2022, 1, 1), yx_id));
+        yx.addPrescription(new Prescription("Pill A", "Dose", "After food", "Once a day", 1, 5));
+        yx.addTreatment(new Treatment("Treatment A", LocalDate.of(2022, 1, 1), "Dr. Smith", "Details A"));
+        users.put(yx_id, yx);
+
         this.scanner = new Scanner(System.in);
     }
 
