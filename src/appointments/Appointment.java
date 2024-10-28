@@ -1,6 +1,7 @@
 package appointments;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import medicalrecords.Prescription;
@@ -12,10 +13,8 @@ public class Appointment {
     private LocalDateTime appointmentDate; // Date and time of the appointment
     private String status; // confirmed, canceled, completed, etc.
 
-    // Outcome information
-    private String serviceProvided; // Type of service (e.g., consultation, X-ray)
-    private String consultationNotes; // Doctor's notes
-    private List<Prescription> prescriptions; // List of prescribed medications
+    // Outcome record
+    private AppointmentOutcomeRecord outcomeRecord;
 
     // Constructor
     public Appointment(String appointmentId, String patientId, String doctorId, LocalDateTime appointmentDate,
@@ -25,32 +24,42 @@ public class Appointment {
         this.doctorId = doctorId;
         this.appointmentDate = appointmentDate;
         this.status = status;
+        this.outcomeRecord = null; // Outcome record is initially null
     }
 
-    // Getters and setters for appointment outcome
-    public void setServiceProvided(String serviceProvided) {
-        this.serviceProvided = serviceProvided;
+    // Method to complete the appointment and create an outcome record
+    public void completeAppointment(String serviceProvided, String consultationNotes,
+            List<Prescription> prescriptions) {
+        this.outcomeRecord = new AppointmentOutcomeRecord(appointmentId, LocalDate.now(), serviceProvided,
+                consultationNotes, prescriptions);
+        this.outcomeRecord.setConsultationNotes(consultationNotes);
+        this.status = "completed"; // Update the appointment status
     }
 
-    public void setConsultationNotes(String consultationNotes) {
-        this.consultationNotes = consultationNotes;
+    // Getters for appointment details
+    public String getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setPrescriptions(List<Prescription> prescriptions) {
-        this.prescriptions = prescriptions;
+    public String getPatientId() {
+        return patientId;
     }
 
-    public String getServiceProvided() {
-        return serviceProvided;
+    public String getDoctorId() {
+        return doctorId;
     }
 
-    public String getConsultationNotes() {
-        return consultationNotes;
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
     }
 
-    public List<Prescription> getPrescriptions() {
-        return prescriptions;
+    public String getStatus() {
+        return status;
     }
 
-    // Other methods for appointment management
+    public AppointmentOutcomeRecord getOutcomeRecord() {
+        return outcomeRecord; // Return the outcome record if it exists
+    }
+
+    // Other methods for appointment management can be added here
 }
