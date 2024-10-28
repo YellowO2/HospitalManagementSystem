@@ -22,7 +22,7 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
         this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
+        this.gender = gender;       
     }
 
     // Getters
