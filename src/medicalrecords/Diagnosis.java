@@ -34,10 +34,9 @@ public class Diagnosis {
     }
 
     // Method to display diagnosis details
-    public void viewDiagnosis() {
-        System.out.println("Diagnosis: " + diagnosisName);
-        System.out.println("Severity: " + severity);
-        System.out.println("Date: " + diagnosisDate);
-        System.out.println("Doctor: " + doctorName);
+    public String getDiagnosisDetails() {
+
+        return "Diagnosis: " + diagnosisName + "\nSeverity: " + severity + "\nDate: " + diagnosisDate
+                + "\nDoctor: " + doctorName;
     }
 }

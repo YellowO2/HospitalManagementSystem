@@ -9,7 +9,6 @@ public abstract class User {
     private String password; // Store user password
     private String phoneNumber; // Contact number
     private String emailAddress; // Email address
-    private String bloodType; // Blood type
     private LocalDate dateOfBirth; // Date of birth
     private String gender; // Gender
 
@@ -22,7 +21,6 @@ public abstract class User {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
-        this.bloodType = bloodType;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
     }
@@ -52,10 +50,6 @@ public abstract class User {
 
     public String getEmailAddress() {
         return emailAddress;
-    }
-
-    public String getBloodType() {
-        return bloodType;
     }
 
     public LocalDate getDateOfBirth() {

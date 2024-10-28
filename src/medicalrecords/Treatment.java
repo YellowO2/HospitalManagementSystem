@@ -34,10 +34,9 @@ public class Treatment {
     }
 
     // Method to display treatment details
-    public void viewTreatment() {
-        System.out.println("Treatment: " + treatmentName);
-        System.out.println("Date: " + treatmentDate);
-        System.out.println("Doctor: " + doctorName);
-        System.out.println("Details: " + treatmentDetails);
+    public String getTreatment() {
+
+        return "Treatment: " + treatmentName + "\nDate: " + treatmentDate + "\nDoctor: " + doctorName
+                + "\nDetails: " + treatmentDetails;
     }
 }

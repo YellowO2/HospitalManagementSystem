@@ -1,3 +1,4 @@
+
 package medicalrecords;
 
 import java.util.List;
@@ -32,71 +33,72 @@ public class MedicalRecord {
         this.prescriptions = new ArrayList<>();
     }
 
-    // Public method to view the entire medical record
-    public void viewMedicalRecord() {
-        System.out.println("Medical Record for Patient ID: " + patientId);
-        System.out.println("Name: " + name);
-        System.out.println("Date of Birth: " + dateOfBirth);
-        System.out.println("Gender: " + gender);
-        System.out.println("Blood Type: " + bloodType);
-        System.out.println("Phone Number: " + phoneNumber);
-        System.out.println("Email Address: " + emailAddress);
+    // Method to view the entire medical record as a formatted string
+    public String getMedicalRecordDescription() {
+        StringBuilder record = new StringBuilder();
+        record.append("Patient ID: ").append(patientId).append("\n")
+                .append("Name: ").append(name).append("\n")
+                .append("Date of Birth: ").append(dateOfBirth).append("\n")
+                .append("Gender: ").append(gender).append("\n")
+                .append("Blood Type: ").append(bloodType).append("\n")
+                .append("Phone Number: ").append(phoneNumber).append("\n")
+                .append("Email Address: ").append(emailAddress).append("\n\n");
 
-        System.out.println("\nDiagnoses:");
+        // Add diagnoses string
+        record.append("Diagnoses:\n");
         if (diagnoses.isEmpty()) {
-            System.out.println("No diagnoses available.");
+            record.append("No diagnoses available.\n");
         } else {
             for (Diagnosis diagnosis : diagnoses) {
-                diagnosis.viewDiagnosis();
+                record.append(diagnosis.getDiagnosisDetails()).append("\n");
             }
         }
 
-        System.out.println("\nTreatments:");
+        // Add treatments string
+        record.append("\nTreatments:\n");
         if (treatments.isEmpty()) {
-            System.out.println("No treatments available.");
+            record.append("No treatments available.\n");
         } else {
             for (Treatment treatment : treatments) {
-                treatment.viewTreatment();
+                record.append(treatment.getTreatment()).append("\n");
             }
         }
 
-        System.out.println("\nPrescriptions:");
+        // Add Prescription string
+        record.append("\nPrescriptions:\n");
         if (prescriptions.isEmpty()) {
-            System.out.println("No prescriptions available.");
+            record.append("No prescriptions available.\n");
         } else {
             for (Prescription prescription : prescriptions) {
-                System.out.println(prescription.getDescriptionDetails());
-
+                record.append(prescription.getDescriptionDetails()).append("\n");
             }
         }
+
+        return record.toString();
     }
 
-    // Method to add a diagnosis (only for significant diagnoses)
+    // Method to add a diagnosis
     public void addDiagnosis(Diagnosis diagnosis) {
         diagnoses.add(diagnosis);
-        System.out.println("Diagnosis added: " + diagnosis.getDiagnosisName());
     }
 
-    // Method to add a treatment (only for significant treatments)
+    // Method to add a treatment
     public void addTreatment(Treatment treatment) {
         treatments.add(treatment);
-        System.out.println("Treatment added: " + treatment.getTreatmentName());
     }
 
-    // Method to add a prescription (only for necessary prescriptions)
+    // Method to add a prescription
     public void addPrescription(Prescription prescription) {
         prescriptions.add(prescription);
-        System.out.println("Prescription added: " + prescription.getMedicationName());
     }
 
     // Allow patients to update contact information
     public void updateContactInfo(String newPhoneNumber, String newEmailAddress) {
         this.phoneNumber = newPhoneNumber;
         this.emailAddress = newEmailAddress;
-        System.out.println("Contact information updated.");
     }
 
-    // Getters for non-modifiable fields (e.g., blood type, date of birth)
+    // Getters for non-modifiable fields
     public String getBloodType() {
         return bloodType;
     }
@@ -109,7 +111,7 @@ public class MedicalRecord {
         return gender;
     }
 
-    // Getter for prescriptions (only for viewing, not modifying by patients)
+    // Getter for prescriptions
     public List<Prescription> getPrescriptions() {
         return prescriptions;
     }
