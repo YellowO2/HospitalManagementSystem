@@ -14,7 +14,7 @@ public abstract class User {
 
     // Constructor with all properties
     public User(String id, String name, String role, String password, String phoneNumber, String emailAddress,
-            String bloodType, LocalDate dateOfBirth, String gender) {
+            LocalDate dateOfBirth, String gender) {
         this.id = id;
         this.name = name;
         this.role = role;
@@ -23,12 +23,6 @@ public abstract class User {
         this.emailAddress = emailAddress;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-    }
-
-    // Constructor with default password
-    public User(String id, String name, String role, String phoneNumber, String emailAddress, String bloodType,
-            LocalDate dateOfBirth, String gender) {
-        this(id, name, role, "password", phoneNumber, emailAddress, bloodType, dateOfBirth, gender); // Default password
     }
 
     // Getters

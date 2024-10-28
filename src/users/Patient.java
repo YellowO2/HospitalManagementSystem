@@ -17,7 +17,7 @@ public class Patient extends User {
     // Constructor
     public Patient(String id, String name, String password, String phoneNumber, String emailAddress, String bloodType,
             LocalDate dateOfBirth, String gender, MedicalRecord medicalRecord) {
-        super(id, name, "Patient", password, phoneNumber, emailAddress, bloodType, dateOfBirth, gender);
+        super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.medicalRecord = (medicalRecord != null) ? medicalRecord
                 : new MedicalRecord(id, name, password, gender, bloodType, phoneNumber, emailAddress);
     }
