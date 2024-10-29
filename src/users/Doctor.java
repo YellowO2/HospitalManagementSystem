@@ -24,7 +24,7 @@ public class Doctor extends User {
         return patient.getMedicalRecord().getMedicalRecordDescription();
     }
 
-    public void addDiagnosis(Patient patient, Diagnosis diagnosis) {
+    public void addDiagnosis(Patient patient, Diagnosis diagnosis) { //"Roland" - do we put in all the scanners for diagnosis in this function?
         patient.getMedicalRecord().addDiagnosis(diagnosis); // Ensure method access control
     }
 
