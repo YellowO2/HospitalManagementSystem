@@ -1,0 +1,6 @@
+﻿Staff ID,Name,Role,Gender,Date oFBirth,Age,Phone Number,Email Address
+D001,John Smith,Doctor,Male,14/5/1980,45,9989 998,john@example.com
+D002,Emily Clarke,Doctor,Female,22/11/1975,38,8881 8881,emily@example.com
+P001,Mark Lee,Pharmacist,Male,8/7/1990,29,8765 4321,mark@example.com
+A001,Sarah Lee,Administrator,Female,23/11/1975,40,9876 5432,sarah@example.com
+,,,,,,,
