@@ -51,4 +51,8 @@ public class AppointmentOutcomeRecord {
     public void setPrescriptions(List<Prescription> prescriptions) {
         this.prescriptions = prescriptions;
     }
+    
+	public LocalDate getAppointmentDate() {
+		return appointmentDate;
+	}
 }
