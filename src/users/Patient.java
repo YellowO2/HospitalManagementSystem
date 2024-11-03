@@ -5,20 +5,14 @@
  */
 package users;
 
-import medicalrecords.Diagnosis;
-import medicalrecords.Prescription;
-import medicalrecords.Treatment;
-import medicalrecords.MedicalRecordManager;
-
 import java.time.LocalDate;
 
 public class Patient extends User {
-    private String patientId; // Only store the patient ID
 
     public Patient(String id, String name, String password, String phoneNumber, String emailAddress, String bloodType,
             LocalDate dateOfBirth, String gender) {
         super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.patientId = id;
+
     }
 
 }

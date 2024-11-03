@@ -1,14 +1,14 @@
 import java.util.Scanner;
 
 // custom imports
-import authentication.LoginSystem;
+import authentication.AuthenticationManager;
 import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
 import menus.PatientMenu;
 
 public class HospitalManagementSystem {
-    private static LoginSystem loginSystem = new LoginSystem();
+    private static AuthenticationManager loginSystem = new AuthenticationManager();
     private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager();
 
     public static void main(String[] args) {

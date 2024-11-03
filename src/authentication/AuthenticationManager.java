@@ -8,16 +8,11 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Scanner;
 
-import medicalrecords.Diagnosis;
-import medicalrecords.Prescription;
-import medicalrecords.MedicalRecord;
-import medicalrecords.Treatment;
-
-public class LoginSystem {
+public class AuthenticationManager {
     private Map<String, User> users = new HashMap<>();
     private Scanner scanner;
 
-    public LoginSystem() {
+    public AuthenticationManager() {
         // Sample users for testing
         // TODO: Ensure unique IDs
         String yx_id = "P69";

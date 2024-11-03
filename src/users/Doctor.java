@@ -1,10 +1,5 @@
 package users;
 
-import medicalrecords.Diagnosis;
-import medicalrecords.MedicalRecord;
-import medicalrecords.Prescription;
-import medicalrecords.Treatment;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
