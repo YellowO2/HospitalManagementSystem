@@ -37,6 +37,11 @@ public class Treatment {
         return new Treatment(treatmentName, treatmentDate, doctorName, treatmentDetails);
     }
 
+    public String toCSV() {
+        return getTreatmentName() + "|" + getTreatmentDate() + "|" + getDoctorName()
+                + "|" + getTreatmentDetails();
+    }
+
     // Getters
     public String getTreatmentName() {
         return treatmentName;

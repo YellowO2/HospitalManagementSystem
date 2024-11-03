@@ -197,4 +197,57 @@ public class MedicalRecord {
         return prescriptions;
     }
 
+    public String toCSV() {
+        StringBuilder sb = new StringBuilder();
+
+        // Append basic information
+        sb.append(patientId).append(",")
+                .append(name).append(",")
+                .append(dateOfBirth).append(",")
+                .append(gender).append(",")
+                .append(bloodType).append(",")
+                .append(phoneNumber).append(",")
+                .append(emailAddress).append(",");
+
+        // Append diagnoses
+        if (diagnoses.isEmpty()) {
+            sb.append(""); // Empty if no diagnoses
+        } else {
+            for (int i = 0; i < diagnoses.size(); i++) {
+                sb.append(diagnoses.get(i).toCSV()); // Assuming toCSV() is implemented in Diagnosis
+                if (i < diagnoses.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between diagnoses
+                }
+            }
+        }
+        sb.append(",");
+
+        // Append treatments
+        if (treatments.isEmpty()) {
+            sb.append(""); // Empty if no treatments
+        } else {
+            for (int i = 0; i < treatments.size(); i++) {
+                sb.append(treatments.get(i).toCSV()); // Assuming toCSV() is implemented in Treatment
+                if (i < treatments.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between treatments
+                }
+            }
+        }
+        sb.append(",");
+
+        // Append prescriptions
+        if (prescriptions.isEmpty()) {
+            sb.append(""); // Empty if no prescriptions
+        } else {
+            for (int i = 0; i < prescriptions.size(); i++) {
+                sb.append(prescriptions.get(i).toCSV()); // Assuming toCSV() is implemented in Prescription
+                if (i < prescriptions.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between prescriptions
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
 }

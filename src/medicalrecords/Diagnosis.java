@@ -37,6 +37,11 @@ public class Diagnosis {
         return new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
     }
 
+    public String toCSV() {
+        return getDiagnosisName() + "|" + getSeverity() + "|"
+                + getDiagnosisDate() + "|" + getDoctorName();
+    }
+
     // Getters
     public String getDiagnosisName() {
         return diagnosisName;

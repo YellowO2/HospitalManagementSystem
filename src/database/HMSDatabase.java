@@ -1,3 +1,7 @@
+/*
+ * This is a singleton eagerloading database class that only saves to the csv before the program is closed.
+ */
+
 package database;
 
 import users.Doctor;
@@ -125,11 +129,6 @@ public class HMSDatabase {
         }
     }
 
-    // Save medical records back to the CSV file
-    public void saveMedicalRecords() throws IOException {
-        saveData("csv_data/Medical_Record.csv", medicalRecords);
-    }
-
     private void saveData(String filename, List<?> dataList) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(filename));
         try {
@@ -218,13 +217,6 @@ public class HMSDatabase {
     public boolean createMedicalRecord(MedicalRecord medicalRecord) {
         if (medicalRecord != null) {
             medicalRecords.add(medicalRecord);
-            try {
-                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace(); // Handle errors appropriately
-                return false;
-            }
         }
         return false; // Invalid record
     }
@@ -243,13 +235,6 @@ public class HMSDatabase {
         if (existingRecord != null) {
             medicalRecords.remove(existingRecord);
             medicalRecords.add(medicalRecord);
-            try {
-                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace(); // Handle errors appropriately
-                return false;
-            }
         }
         return false; // Record not found
     }
@@ -258,13 +243,6 @@ public class HMSDatabase {
         MedicalRecord existingRecord = getMedicalRecordByPatientId(patientId);
         if (existingRecord != null) {
             medicalRecords.remove(existingRecord);
-            try {
-                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace(); // Handle errors appropriately
-                return false;
-            }
         }
         return false; // Record not found
     }

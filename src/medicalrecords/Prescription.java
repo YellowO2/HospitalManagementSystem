@@ -37,6 +37,11 @@ public class Prescription {
         throw new IllegalArgumentException("Invalid CSV format for Prescription: " + csvString);
     }
 
+    // to csv
+    public String toCSV() {
+        return String.format("%s|%s|%s|%d|%s|%d", medicationName, dosage, frequency, amount, instructions, status);
+    }
+
     // Getters and Setters
     public String getPrescriptionId() {
         return prescriptionId;
