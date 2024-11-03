@@ -1,13 +1,14 @@
-package user;
+package users;
 
 import data.ReadFile;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import medicine.Inventory;
 import medicine.Medicine;
 
-public class Administrator extends Staff {
+public class Administrator extends User {
 
     // List to store staff members (Doctors & Pharmacists)
     private List<Staff> staffList;
@@ -15,9 +16,10 @@ public class Administrator extends Staff {
     // Inventory object for managing medication
     private Inventory inventory;
 
-    // Constructor to initialize Administrator with an empty staff list and inventory
-    public Administrator(String id, String name, String role, String gender, int age) throws IOException {
-        super(id, name, role, gender, age);
+    // Constructor to initialize Administrator with user properties and inventory
+    public Administrator(String id, String name, String password, String phoneNumber, String emailAddress,
+                         LocalDate dateOfBirth, String gender) throws IOException {
+        super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
         this.inventory = new Inventory("Medicine_List.csv");
     }
@@ -69,7 +71,7 @@ public class Administrator extends Staff {
     // Method to view appointments (placeholder for future implementation)
     public void viewAppointments() {
         System.out.println("Viewing appointments... (Work in progress)");
-        // Implement logic to display appointment details
+        // Implement logic to display appointment details if needed
     }
 
     // Method to view the entire inventory
@@ -77,7 +79,8 @@ public class Administrator extends Staff {
         Medicine[] inventoryList = inventory.GetInventory();
         System.out.println("=== Inventory List ===");
         for (Medicine medicine : inventoryList) {
-            System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() + ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
+            System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
+                               ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
         }
     }
 
