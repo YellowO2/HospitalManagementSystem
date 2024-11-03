@@ -33,7 +33,8 @@ public class LoginSystem {
 
     public User login(String userId, String password) {
         User user = users.get(userId);
-        if (user != null && user.validatePassword(password)) {
+
+        if (user != null && user.getPassword().equals(password)) {
             System.out.println("Login successful for user: " + userId);
             return user;
         }

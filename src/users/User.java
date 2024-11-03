@@ -22,7 +22,7 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
         this.dateOfBirth = dateOfBirth;
-        this.gender = gender;       
+        this.gender = gender;
     }
 
     // Getters
@@ -63,6 +63,14 @@ public abstract class User {
         this.emailAddress = emailAddress;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     // Password methods
     public boolean changePassword(String newPassword) {
         if (newPassword == null || newPassword.isEmpty()) {
@@ -70,9 +78,5 @@ public abstract class User {
         }
         this.password = newPassword;
         return true;
-    }
-
-    public boolean validatePassword(String password) {
-        return this.password.equals(password);
     }
 }

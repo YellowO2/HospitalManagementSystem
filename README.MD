@@ -26,7 +26,6 @@ java -cp out HospitalManagementSystem
 - [ ] `role`: User role (Patient, Doctor, Pharmacist, Administrator)
 - [ ] `phoneNumber`: Contact number
 - [ ] `emailAddress`: Email address
-- [ ] `bloodType`: Blood type
 - [ ] `dateOfBirth`: Date of birth
 - [ ] `gender`: Gender
 
@@ -43,13 +42,6 @@ java -cp out HospitalManagementSystem
 - [ ] `appointments`: List of patient's appointments
 
 **Methods:**
-- [ ] `viewMedicalRecord()`: View the patient's own medical record
-- [ ] `updateContactInfo()`: Update non-medical personal information (e.g., email, phone)
-- [ ] `viewAppointments()`: View scheduled appointments
-- [ ] `scheduleAppointment()`: Schedule a new appointment
-- [ ] `rescheduleAppointment()`: Reschedule an existing appointment
-- [ ] `cancelAppointment()`: Cancel an appointment
-- [ ] `viewAppointmentOutcome()`: View the outcome of past appointments
 
 ---
 
@@ -150,4 +142,17 @@ java -cp out HospitalManagementSystem
 - [ ] `viewAppointmentDetails()`: View appointment details
 - [ ] `setAppointmentOutcome()`: Set the outcome of the appointment (Doctor action)
 
+
+### **Menu Package**
+
+#### **UserMenu Checklist**
+
+**Methods:**
+- [ ] `viewMedicalRecord()`: View the patient's own medical record
+- [ ] `updateContactInfo()`: Update non-medical personal information (e.g., email, phone)
+- [ ] `viewAppointments()`: View scheduled appointments
+- [ ] `scheduleAppointment()`: Schedule a new appointment
+- [ ] `rescheduleAppointment()`: Reschedule an existing appointment
+- [ ] `cancelAppointment()`: Cancel an appointment
+- [ ] `viewAppointmentOutcome()`: View the outcome of past appointments
 ---
