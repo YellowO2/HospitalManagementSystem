@@ -2,6 +2,7 @@
 package medicalrecords;
 
 public class Prescription {
+    private String prescriptionId; // Unique ID for the prescription
     private String medicationName; // Name of the medication
     private String dosage; // Dosage information (e.g., "500mg twice a day")
     private String frequency; // Frequency of administration (e.g., "2 times per day")
@@ -10,7 +11,8 @@ public class Prescription {
     private int status; // Status of the prescription (e.g., pending, prescribed, filled)
 
     // Constructor
-    public Prescription(String medicationName, String dosage, String instructions, String frequency, int amount, int status) {
+    public Prescription(String medicationName, String dosage, String instructions, String frequency, int amount,
+            int status) {
         this.medicationName = medicationName;
         this.dosage = dosage;
         this.frequency = frequency;
@@ -20,6 +22,11 @@ public class Prescription {
     }
 
     // Getters and Setters
+
+    public String getPrescriptionId() {
+        return prescriptionId;
+    }
+
     public String getMedicationName() {
         return medicationName;
     }

@@ -6,14 +6,18 @@
 package menus;
 
 import java.util.Scanner;
+
+import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
 public class PatientMenu {
     private Patient patient; // The currently logged-in patient
     private Scanner scanner;
+    private MedicalRecordManager medicalRecordManager;
 
     // Constructor
-    public PatientMenu(Patient patient) {
+    public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager) {
+        this.medicalRecordManager = medicalRecordManager;
         this.patient = patient;
         this.scanner = new Scanner(System.in);
     }
@@ -79,7 +83,7 @@ public class PatientMenu {
     // Placeholder methods for each menu option
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
-        System.out.println(patient.getMedicalRecord().getMedicalRecordDescription());
+        System.out.println(medicalRecordManager.getMedicalRecord(patient.getId()));
 
     }
 
@@ -108,11 +112,13 @@ public class PatientMenu {
         if (choice == 1) {
             System.out.print("Enter new email: ");
             newValue = scanner.nextLine().trim(); // Get and trim input
-            patient.updatePersonalInformation(newValue, null); // Update email
+            // Call MedicalRecordManager to update email
+            medicalRecordManager.updateContactInfo(patient.getId(), null, newValue); // Update email
         } else if (choice == 2) {
             System.out.print("Enter new phone number: ");
             newValue = scanner.nextLine().trim(); // Get and trim input
-            patient.updatePersonalInformation(null, newValue); // Update phone number
+            // Call MedicalRecordManager to update phone number
+            medicalRecordManager.updateContactInfo(patient.getId(), newValue, null); // Update phone number
         }
 
         System.out.println("Personal information updated successfully.");

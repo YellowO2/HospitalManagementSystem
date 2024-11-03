@@ -22,10 +22,13 @@ public class LoginSystem {
         // TODO: Ensure unique IDs
         String yx_id = "P69";
         Patient yx = new Patient(yx_id, "Patient YX", "yxpass", "123456789", "patientyx@example.com", "AB+",
-                LocalDate.of(2000, 1, 1), "Male", null);
-        yx.addDiagnosis(new Diagnosis("Big balls disease", "Moderate", LocalDate.of(2022, 1, 1), yx_id));
-        yx.addPrescription(new Prescription("Pill A", "Dose", "After food", "Once a day", 1, 5));
-        yx.addTreatment(new Treatment("Treatment A", LocalDate.of(2022, 1, 1), "Dr. Smith", "Details A"));
+                LocalDate.of(2000, 1, 1), "Male");
+        // yx.addDiagnosis(new Diagnosis("Big balls disease", "Moderate",
+        // LocalDate.of(2022, 1, 1), yx_id));
+        // yx.addPrescription(new Prescription("Pill A", "Dose", "After food", "Once a
+        // day", 1, 5));
+        // yx.addTreatment(new Treatment("Treatment A", LocalDate.of(2022, 1, 1), "Dr.
+        // Smith", "Details A"));
         users.put(yx_id, yx);
 
         this.scanner = new Scanner(System.in);

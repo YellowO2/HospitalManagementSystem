@@ -2,12 +2,14 @@ import java.util.Scanner;
 
 // custom imports
 import authentication.LoginSystem;
+import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
 import menus.PatientMenu;
 
 public class HospitalManagementSystem {
     private static LoginSystem loginSystem = new LoginSystem();
+    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -26,7 +28,7 @@ public class HospitalManagementSystem {
         String role = currentUser.getRole();
 
         if (role.equals("Patient")) {
-            PatientMenu patientMenu = new PatientMenu((Patient) currentUser);
+            PatientMenu patientMenu = new PatientMenu((Patient) currentUser, medicalRecordManager);
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
             // Uncomment and implement the doctor menu

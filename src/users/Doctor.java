@@ -15,38 +15,43 @@ public class Doctor extends User {
     private List<Appointment> appointmentSchedule;
 
     public Doctor(String id, String name, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender){
+            LocalDate dateOfBirth, String gender) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.appointmentSchedule = new ArrayList<>();  
+        this.appointmentSchedule = new ArrayList<>();
     }
 
-    public String viewPatientMedicalRecord(Patient patient){
-        return patient.getMedicalRecord().getMedicalRecordDescription();
-    }
+    // TODO: These methods needs to be moved into Medical Record Manager
+    // public String viewPatientMedicalRecord(Patient patient){
+    // return patient.getMedicalRecord().getMedicalRecordDescription();
+    // }
 
-    public void addDiagnosis(Patient patient, Diagnosis diagnosis) { //"Roland" - do we put in all the scanners for diagnosis in this function?
-        patient.getMedicalRecord().addDiagnosis(diagnosis); // Ensure method access control
-    }
+    // public void addDiagnosis(Patient patient, Diagnosis diagnosis) { //"Roland" -
+    // do we put in all the scanners for diagnosis in this function?
+    // patient.getMedicalRecord().addDiagnosis(diagnosis); // Ensure method access
+    // control
+    // }
 
-    public void addPrescription(Patient patient, Prescription prescription) {
-        patient.getMedicalRecord().addPrescription(prescription); // Ensure method access control
-    }
+    // public void addPrescription(Patient patient, Prescription prescription) {
+    // patient.getMedicalRecord().addPrescription(prescription); // Ensure method
+    // access control
+    // }
 
-    public void addTreatment(Patient patient, Treatment treatment) {
-        patient.getMedicalRecord().addTreatment(treatment); // Ensure method access control
-    }
+    // public void addTreatment(Patient patient, Treatment treatment) {
+    // patient.getMedicalRecord().addTreatment(treatment); // Ensure method access
+    // control
+    // }
 
-    //Work In Progress
+    // Work In Progress
     // public void acceptAppointment(Appointment appointment){
-    //     appointment.setStatus("Accepted");
+    // appointment.setStatus("Accepted");
     // }
 
     // public void declineAppointment(Appointment appointment) {
-    //     // Logic to decline the appointment and update the status
-    //     appointment.setStatus("Declined");
+    // // Logic to decline the appointment and update the status
+    // appointment.setStatus("Declined");
     // }
 
     // public List<Appointment> getUpcomingAppointments() {
-    //     return upcomingAppointments;
+    // return upcomingAppointments;
     // }
 }

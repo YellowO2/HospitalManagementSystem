@@ -1,4 +1,3 @@
-
 package medicalrecords;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class MedicalRecord {
             }
         }
 
-        // Add Prescription string
+        // Add prescriptions string
         record.append("\nPrescriptions:\n");
         if (prescriptions.isEmpty()) {
             record.append("No prescriptions available.\n");
@@ -79,26 +78,71 @@ public class MedicalRecord {
 
     // Method to add a diagnosis
     public void addDiagnosis(Diagnosis diagnosis) {
-        diagnoses.add(diagnosis);
+        if (diagnosis != null) {
+            diagnoses.add(diagnosis);
+        }
+    }
+
+    // Method to remove a diagnosis
+    public void removeDiagnosis(Diagnosis diagnosis) {
+        diagnoses.remove(diagnosis);
     }
 
     // Method to add a treatment
     public void addTreatment(Treatment treatment) {
-        treatments.add(treatment);
+        if (treatment != null) {
+            treatments.add(treatment);
+        }
+    }
+
+    // Method to remove a treatment
+    public void removeTreatment(Treatment treatment) {
+        treatments.remove(treatment);
     }
 
     // Method to add a prescription
     public void addPrescription(Prescription prescription) {
-        prescriptions.add(prescription);
+        if (prescription != null) {
+            prescriptions.add(prescription);
+        }
     }
+
+    // Method to remove a prescription
+    public void removePrescription(Prescription prescription) {
+        prescriptions.remove(prescription);
+    }
+
+    // // Method to update the status of a prescription
+    // TODO: Should see if prescription has id
+    // public void updatePrescriptionStatus(String prescriptionId, String newStatus)
+    // {
+    // for (Prescription prescription : prescriptions) {
+    // if (prescription.getPrescriptionId().equals(prescriptionId)) {
+    // prescription.setStatus(newStatus);
+    // break;
+    // }
+    // }
+    // }
 
     // Allow patients to update contact information
     public void updateContactInfo(String newPhoneNumber, String newEmailAddress) {
-        this.phoneNumber = newPhoneNumber;
-        this.emailAddress = newEmailAddress;
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
+            this.phoneNumber = newPhoneNumber;
+        }
+        if (newEmailAddress != null && !newEmailAddress.isEmpty()) {
+            this.emailAddress = newEmailAddress;
+        }
     }
 
     // Getters for non-modifiable fields
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public String getBloodType() {
         return bloodType;
     }
@@ -111,8 +155,55 @@ public class MedicalRecord {
         return gender;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
     // Getter for prescriptions
     public List<Prescription> getPrescriptions() {
         return prescriptions;
+    }
+
+    // Method to retrieve medical history (for patients to view)
+    public String getMedicalHistory() {
+        StringBuilder history = new StringBuilder();
+
+        history.append("Medical History for ").append(name).append(" (Patient ID: ").append(patientId).append(")\n");
+
+        // Add diagnoses
+        history.append("Diagnoses:\n");
+        if (diagnoses.isEmpty()) {
+            history.append("No diagnoses available.\n");
+        } else {
+            for (Diagnosis diagnosis : diagnoses) {
+                history.append(diagnosis.getDiagnosisDetails()).append("\n");
+            }
+        }
+
+        // Add treatments
+        history.append("\nTreatments:\n");
+        if (treatments.isEmpty()) {
+            history.append("No treatments available.\n");
+        } else {
+            for (Treatment treatment : treatments) {
+                history.append(treatment.getTreatment()).append("\n");
+            }
+        }
+
+        // Add prescriptions
+        history.append("\nPrescriptions:\n");
+        if (prescriptions.isEmpty()) {
+            history.append("No prescriptions available.\n");
+        } else {
+            for (Prescription prescription : prescriptions) {
+                history.append(prescription.getDescriptionDetails()).append("\n");
+            }
+        }
+
+        return history.toString();
     }
 }

@@ -6,58 +6,19 @@
 package users;
 
 import medicalrecords.Diagnosis;
-import medicalrecords.MedicalRecord;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
+import medicalrecords.MedicalRecordManager;
 
 import java.time.LocalDate;
 
 public class Patient extends User {
-    private MedicalRecord medicalRecord; // Patient's medical record
+    private String patientId; // Only store the patient ID
 
-    // Constructor
     public Patient(String id, String name, String password, String phoneNumber, String emailAddress, String bloodType,
-            LocalDate dateOfBirth, String gender, MedicalRecord medicalRecord) {
+            LocalDate dateOfBirth, String gender) {
         super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.medicalRecord = (medicalRecord != null) ? medicalRecord
-                : new MedicalRecord(id, name, password, gender, bloodType, phoneNumber, emailAddress);
+        this.patientId = id;
     }
 
-    // Add a diagnosis to the patient's medical record
-    public void addDiagnosis(Diagnosis diagnosis) {
-        // if (doctor != null){
-        // medicalRecord.addDiagnosis(diagnosis);
-        // } else {
-        // throw new SecurityException("Only doctors can add diagnoses.");
-        // }
-        medicalRecord.addDiagnosis(diagnosis);
-
-    }
-
-    // Add a prescription to the patient's medical record
-    public void addPrescription(Prescription prescription) {
-        medicalRecord.addPrescription(prescription);
-
-    }
-
-    // Add a treatment to the patient's medical record
-    public void addTreatment(Treatment treatment) {
-
-        medicalRecord.addTreatment(treatment);
-
-    }
-
-    // Accessor for medical record
-    public MedicalRecord getMedicalRecord() {
-        return medicalRecord;
-    }
-
-    // Update patient information
-    public void updatePersonalInformation(String newPhoneNumber, String newEmailAddress) {
-        setPhoneNumber(newPhoneNumber);
-        setEmailAddress(newEmailAddress);
-
-        medicalRecord.updateContactInfo(newPhoneNumber, newEmailAddress);
-
-    }
 }
