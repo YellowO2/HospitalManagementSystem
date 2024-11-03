@@ -14,14 +14,15 @@ public abstract class User {
 
     // Constructor with all properties
     public User(String id, String name, String role, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender) {
+            String dateOfBirth, String gender) {
+
         this.id = id;
         this.name = name;
         this.role = role;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = LocalDate.parse(dateOfBirth);
         this.gender = gender;
     }
 
@@ -79,4 +80,9 @@ public abstract class User {
         this.password = newPassword;
         return true;
     }
+
+    public String toString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getId(), getName(), getDateOfBirth(), getGender(),
+                getPhoneNumber(), getEmailAddress(), getPassword());
+    };
 }

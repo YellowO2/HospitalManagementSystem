@@ -5,14 +5,21 @@
  */
 package users;
 
-import java.time.LocalDate;
-
 public class Patient extends User {
 
-    public Patient(String id, String name, String password, String phoneNumber, String emailAddress, String bloodType,
-            LocalDate dateOfBirth, String gender) {
-        super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
+    private String bloodType;
 
+    // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+    public Patient(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) {
+        super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
+        this.bloodType = bloodType;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getId(), getName(), getDateOfBirth(), getGender(), bloodType,
+                getPhoneNumber(), getEmailAddress(), getPassword());
     }
 
 }

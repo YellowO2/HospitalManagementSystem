@@ -9,10 +9,18 @@ import appointments.Appointment;
 public class Doctor extends User {
     private List<Appointment> appointmentSchedule;
 
-    public Doctor(String id, String name, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender) {
+    // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+    public Doctor(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentSchedule = new ArrayList<>();
+    }
+
+    // TODO: To JianAn, remeber to order the fields in correct order for the csv
+    @Override
+    public String toString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getId(), getName(), getDateOfBirth(), getGender(),
+                getPhoneNumber(), getEmailAddress(), getPassword(), appointmentSchedule);
     }
 
     // TODO: These methods needs to be moved into Medical Record Manager

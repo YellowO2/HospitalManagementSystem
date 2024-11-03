@@ -12,8 +12,8 @@ public class Pharmacist extends User {
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
     private Inventory inventory;
 
-    public Pharmacist(String id, String name, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender) {
+    public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) {
         super(id, name, "PHARMACIST", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentOutcomeRecords = new ArrayList<>();
         this.inventory = new Inventory();
@@ -51,7 +51,8 @@ public class Pharmacist extends User {
 
     public void submitReplenishmentRequest(String medicationId, int quantity) {
         if (inventory.isLow(medicationId, quantity)) {
-            System.out.println("Replenishment request submitted for " + quantity + " units of medication ID: " + medicationId);
+            System.out.println(
+                    "Replenishment request submitted for " + quantity + " units of medication ID: " + medicationId);
         } else {
             System.out.println("Stock levels are sufficient.");
         }
@@ -60,4 +61,5 @@ public class Pharmacist extends User {
     public void addAppointmentOutcomeRecord(AppointmentOutcomeRecord record) {
         this.appointmentOutcomeRecords.add(record);
     }
+
 }

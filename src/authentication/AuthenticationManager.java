@@ -2,42 +2,29 @@ package authentication;
 
 import users.User;
 import users.Patient;
-
-import java.util.HashMap;
-import java.time.LocalDate;
-import java.util.Map;
 import java.util.Scanner;
+import database.HMSDatabase;
 
 public class AuthenticationManager {
-    private Map<String, User> users = new HashMap<>();
     private Scanner scanner;
 
+    // TODO: Consider passing scanner from main
     public AuthenticationManager() {
-        // Sample users for testing
-        // TODO: Ensure unique IDs
-        String yx_id = "P69";
-        Patient yx = new Patient(yx_id, "Patient YX", "yxpass", "123456789", "patientyx@example.com", "AB+",
-                LocalDate.of(2000, 1, 1), "Male");
-        // yx.addDiagnosis(new Diagnosis("Big balls disease", "Moderate",
-        // LocalDate.of(2022, 1, 1), yx_id));
-        // yx.addPrescription(new Prescription("Pill A", "Dose", "After food", "Once a
-        // day", 1, 5));
-        // yx.addTreatment(new Treatment("Treatment A", LocalDate.of(2022, 1, 1), "Dr.
-        // Smith", "Details A"));
-        users.put(yx_id, yx);
-
         this.scanner = new Scanner(System.in);
     }
 
+    // Method to check if user credentials are valid
     public User login(String userId, String password) {
-        User user = users.get(userId);
+        HMSDatabase hmsDatabase = HMSDatabase.getInstance();
+        User user = hmsDatabase.getUserById(userId);
 
         if (user != null && user.getPassword().equals(password)) {
             System.out.println("Login successful for user: " + userId);
-            return user;
+            return user; // Return the authenticated patient
         }
+
         System.out.println("Login failed for user: " + userId);
-        return null;
+        return null; // Return null if no match found
     }
 
     // New method to handle login interaction
@@ -55,6 +42,6 @@ public class AuthenticationManager {
                 System.out.println("Invalid credentials. Please try again.");
             }
         }
-        return currentUser;
+        return currentUser; // Return the authenticated user
     }
 }

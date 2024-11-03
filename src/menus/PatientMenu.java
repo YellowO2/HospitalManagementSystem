@@ -15,7 +15,7 @@ public class PatientMenu {
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
 
-    // Constructor
+    // TODO: Consider passing scanner from the main app
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager) {
         this.medicalRecordManager = medicalRecordManager;
         this.patient = patient;
