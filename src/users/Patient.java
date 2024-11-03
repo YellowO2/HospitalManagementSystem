@@ -16,10 +16,4 @@ public class Patient extends User {
         this.bloodType = bloodType;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getId(), getName(), getDateOfBirth(), getGender(), bloodType,
-                getPhoneNumber(), getEmailAddress(), getPassword());
-    }
-
 }

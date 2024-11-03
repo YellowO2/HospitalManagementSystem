@@ -1,6 +1,7 @@
 package medicalrecords;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Treatment {
     private String treatmentName; // Name of the treatment
@@ -14,6 +15,26 @@ public class Treatment {
         this.treatmentDate = treatmentDate;
         this.doctorName = doctorName;
         this.treatmentDetails = treatmentDetails;
+    }
+
+    // Static factory method to create Treatment from CSV string
+    public static Treatment fromCSV(String treatmentString) {
+        String[] parts = treatmentString.split("\\|");
+        if (parts.length != 4) {
+            throw new IllegalArgumentException("Invalid treatment format. Expected 4 fields.");
+        }
+
+        String treatmentName = parts[0];
+        LocalDate treatmentDate;
+        try {
+            treatmentDate = LocalDate.parse(parts[1]); // Parsing the date
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD.");
+        }
+        String doctorName = parts[2];
+        String treatmentDetails = parts[3];
+
+        return new Treatment(treatmentName, treatmentDate, doctorName, treatmentDetails);
     }
 
     // Getters

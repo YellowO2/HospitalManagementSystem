@@ -81,6 +81,11 @@ public class HMSDatabase {
                         users.add(pharmacist);
                         break;
 
+                    case "Administrator":
+                        // TODO
+
+                        break;
+
                     default:
                         System.out.println("Unknown user role for ID: " + id);
                         break;
@@ -93,11 +98,30 @@ public class HMSDatabase {
 
     private void loadMedicalRecords(String filename) throws IOException {
         List<String> lines = readFile(filename);
-        for (String line : lines) {
+        // Start processing from index 1 to skip the header
+        for (int i = 1; i < lines.size(); i++) {
+            String line = lines.get(i);
             String[] tokens = line.split(SEPARATOR);
-            MedicalRecord record = new MedicalRecord(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], tokens[5],
-                    tokens[6]);
-            medicalRecords.add(record);
+
+            if (tokens.length >= 10) { // Ensure there are enough tokens for all fields
+                // Extract fields including diagnoses, treatments, and prescriptions
+                MedicalRecord record = new MedicalRecord(
+                        tokens[0], // patientId
+                        tokens[1], // name
+                        tokens[2], // dateOfBirth
+                        tokens[3], // gender
+                        tokens[4], // bloodType
+                        tokens[5], // phoneNumber
+                        tokens[6], // emailAddress
+                        tokens[7], // diagnoses (as a string)
+                        tokens[8], // treatments (as a string)
+                        tokens[9] // prescriptions (as a string)
+                );
+
+                medicalRecords.add(record);
+            } else {
+                System.out.println("Invalid line in CSV: " + line);
+            }
         }
     }
 
@@ -130,21 +154,118 @@ public class HMSDatabase {
         return data;
     }
 
-    // Getter methods for users and medical records
-    public List<User> getUsers() {
-        return users;
+    // ========================= CRUD OPERATIONS FOR USERS =========================
+
+    public boolean createUser(User user) {
+        if (user != null) {
+            users.add(user);
+            try {
+                saveUsers(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // Invalid user
     }
 
     public User getUserById(String id) {
         for (User user : users) {
             if (user.getId().equals(id)) {
-                return user;
+                return user; // Return the matching user
             }
         }
-        return null;
+        return null; // Return null if not found
     }
 
-    public List<MedicalRecord> getMedicalRecords() {
-        return medicalRecords;
+    public boolean updateUser(User updatedUser) {
+        User existingUser = getUserById(updatedUser.getId());
+        if (existingUser != null) {
+            users.remove(existingUser);
+            users.add(updatedUser);
+            try {
+                saveUsers(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // User not found
+    }
+
+    public boolean deleteUser(String id) {
+        User existingUser = getUserById(id);
+        if (existingUser != null) {
+            users.remove(existingUser);
+            try {
+                saveUsers(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // User not found
+    }
+
+    public void saveUsers() throws IOException {
+        saveData("csv_data/User_List.csv", users);
+    }
+
+    // ================== CRUD OPERATIONS FOR MEDICAL RECORDS ====================
+    public boolean createMedicalRecord(MedicalRecord medicalRecord) {
+        if (medicalRecord != null) {
+            medicalRecords.add(medicalRecord);
+            try {
+                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // Invalid record
+    }
+
+    public MedicalRecord getMedicalRecordByPatientId(String patientId) {
+        for (MedicalRecord record : medicalRecords) {
+            if (record.getPatientId().equals(patientId)) {
+                return record; // Return the matching record
+            }
+        }
+        return null; // Return null if not found
+    }
+
+    public boolean updateMedicalRecord(MedicalRecord medicalRecord) {
+        MedicalRecord existingRecord = getMedicalRecordByPatientId(medicalRecord.getPatientId());
+        if (existingRecord != null) {
+            medicalRecords.remove(existingRecord);
+            medicalRecords.add(medicalRecord);
+            try {
+                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // Record not found
+    }
+
+    public boolean deleteMedicalRecord(String patientId) {
+        MedicalRecord existingRecord = getMedicalRecordByPatientId(patientId);
+        if (existingRecord != null) {
+            medicalRecords.remove(existingRecord);
+            try {
+                saveMedicalRecords(); // Save changes immediately or manage saving elsewhere
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle errors appropriately
+                return false;
+            }
+        }
+        return false; // Record not found
     }
 }
