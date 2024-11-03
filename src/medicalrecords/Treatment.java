@@ -37,7 +37,8 @@ public class Treatment {
         return new Treatment(treatmentName, treatmentDate, doctorName, treatmentDetails);
     }
 
-    public String toCSV() {
+    @Override
+    public String toString() {
         return getTreatmentName() + "|" + getTreatmentDate() + "|" + getDoctorName()
                 + "|" + getTreatmentDetails();
     }

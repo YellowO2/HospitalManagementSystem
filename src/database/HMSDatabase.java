@@ -42,6 +42,11 @@ public class HMSDatabase {
         loadMedicalRecords("csv_data/Medical_Record.csv");
     }
 
+    public void closeDatabase() throws IOException {
+        saveUsers();
+        saveMedicalRecords();
+    }
+
     // Load users (patients, staff, etc.) based on role from the CSV file
     private void loadUsers(String filename) throws IOException {
         List<String> lines = readFile(filename);
@@ -245,5 +250,9 @@ public class HMSDatabase {
             medicalRecords.remove(existingRecord);
         }
         return false; // Record not found
+    }
+
+    public void saveMedicalRecords() throws IOException {
+        saveData("csv_data/Medical_Record.csv", medicalRecords);
     }
 }

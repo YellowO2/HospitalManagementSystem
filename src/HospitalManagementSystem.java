@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 import authentication.AuthenticationManager;
@@ -35,6 +36,13 @@ public class HospitalManagementSystem {
             e.printStackTrace();
         } finally {
             scanner.close();
+        }
+
+        try {
+            HMSDatabase.getInstance().closeDatabase();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         System.out.println("Thank you for using the Hospital Management System.");

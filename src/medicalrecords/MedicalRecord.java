@@ -197,7 +197,8 @@ public class MedicalRecord {
         return prescriptions;
     }
 
-    public String toCSV() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         // Append basic information
@@ -214,7 +215,7 @@ public class MedicalRecord {
             sb.append(""); // Empty if no diagnoses
         } else {
             for (int i = 0; i < diagnoses.size(); i++) {
-                sb.append(diagnoses.get(i).toCSV()); // Assuming toCSV() is implemented in Diagnosis
+                sb.append(diagnoses.get(i).toString()); // Assuming toString() is implemented in Diagnosis
                 if (i < diagnoses.size() - 1) {
                     sb.append(";"); // Use semicolon as a delimiter between diagnoses
                 }
@@ -227,7 +228,7 @@ public class MedicalRecord {
             sb.append(""); // Empty if no treatments
         } else {
             for (int i = 0; i < treatments.size(); i++) {
-                sb.append(treatments.get(i).toCSV()); // Assuming toCSV() is implemented in Treatment
+                sb.append(treatments.get(i).toString()); // Assuming toString() is implemented in Treatment
                 if (i < treatments.size() - 1) {
                     sb.append(";"); // Use semicolon as a delimiter between treatments
                 }
@@ -240,7 +241,7 @@ public class MedicalRecord {
             sb.append(""); // Empty if no prescriptions
         } else {
             for (int i = 0; i < prescriptions.size(); i++) {
-                sb.append(prescriptions.get(i).toCSV()); // Assuming toCSV() is implemented in Prescription
+                sb.append(prescriptions.get(i).toString()); // Assuming toString() is implemented in Prescription
                 if (i < prescriptions.size() - 1) {
                     sb.append(";"); // Use semicolon as a delimiter between prescriptions
                 }

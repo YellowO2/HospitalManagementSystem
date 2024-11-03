@@ -37,7 +37,8 @@ public class Diagnosis {
         return new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
     }
 
-    public String toCSV() {
+    @Override
+    public String toString() {
         return getDiagnosisName() + "|" + getSeverity() + "|"
                 + getDiagnosisDate() + "|" + getDoctorName();
     }
