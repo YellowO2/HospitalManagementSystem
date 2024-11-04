@@ -16,14 +16,6 @@ public class Doctor extends User {
         this.appointmentSchedule = new ArrayList<>();
     }
 
-    // TODO: To JianAn, remeber to order the fields in correct order for the
-    // parameters as they correspond to the order in csv file.
-    // look at user.java for reference
-    @Override
-    public String toString() {
-        return String.format("WAITING");
-    }
-
     // TODO: These methods needs to be moved into Medical Record Manager
     // public String viewPatientMedicalRecord(Patient patient){
     // return patient.getMedicalRecord().getMedicalRecordDescription();

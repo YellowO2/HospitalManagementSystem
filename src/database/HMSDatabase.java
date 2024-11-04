@@ -91,7 +91,10 @@ public class HMSDatabase {
                         break;
 
                     case "Administrator":
-                        // TODO
+                        // TODO: Like the same as above, the order of parameters should be the same as
+                        // the csv file saved
+                        // Heres an example of the csv:
+                        // A001,SarahLee,1975-11-23,Female,98765432,sarah@example.com,password,Administrator
 
                         break;
 
