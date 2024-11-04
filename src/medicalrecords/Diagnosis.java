@@ -1,6 +1,7 @@
 package medicalrecords;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Diagnosis {
     private String diagnosisName; // Name of the diagnosis
@@ -11,9 +12,35 @@ public class Diagnosis {
     // Constructor
     public Diagnosis(String diagnosisName, String severity, LocalDate diagnosisDate, String doctorName) {
         this.diagnosisName = diagnosisName;
-        this.severity = severity; 
+        this.severity = severity;
         this.diagnosisDate = diagnosisDate;
         this.doctorName = doctorName;
+    }
+
+    // Static method to parse a string and create a Diagnosis object
+    public static Diagnosis fromCSV(String diagnosisString) {
+        String[] parts = diagnosisString.split("\\|");
+        if (parts.length != 4) {
+            throw new IllegalArgumentException("Invalid diagnosis format. Expected 4 fields.");
+        }
+
+        String diagnosisName = parts[0];
+        String severity = parts[1];
+        LocalDate diagnosisDate;
+        try {
+            diagnosisDate = LocalDate.parse(parts[2]); // Parsing the date
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD.");
+        }
+        String doctorName = parts[3];
+
+        return new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
+    }
+
+    @Override
+    public String toString() {
+        return getDiagnosisName() + "|" + getSeverity() + "|"
+                + getDiagnosisDate() + "|" + getDoctorName();
     }
 
     // Getters

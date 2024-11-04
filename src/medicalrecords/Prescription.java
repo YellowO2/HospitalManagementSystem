@@ -20,8 +20,28 @@ public class Prescription {
         this.status = status;
     }
 
-    // Getters and Setters
+    // Static factory method to create a Prescription from a CSV format
+    public static Prescription fromCSV(String csvString) {
+        String[] parts = csvString.split("\\|");
+        if (parts.length == 6) { // Ensure you have all required fields
+            String medicationName = parts[0];
+            String dosage = parts[1];
+            String frequency = parts[2];
+            int amount = Integer.parseInt(parts[3]); // Ensure to handle exceptions if needed
+            String instructions = parts[4];
+            int status = Integer.parseInt(parts[5]);
 
+            return new Prescription(medicationName, dosage, instructions, frequency, amount, status);
+        }
+        throw new IllegalArgumentException("Invalid CSV format for Prescription: " + csvString);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s|%s|%s|%d|%s|%d", medicationName, dosage, frequency, amount, instructions, status);
+    }
+
+    // Getters and Setters
     public String getPrescriptionId() {
         return prescriptionId;
     }
@@ -67,9 +87,9 @@ public class Prescription {
     }
 
     public String getDescriptionDetails() {
-        return "Prescription Details:\n" + "Medication Name: " + medicationName + "\nDosage: " + dosage
+        return "Medication Name: " + medicationName + "\nDosage: " + dosage
                 + "\nFrequency: " + frequency + "\nStatus: " + status + "\nAmount: " + amount
-                + "\nInstructions: " + instructions;
+                + "\nInstructions: " + instructions + "\n";
     }
 
     public int getStatus() {

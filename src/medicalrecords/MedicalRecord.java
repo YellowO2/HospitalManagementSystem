@@ -2,7 +2,10 @@ package medicalrecords;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+//Very ANGRY that they want us to have non medical information like FUCKING email-address etc in the fucking MEDICAL record, 
+//can we ask if we can do it our own way?
 public class MedicalRecord {
     private String patientId;
     private String name;
@@ -11,15 +14,13 @@ public class MedicalRecord {
     private String bloodType;
     private String phoneNumber;
     private String emailAddress;
-
-    // List of diagnoses, treatments, and prescriptions
     private List<Diagnosis> diagnoses;
     private List<Treatment> treatments;
     private List<Prescription> prescriptions;
 
-    // Constructor
     public MedicalRecord(String patientId, String name, String dateOfBirth, String gender, String bloodType,
-            String phoneNumber, String emailAddress) {
+            String phoneNumber, String emailAddress, String diagnosisString,
+            String treatmentString, String prescriptionString) {
         this.patientId = patientId;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -27,9 +28,49 @@ public class MedicalRecord {
         this.bloodType = bloodType;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
-        this.diagnoses = new ArrayList<>();
-        this.treatments = new ArrayList<>();
-        this.prescriptions = new ArrayList<>();
+        this.diagnoses = parseDiagnoses(diagnosisString);
+        this.treatments = parseTreatments(treatmentString);
+        this.prescriptions = parsePrescriptions(prescriptionString);
+    }
+
+    private List<Diagnosis> parseDiagnoses(String diagnosisString) {
+        List<Diagnosis> diagnosesList = new ArrayList<>();
+        String[] diagnosesArray = diagnosisString.split(";");
+        for (String diag : diagnosesArray) {
+            Diagnosis diagnosis = Diagnosis.fromCSV(diag);
+            diagnosesList.add(diagnosis);
+        }
+        return diagnosesList;
+    }
+
+    private List<Treatment> parseTreatments(String treatmentString) {
+        List<Treatment> treatmentsList = new ArrayList<>();
+        String[] treatmentsArray = treatmentString.split(";");
+        for (String treat : treatmentsArray) {
+            Treatment treatment = Treatment.fromCSV(treat);
+            treatmentsList.add(treatment);
+        }
+        return treatmentsList;
+    }
+
+    private List<Prescription> parsePrescriptions(String prescriptionString) {
+        List<Prescription> prescriptionsList = new ArrayList<>();
+
+        // Split the prescriptions based on a semicolon delimiter
+        String[] prescriptionsArray = prescriptionString.split(";");
+
+        for (String presc : prescriptionsArray) {
+            try {
+                // Use the static factory method fromCSV to create a Prescription
+                Prescription prescription = Prescription.fromCSV(presc);
+                prescriptionsList.add(prescription);
+            } catch (IllegalArgumentException e) {
+                // FOR DEBUGGING
+                System.out.println("Error parsing prescription: " + e.getMessage());
+            }
+        }
+
+        return prescriptionsList;
     }
 
     // Method to view the entire medical record as a formatted string
@@ -112,18 +153,6 @@ public class MedicalRecord {
         prescriptions.remove(prescription);
     }
 
-    // // Method to update the status of a prescription
-    // TODO: Should see if prescription has id
-    // public void updatePrescriptionStatus(String prescriptionId, String newStatus)
-    // {
-    // for (Prescription prescription : prescriptions) {
-    // if (prescription.getPrescriptionId().equals(prescriptionId)) {
-    // prescription.setStatus(newStatus);
-    // break;
-    // }
-    // }
-    // }
-
     // Allow patients to update contact information
     public void updateContactInfo(String newPhoneNumber, String newEmailAddress) {
         if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
@@ -168,42 +197,58 @@ public class MedicalRecord {
         return prescriptions;
     }
 
-    // Method to retrieve medical history (for patients to view)
-    public String getMedicalHistory() {
-        StringBuilder history = new StringBuilder();
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
 
-        history.append("Medical History for ").append(name).append(" (Patient ID: ").append(patientId).append(")\n");
+        // Append basic information
+        sb.append(patientId).append(",")
+                .append(name).append(",")
+                .append(dateOfBirth).append(",")
+                .append(gender).append(",")
+                .append(bloodType).append(",")
+                .append(phoneNumber).append(",")
+                .append(emailAddress).append(",");
 
-        // Add diagnoses
-        history.append("Diagnoses:\n");
+        // Append diagnoses
         if (diagnoses.isEmpty()) {
-            history.append("No diagnoses available.\n");
+            sb.append(""); // Empty if no diagnoses
         } else {
-            for (Diagnosis diagnosis : diagnoses) {
-                history.append(diagnosis.getDiagnosisDetails()).append("\n");
+            for (int i = 0; i < diagnoses.size(); i++) {
+                sb.append(diagnoses.get(i).toString()); // Assuming toString() is implemented in Diagnosis
+                if (i < diagnoses.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between diagnoses
+                }
             }
         }
+        sb.append(",");
 
-        // Add treatments
-        history.append("\nTreatments:\n");
+        // Append treatments
         if (treatments.isEmpty()) {
-            history.append("No treatments available.\n");
+            sb.append(""); // Empty if no treatments
         } else {
-            for (Treatment treatment : treatments) {
-                history.append(treatment.getTreatment()).append("\n");
+            for (int i = 0; i < treatments.size(); i++) {
+                sb.append(treatments.get(i).toString()); // Assuming toString() is implemented in Treatment
+                if (i < treatments.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between treatments
+                }
             }
         }
+        sb.append(",");
 
-        // Add prescriptions
-        history.append("\nPrescriptions:\n");
+        // Append prescriptions
         if (prescriptions.isEmpty()) {
-            history.append("No prescriptions available.\n");
+            sb.append(""); // Empty if no prescriptions
         } else {
-            for (Prescription prescription : prescriptions) {
-                history.append(prescription.getDescriptionDetails()).append("\n");
+            for (int i = 0; i < prescriptions.size(); i++) {
+                sb.append(prescriptions.get(i).toString()); // Assuming toString() is implemented in Prescription
+                if (i < prescriptions.size() - 1) {
+                    sb.append(";"); // Use semicolon as a delimiter between prescriptions
+                }
             }
         }
 
-        return history.toString();
+        return sb.toString();
     }
+
 }

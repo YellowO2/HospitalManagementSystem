@@ -1,77 +1,128 @@
 // package users;
 
+// import data.ReadFile;
+// import java.io.IOException;
 // import java.time.LocalDate;
-// import java.util.Scanner;
+// import java.util.ArrayList;
+// import java.util.List;
+// import medicine.Inventory;
+// import medicine.Medicine;
 
 // public class Administrator extends User {
 
-// // Constructor
-// public Administrator(String id, String name, String role, LocalDate
-// dateOfBirth, String gender, String phoneNumber,
-// String emailAddress, String bloodType) {
-// super(id, name, role, phoneNumber, emailAddress, bloodType,
+// // List to store staff members (Doctors & Pharmacists)
+// private List<Staff> staffList;
+
+// // Inventory object for managing medication
+// private Inventory inventory;
+
+// // Constructor to initialize Administrator with user properties and inventory
+// public Administrator(String id, String name, String password, String
+// phoneNumber, String emailAddress,
+// LocalDate dateOfBirth, String gender) throws IOException {
+// super(id, name, "Administrator", password, phoneNumber, emailAddress,
 // dateOfBirth, gender);
+// this.staffList = new ArrayList<>();
+// this.inventory = new Inventory("Medicine_List.csv");
 // }
 
-// // Methods to manage hospitals
-// public void manageHospitals(String hospitalID) {
-// System.out.println("Managing hospital with ID: " + hospitalID);
-// // Implementation to manage hospital
+// // Initialize the staff list from a CSV file
+// public void initializeStaffList() throws IOException {
+// this.staffList = new ArrayList<>();
+// Staff[] loadedStaff = ReadFile.readStaffListFile("Staff_List.csv");
+// for (Staff staff : loadedStaff) {
+// staffList.add(staff);
+// }
+// System.out.println("Staff list initialized from file.");
 // }
 
-// // Method to view appointment details
-// public void viewAppointmentDetails(String appointmentID) {
-// System.out.println("Viewing details of appointment: " + appointmentID);
-// System.out.println("Patient ID: " + record.getPatientID());
-// System.out.println("Doctor ID: " + record.get DoctorID());
-// System.out.println("Appointment Status: " + record.getAppointmentStatus());
-// System.out.println("Appointment Date: " + record.getAppointmentDate());
-// System.out.println("Appointment Time: " + record.getAppointmentTime());
-// System.out.println("Appointment Outcome Record: " +
-// record.getOutcomeRecord());
+// // Method to add a new staff member
+// public void addStaff(Staff staff) {
+// staffList.add(staff);
+// System.out.println("Staff member added successfully: " + staff.getName());
 // }
 
-// // Method to update inventory
-// public void updateInventory(String item, int quantity) {
-// int input = 0;
-// Scanner sc = new Scanner(System.in);
-// System.out.println("Choose option");
-// input = sc.nextInt();
-// switch (input) {
-// case 1:
-// System.out.println("Adding inventory for medication: " + item + " with
-// quantity: " + quantity);
-// break;
-// case 2:
-// System.out.println("Updating inventory for medication: " + item + " with
-// quantity: " + quantity);
-// break;
-// case 3:
-// System.out.println("Removing inventory for medication: " + item + " with
-// quantity: " + quantity);
-// break;
-// default:
-// System.out.println("Error Input");
-
-// }
-
-// }
-
-// // Method to request replenishment
-// public void requestReplenishment(String item, int quantity) {
-// System.out.println("Requesting replenishment for item: " + item + " with
-// quantity: " + quantity);
-// // Implementation for replenishment request
-// }
-
-// // Method to approve replenishment requests
-// public void approveReplenishment(String requestID) {
-// if (inventory.isLow(medicationId)) {
-// System.out.println("Approving replenishment request with ID: " + requestID);
-// ;
+// // Method to remove an existing staff member
+// public void removeStaff(Staff staff) {
+// if (staffList.remove(staff)) {
+// System.out.println("Staff member removed successfully: " + staff.getName());
 // } else {
-// System.out.println("Stock levels are sufficient.");
+// System.out.println("Staff member not found.");
 // }
 // }
 
+// // Method to update staff information
+// public void updateStaff(Staff oldStaff, Staff newStaff) {
+// int index = staffList.indexOf(oldStaff);
+// if (index >= 0) {
+// staffList.set(index, newStaff);
+// System.out.println("Staff information updated for: " + newStaff.getName());
+// } else {
+// System.out.println("Old staff member not found.");
+// }
+// }
+
+// // Method to display the staff list
+// public void displayStaffList() {
+// System.out.println("=== Staff List ===");
+// for (Staff staff : staffList) {
+// System.out.println(staff);
+// }
+// }
+
+// // Method to view appointments (placeholder for future implementation)
+// public void viewAppointments() {
+// System.out.println("Viewing appointments... (Work in progress)");
+// // Implement logic to display appointment details if needed
+// }
+
+// // Method to view the entire inventory
+// public void viewInventory() {
+// Medicine[] inventoryList = inventory.GetInventory();
+// System.out.println("=== Inventory List ===");
+// for (Medicine medicine : inventoryList) {
+// System.out.println("Medicine: " + medicine.getName() + ", Stock: " +
+// medicine.getStock() +
+// ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
+// }
+// }
+
+// // Method to update stock for an existing medicine
+// public void updateInventoryStock(String medicineName, int stockNum) {
+// int updated = inventory.setInventory(medicineName, stockNum);
+// if (updated == 1) {
+// System.out.println("Inventory updated for " + medicineName);
+// } else {
+// System.out.println("Medicine not found in inventory.");
+// }
+// }
+
+// // Method to update stock and low stock alert for an existing medicine
+// public void updateInventoryStockWithAlert(String medicineName, int stockNum,
+// int lowStockAlert) {
+// int updated = inventory.setInventory(medicineName, stockNum, lowStockAlert);
+// if (updated == 1) {
+// System.out.println("Inventory and low stock alert updated for " +
+// medicineName);
+// } else {
+// System.out.println("Medicine not found in inventory.");
+// }
+// }
+
+// // Method to add a new medicine to the inventory
+// public void addNewMedicine(String medicineName, int initialStock, int
+// lowStockAlert) {
+// inventory.addInventory(medicineName, initialStock, lowStockAlert);
+// System.out.println("New medicine added to the inventory: " + medicineName);
+// }
+
+// // Method to remove a medicine from the inventory
+// public void removeMedicine(String medicineName) {
+// int updated = inventory.removeInventory(medicineName);
+// if (updated == 1) {
+// System.out.println(medicineName + " removed from the inventory.");
+// } else {
+// System.out.println("Medicine not found in the inventory.");
+// }
+// }
 // }

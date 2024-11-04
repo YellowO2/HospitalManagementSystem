@@ -15,7 +15,8 @@ public class PatientMenu {
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
 
-    // Constructor
+    // TODO: Waiting for appointment manager to be integrated here
+    // TODO: Consider passing scanner from the main app
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager) {
         this.medicalRecordManager = medicalRecordManager;
         this.patient = patient;
@@ -83,8 +84,7 @@ public class PatientMenu {
     // Placeholder methods for each menu option
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
-        System.out.println(medicalRecordManager.getMedicalRecord(patient.getId()));
-
+        System.out.println(medicalRecordManager.getMedicalHistory(patient.getId()));
     }
 
     private void updatePersonalInformation() {

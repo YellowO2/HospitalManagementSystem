@@ -1,6 +1,7 @@
 package users;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public abstract class User {
     private String id; // Unique hospital ID
@@ -14,14 +15,15 @@ public abstract class User {
 
     // Constructor with all properties
     public User(String id, String name, String role, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender) {
+            String dateOfBirth, String gender) {
+
         this.id = id;
         this.name = name;
         this.role = role;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = LocalDate.parse(dateOfBirth);
         this.gender = gender;
     }
 
@@ -79,4 +81,18 @@ public abstract class User {
         this.password = newPassword;
         return true;
     }
+
+    public String toString() {
+        // Assuming getDateOfBirth() returns a LocalDate
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
+                getId(),
+                getName(),
+                getDateOfBirth().format(DateTimeFormatter.ISO_LOCAL_DATE), // Format date as yyyy-MM-dd
+                getGender(),
+                getPhoneNumber(),
+                getEmailAddress(),
+                getPassword(),
+                getRole());
+    }
+
 }

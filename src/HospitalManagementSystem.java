@@ -1,25 +1,50 @@
+import java.io.IOException;
 import java.util.Scanner;
 
-// custom imports
-import authentication.LoginSystem;
+import authentication.AuthenticationManager;
 import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
 import menus.PatientMenu;
+import database.HMSDatabase;
 
 public class HospitalManagementSystem {
-    private static LoginSystem loginSystem = new LoginSystem();
+    private static AuthenticationManager loginSystem = new AuthenticationManager();
     private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager();
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        User currentUser = loginSystem.handleLogin();
+        try {
+            // Initialize the database and load data
+            System.out.println("Loading database...");
+            HMSDatabase.getInstance().initializeDatabase();
+            ; // Access singleton instance
+            System.out.println("Database loaded successfully.");
 
-        if (currentUser != null) {
-            handleUserRole(scanner, currentUser);
+            User currentUser = loginSystem.handleLogin();
+
+            if (currentUser != null) {
+                handleUserRole(scanner, currentUser);
+            }
+
+            // Save any changes to the database before exiting
+            // hmsDatabase.savePatients();
+            // hmsDatabase.saveMedicalRecords();
+
+        } catch (Exception e) {
+            System.out.println("Error loading the database: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            scanner.close();
         }
 
-        scanner.close();
+        try {
+            HMSDatabase.getInstance().closeDatabase();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         System.out.println("Thank you for using the Hospital Management System.");
     }
 
@@ -28,10 +53,11 @@ public class HospitalManagementSystem {
         String role = currentUser.getRole();
 
         if (role.equals("Patient")) {
-            PatientMenu patientMenu = new PatientMenu((Patient) currentUser, medicalRecordManager);
+            Patient patient = (Patient) currentUser;
+            PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager);
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
-            // Uncomment and implement the doctor menu
+            // Implement the doctor menu
             // runDoctorMenu(scanner, (Doctor) currentUser);
         } else {
             System.out.println("Invalid role. Logging out.");

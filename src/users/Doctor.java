@@ -20,8 +20,9 @@ public class Doctor extends User {
     private List<Appointment> appointmentSchedule;
     // private MedicalRecordManager medicalRecordManager;
 
-    public Doctor(String id, String name, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender) {
+    // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+    public Doctor(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentSchedule = new ArrayList<>();
         // this.medicalRecordManager = medicalRecordManager;
