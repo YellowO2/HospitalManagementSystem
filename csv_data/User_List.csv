@@ -1,4 +1,8 @@
+ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+P1001,Roland,1980-05-14,Male,11111111,roland001@example.com,password,Patient
 P1002,Josh,1975-11-22,Female,11111111,josh002@example.com,password,Patient
 P1003,Rizz,1990-07-08,Female,11111111,rizz003@example.com,password,Patient
 P1004,Jian An,1975-11-23,Female,11111111,jianan004@example.com,password,Patient
 P1005,Yu Xuan,1980-05-15,Female,11111111,yuxuan005@example.com,password,Patient
+WAITING
+PH001,Mark Lee,1990-07-08,Male,87654321,mark@example.com,password,PHARMACIST

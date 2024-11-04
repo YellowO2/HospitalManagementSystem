@@ -134,11 +134,13 @@ public class HMSDatabase {
         }
     }
 
-    private void saveData(String filename, List<?> dataList) throws IOException {
+    private void saveData(String filename, List<?> dataList, String header) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(filename));
         try {
+            out.println(header);
             for (Object obj : dataList) {
-                out.println(obj.toString()); // Ensure that User and MedicalRecord have proper toString methods
+                out.println(obj.toString()); // Ensure that User, MedicalRecord and other data classes have proper
+                                             // toString methods
             }
         } finally {
             out.close();
@@ -215,7 +217,8 @@ public class HMSDatabase {
     }
 
     public void saveUsers() throws IOException {
-        saveData("csv_data/User_List.csv", users);
+        saveData("csv_data/User_List.csv", users,
+                "ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role");
     }
 
     // ================== CRUD OPERATIONS FOR MEDICAL RECORDS ====================
@@ -253,6 +256,7 @@ public class HMSDatabase {
     }
 
     public void saveMedicalRecords() throws IOException {
-        saveData("csv_data/Medical_Record.csv", medicalRecords);
+        saveData("csv_data/Medical_Record.csv", medicalRecords,
+                "PatientID,Name,DateOfBirth,Gender,BloodType,PhoneNumber,EmailAddress,Diagnoses,Treatments,Prescriptions");
     }
 }
