@@ -48,7 +48,7 @@ public class MedicalRecordManager {
     }
 
     // View past diagnoses and treatments (for patients)
-    public String getMedicalHistory(String patientId) {
+    public String viewMedicalHistory(String patientId) {
         MedicalRecord record = database.getMedicalRecordByPatientId(patientId);
         return (record != null) ? record.getMedicalRecordDescription() : null; // Return null if not found
     }

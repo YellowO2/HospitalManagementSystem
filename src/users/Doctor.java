@@ -8,7 +8,6 @@ import medicalrecords.MedicalRecord;
 import medicalrecords.MedicalRecordManager;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
-// import medicalrecords.MedicalRecordManger; 
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +17,15 @@ import java.util.Scanner;
 
 public class Doctor extends User {
     private List<Appointment> appointmentSchedule;
-    // private MedicalRecordManager medicalRecordManager;
+    private MedicalRecordManager medicalRecordManager;
 
     // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+    // TODO: Consider adding medicalRecordManager (so that only doctors can see their ownn patients) and appointmentSchedule into constructor
     public Doctor(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentSchedule = new ArrayList<>();
-        // this.medicalRecordManager = medicalRecordManager;
+        this.medicalRecordManager = medicalRecordManager;
     }
 
     public boolean updatePatientMedicalRecords(String patientId){
@@ -94,7 +94,7 @@ public class Doctor extends User {
         Treatment treatment = null;
 
         // Obtain treatment information (Optional, skipped if input is No)
-        System.out.print("Do you want to add a treatment? (yes/no): ");
+        System.out.print("Do you want to add a treatment? (Yes/No): ");
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
             System.out.print("Enter treatment details: ");
             String treatmentName = scanner.nextLine();
@@ -107,8 +107,7 @@ public class Doctor extends User {
         }
 
         // Update the medical record
-        // return medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
-        return false; // Placeholder return
+        return medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
     }
 
     // TODO: These methods needs to be moved into Medical Record Manager
