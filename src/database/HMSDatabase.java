@@ -51,6 +51,12 @@ public class HMSDatabase {
     private void loadUsers(String filename) throws IOException {
         List<String> lines = readFile(filename);
 
+        // Display a warning if the CSV file is empty or contains only the header row
+        if (lines.size() <= 1) {
+            System.out.println("Warning: User CSV file is empty or contains only the header.");
+            return;
+        }
+
         // Skip the header by starting from 1
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -110,6 +116,13 @@ public class HMSDatabase {
 
     private void loadMedicalRecords(String filename) throws IOException {
         List<String> lines = readFile(filename);
+
+        // Display a warning if the CSV file is empty or contains only the header row
+        if (lines.size() <= 1) { // If only header or no lines
+            System.out.println("Warning: Medical Record CSV file is empty or contains only the header.");
+            return;
+        }
+
         // Start processing from index 1 to skip the header
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);

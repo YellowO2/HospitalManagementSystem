@@ -84,7 +84,7 @@ public class PatientMenu {
     // Placeholder methods for each menu option
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
-        System.out.println(medicalRecordManager.getMedicalHistory(patient.getId()));
+        System.out.println(medicalRecordManager.viewMedicalHistory(patient.getId()));
     }
 
     private void updatePersonalInformation() {
