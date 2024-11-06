@@ -1,27 +1,29 @@
 package authentication;
 
 import users.User;
-import users.Patient;
 import java.util.Scanner;
-import database.HMSDatabase;
+
+import database.UserDB;
 
 public class AuthenticationManager {
     private Scanner scanner;
+    private UserDB userDB;
 
-    // TODO: Consider passing scanner from main
-    public AuthenticationManager() {
+    // Constructor, scanner can be passed from the main method
+    public AuthenticationManager(UserDB userDB) {
         this.scanner = new Scanner(System.in);
+        this.userDB = userDB;
     }
 
     // Method to check if user credentials are valid
     public User login(String userId, String password) {
-        HMSDatabase hmsDatabase = HMSDatabase.getInstance();
-        User user = hmsDatabase.getUserById(userId);
+        User user = userDB.getById(userId); // Retrieve the user by ID using UserDB
 
         if (user != null && user.getPassword().equals(password)) {
             System.out.println("Login successful for user: " + userId);
-            return user; // Return the authenticated patient
+            return user; // Return the authenticated user
         }
+        System.out.println("user:" + user);
 
         System.out.println("Login failed for user: " + userId);
         return null; // Return null if no match found

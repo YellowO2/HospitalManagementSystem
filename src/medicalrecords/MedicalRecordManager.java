@@ -1,22 +1,21 @@
 package medicalrecords;
 
-import database.HMSDatabase;
+import database.MedicalRecordDB;
 
 public class MedicalRecordManager {
-    // Reference to the database
-    private HMSDatabase database;
+    // Reference to the MedicalRecordDB
+    private MedicalRecordDB database;
 
     // Constructor
-    public MedicalRecordManager() {
-        this.database = HMSDatabase.getInstance(); // Get the instance of the database
+    public MedicalRecordManager(MedicalRecordDB database) {
+        this.database = database; // Create an instance directly with the filename
     }
 
     // Add a new medical record for a patient
     public boolean addMedicalRecord(String patientId, MedicalRecord medicalRecord) {
         if (medicalRecord != null && patientId != null && !patientId.isEmpty()) {
             // Add to database
-            database.createMedicalRecord(medicalRecord);
-            return true;
+            return database.create(medicalRecord); // Use the create method from MedicalRecordDB
         } else {
             return false; // Invalid input
         }
@@ -25,7 +24,7 @@ public class MedicalRecordManager {
     // Update an existing medical record (for use by doctors)
     public boolean updateMedicalRecord(String patientId, Diagnosis diagnosis, Prescription prescription,
             Treatment treatment) {
-        MedicalRecord record = database.getMedicalRecordByPatientId(patientId);
+        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
         if (record != null) {
             if (diagnosis != null) {
                 record.addDiagnosis(diagnosis);
@@ -37,29 +36,28 @@ public class MedicalRecordManager {
                 record.addTreatment(treatment);
             }
             // Update in database
-            return database.updateMedicalRecord(record);
+            return database.update(record); // Update the record in the database
         }
         return false; // Record not found
     }
 
     // Delete a medical record (for potential administrative actions)
     public boolean deleteMedicalRecord(String patientId) {
-        return database.deleteMedicalRecord(patientId);
+        return database.delete(patientId); // Use the delete method to remove the record
     }
 
     // View past diagnoses and treatments (for patients)
     public String getMedicalHistory(String patientId) {
-        MedicalRecord record = database.getMedicalRecordByPatientId(patientId);
-        return (record != null) ? record.getMedicalRecordDescription() : null; // Return null if not found
+        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
+        return (record != null) ? record.getMedicalRecordDescription() : null; // Return the description if found
     }
 
     // Update non-medical information such as contact info (for patients)
-    // TODO: Consider if i should also update the contact info in patient class
     public boolean updateContactInfo(String patientId, String newPhoneNumber, String newEmailAddress) {
-        MedicalRecord record = database.getMedicalRecordByPatientId(patientId);
+        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
         if (record != null) {
             record.updateContactInfo(newPhoneNumber, newEmailAddress);
-            return database.updateMedicalRecord(record); // Asks database to update it
+            return database.update(record); // Update the medical record in the database
         }
         return false; // Record not found
     }

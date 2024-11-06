@@ -6,20 +6,22 @@ import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
 import menus.PatientMenu;
-import database.HMSDatabase;
+import database.DatabaseManager;
 
 public class HospitalManagementSystem {
-    private static AuthenticationManager loginSystem = new AuthenticationManager();
-    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager();
+
+    private static DatabaseManager databaseManager = new DatabaseManager();
+    private static AuthenticationManager loginSystem = new AuthenticationManager(databaseManager.getUserDB());
+    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(
+            databaseManager.getMedicalRecordDB());
+
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         try {
-            // Initialize the database and load data
+            // Initialize the database
             System.out.println("Loading database...");
-            HMSDatabase.getInstance().initializeDatabase();
-            ; // Access singleton instance
-            System.out.println("Database loaded successfully.");
+            databaseManager.initialize();
 
             User currentUser = loginSystem.handleLogin();
 
@@ -39,9 +41,8 @@ public class HospitalManagementSystem {
         }
 
         try {
-            HMSDatabase.getInstance().closeDatabase();
+            databaseManager.save();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
