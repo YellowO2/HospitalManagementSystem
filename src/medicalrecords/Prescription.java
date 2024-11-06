@@ -1,4 +1,3 @@
-
 package medicalrecords;
 
 public class Prescription {
