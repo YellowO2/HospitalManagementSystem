@@ -49,11 +49,19 @@ public abstract class Database<T> {
     }
 
     public List<String> readFile(String filename) throws IOException {
+
         List<String> data = new ArrayList<>();
         try (Scanner scanner = new Scanner(new FileInputStream(filename))) {
+
             // Skip the first line (header)
             if (scanner.hasNextLine()) {
                 scanner.nextLine();
+            }
+
+            // Display a warning if the CSV file contains only the header row, implying
+            // empty
+            if (!scanner.hasNextLine()) {
+                System.out.println("Warning: The CSV file is empty or contains only the header row.");
             }
 
             // Read the remaining lines
