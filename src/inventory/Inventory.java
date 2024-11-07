@@ -17,8 +17,13 @@ public class Inventory {
 
     public void updateMedicine(String id, int newStockLevel) {
         if (medicines.containsKey(id)) {
-            medicines.get(id).setStockLevel(newStockLevel);
-            System.out.println("Updated stock level for " + medicines.get(id).getName() + " to " + newStockLevel);
+            Medicine medicine = medicines.get(id);
+            medicine.setStockLevel(newStockLevel);
+            System.out.println("Updated stock level for " + medicine.getName() + " to " + newStockLevel);
+
+            if (!medicine.isStockLow()) {
+                System.out.println("Stock level for " + medicine.getName() + " is now above the low stock alert level.");
+            }
         } else {
             System.out.println("Medicine not found.");
         }
@@ -37,6 +42,10 @@ public class Inventory {
             Medicine medicine = medicines.get(id);
             medicine.setStockLevel(medicine.getStockLevel() + quantity);
             System.out.println("Replenished " + quantity + " units of " + medicine.getName());
+
+            if (!medicine.isStockLow()) {
+                System.out.println("Stock level for " + medicine.getName() + " is now above the low stock alert level.");
+            }
         } else {
             System.out.println("Medicine not found.");
         }
@@ -52,10 +61,27 @@ public class Inventory {
         }
     }
 
-    public boolean isLow(String id, int threshold) {
+    // Check if a specific medicine is below its low stock alert level
+    public boolean isLow(String id) {
         if (medicines.containsKey(id)) {
-			return medicines.get(id).getStockLevel() < threshold ;
+            return medicines.get(id).isStockLow();
         }
         return false;
+    }
+
+    // Display all medicines that are below their low stock alert levels
+    public void displayLowStockMedicines() {
+        boolean lowStockFound = false;
+        for (Medicine medicine : medicines.values()) {
+            if (medicine.isStockLow()) {
+                System.out.println("Low stock alert for: " + medicine.getName() + 
+                                   " (Current Stock: " + medicine.getStockLevel() + 
+                                   ", Alert Level: " + medicine.getLowStockLevelAlert() + ")");
+                lowStockFound = true;
+            }
+        }
+        if (!lowStockFound) {
+            System.out.println("No medicines are currently below their low stock levels.");
+        }
     }
 }
