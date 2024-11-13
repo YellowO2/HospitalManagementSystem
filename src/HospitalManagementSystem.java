@@ -9,6 +9,8 @@ import menus.PatientMenu;
 import database.DatabaseManager;
 import users.Pharmacist;
 import menus.PharmacistMenu;
+import users.Administrator;
+import menus.AdministratorMenu;
 
 public class HospitalManagementSystem {
 
@@ -66,6 +68,11 @@ public class HospitalManagementSystem {
             Pharmacist pharmacist = (Pharmacist) currentUser;
             PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist);
             pharmacistMenu.displayMenu();
+        if (role.equals("Administrator")){
+            Administrator administrator = (Administrator) currentUser;
+            AdminstratorMenu adminstratorMenu = new AdministratorMenu(administrator);
+            AdministratorMenu.displayMenu();
+        }
         } else {
             System.out.println("Invalid role. Logging out.");
         }

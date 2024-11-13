@@ -100,48 +100,48 @@ public class Administrator extends User {
     // Existing methods related to inventory and staff management remain unchanged
 
     // Method to view the entire inventory
-    public void viewInventory() {
+/*    public void viewInventory() {
         Medicine[] inventoryList = inventory.displayInventory();
         System.out.println("=== Inventory List ===");
         for (Medicine medicine : inventoryList) {
             System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
                                ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
         }
-    }
+    }*/
 
     // Method to update stock for an existing medicine
-    public void updateInventoryStock(String medicineName, int stockNum) {
+ /*   public void updateInventoryStock(String medicineName, int stockNum) {
         int updated = inventory.setInventory(medicineName, stockNum);
         if (updated == 1) {
             System.out.println("Inventory updated for " + medicineName);
         } else {
             System.out.println("Medicine not found in inventory.");
         }
-    }
+    }*/
 
     // Method to update stock and low stock alert for an existing medicine
-    public void updateInventoryStockWithAlert(String medicineName, int stockNum, int lowStockAlert) {
+/*    public void updateInventoryStockWithAlert(String medicineName, int stockNum, int lowStockAlert) {
         int updated = inventory.setInventory(medicineName, stockNum, lowStockAlert);
         if (updated == 1) {
             System.out.println("Inventory and low stock alert updated for " + medicineName);
         } else {
             System.out.println("Medicine not found in inventory.");
         }
-    }
+    }*/
 
-    // Method to add a new medicine to the inventory
+/*    // Method to add a new medicine to the inventory
     public void addNewMedicine(String medicineName, int initialStock, int lowStockAlert) {
         inventory.addInventory(medicineName, initialStock, lowStockAlert);
         System.out.println("New medicine added to the inventory: " + medicineName);
-    }
+    }*/
 
-    // Method to remove a medicine from the inventory
+  /*  // Method to remove a medicine from the inventory
     public void removeMedicine(String medicineName) {
-        int updated = inventory.removeInventory(medicineName);
+        String updated = Inventory.removeMedicine(medicineName);
         if (updated == 1) {
             System.out.println(medicineName + " removed from the inventory.");
         } else {
             System.out.println("Medicine not found in the inventory.");
         }
     }
-}
+}*/
