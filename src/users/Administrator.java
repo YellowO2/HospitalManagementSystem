@@ -21,9 +21,9 @@ public class Administrator extends User {
     private UserDB userDB;
 
     // Constructor to initialize Administrator with user properties, inventory, and a reference to UserDB
-    public Administrator(String id, String name, String password, String phoneNumber, String emailAddress,
-                         LocalDate dateOfBirth, String gender, UserDB userDB) throws IOException {
-        super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
+    public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) throws IOException {
+    	super(id, name, "ADMINISTRATOR", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
         this.inventory = new Inventory("Medicine_List.csv");
         this.userDB = userDB;
