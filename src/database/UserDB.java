@@ -117,7 +117,8 @@ public class UserDB extends Database<User> {
                         users.add(pharmacist);
                         break;
                     case "Administrator":
-                    	Administrator administrator = new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password);
+                        Administrator administrator = new Administrator(id, name, dob, gender, phoneNumber,
+                                emailAddress, password);
                         users.add(administrator);
                         break;
                     default:
@@ -129,5 +130,10 @@ public class UserDB extends Database<User> {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<User> getAll() {
+        return users;
     }
 }

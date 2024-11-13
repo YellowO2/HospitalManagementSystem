@@ -19,10 +19,11 @@ public class Administrator extends User {
     // Reference to UserDB for user management
     private UserDB userDB;
 
-    // Constructor to initialize Administrator with user properties, inventory, and a reference to UserDB
+    // Constructor to initialize Administrator with user properties, inventory, and
+    // a reference to UserDB
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) throws IOException {
-    	super(id, name, "ADMINISTRATOR", password, phoneNumber, emailAddress, dateOfBirth, gender);
+        super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
         this.inventory = new Inventory("Medicine_List.csv");
         this.userDB = userDB;
@@ -105,7 +106,7 @@ public class Administrator extends User {
         System.out.println("=== Inventory List ===");
         for (Medicine medicine : inventoryList) {
             System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
-                               ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
+                    ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
         }
     }*/
 
