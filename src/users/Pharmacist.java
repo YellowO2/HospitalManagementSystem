@@ -2,39 +2,38 @@ package users;
 
 import java.util.ArrayList;
 import java.util.List;
+import inventory.Inventory;
+import inventory.Medicine;
+import appointments.AppointmentOutcomeRecord;
+import medicalrecords.Prescription;
 
 public class Pharmacist extends User {
-    private List<AppointmentOutcomeRecord> appointmentOutcomeRecords; // Need update prescription class
+    private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
     private Inventory inventory;
 
-    public Pharmacist(String id, String name, String password) {
-        super(id, name, "PHARMACIST", password);
+    public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password)  {
+        super(id, name, "PHARMACIST", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentOutcomeRecords = new ArrayList<>();
         this.inventory = new Inventory();
     }
 
-    @Override
-    public void viewProfile() {
-        System.out.println("Pharmacist Profile: " + getName() + " (ID: " + getId() + ")");
-    }
-
+    // Method to view all appointment outcome records
     public void viewAppointmentOutcomeRecords() {
-        for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-            System.out.println("Appointment Date: " + record.getAppointmentDate());
-            System.out.println("Service Type: " + record.getServiceType());
-            System.out.println("Consultation Notes: " + record.getConsultationNotes());
-            System.out.println("Prescribed Medications:");
-            for (Prescription medication : record.getPrescribedMedications()) {
-                System.out.println(" - " + medication);
+        if (appointmentOutcomeRecords.isEmpty()) {
+            System.out.println("No appointment outcome records available.");
+        } else {
+            for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
+                System.out.println(record);
             }
-            System.out.println();
         }
     }
 
-    public void updatePrescriptionStatus(String medicationName, String newStatus) {
+    // Method to update prescription status in appointment outcome records
+    public void updatePrescriptionStatus(String medicationName, int newStatus) {
         for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-            for (Prescription medication : record.getPrescribedMedications()) {
-                if (medication.getName().equals(medicationName)) {
+            for (Prescription medication : record.getPrescriptions()) {
+                if (medication.getMedicationName().equals(medicationName)) {
                     medication.setStatus(newStatus);
                     System.out.println("Updated status for " + medicationName + " to " + newStatus);
                     return;
@@ -44,16 +43,18 @@ public class Pharmacist extends User {
         System.out.println("Medication not found in records.");
     }
 
+    // Method to view medication inventory levels
     public void viewMedicationInventory() {
-        inventory.displayStockLevels();
+        inventory.displayInventory();
     }
 
+    // Method to submit a replenishment request if stock is low
     public void submitReplenishmentRequest(String medicationId, int quantity) {
-        if (inventory.isLow(medicationId)) {
-            System.out.println("Replenishment request submitted for " + quantity + " units of medication ID: " + medicationId);
+        Medicine medicine = inventory.getMedicineById(medicationId);
+        if (medicine != null && medicine.isStockLow()) {
+            System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
         } else {
-            System.out.println("Stock levels are sufficient.");
+            System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
         }
     }
-
 }
