@@ -91,4 +91,9 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
         }
         return true;
     }
+
+    @Override
+    public List<MedicalRecord> getAll() {
+        return medicalRecords;
+    }
 }

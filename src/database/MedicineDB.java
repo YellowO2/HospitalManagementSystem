@@ -86,4 +86,9 @@ public class MedicineDB extends Database<Medicine> {
         }
         return lowStockAlerts;
     }
+
+    @Override
+    public List<Medicine> getAll() {
+        return inventoryRecords;
+    }
 }

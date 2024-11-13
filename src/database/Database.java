@@ -26,6 +26,8 @@ public abstract class Database<T> {
 
     public abstract T getById(String id);
 
+    public abstract List<T> getAll();
+
     public abstract boolean update(T entity);
 
     public abstract boolean delete(String id);
