@@ -84,4 +84,8 @@ public class Inventory {
             System.out.println("No medicines are currently below their low stock levels.");
         }
     }
+    
+    public Medicine getMedicineById(String id) {
+        return medicines.get(id);
+    }
 }
