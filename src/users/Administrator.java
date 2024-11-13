@@ -1,13 +1,12 @@
 package users;
 
-import data.ReadFile;
 import database.UserDB;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import medicine.Inventory;
-import medicine.Medicine;
+import inventory.Inventory;
+import inventory.Medicine;
 
 public class Administrator extends User {
 
@@ -102,7 +101,7 @@ public class Administrator extends User {
 
     // Method to view the entire inventory
     public void viewInventory() {
-        Medicine[] inventoryList = inventory.GetInventory();
+        Medicine[] inventoryList = inventory.displayInventory();
         System.out.println("=== Inventory List ===");
         for (Medicine medicine : inventoryList) {
             System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
