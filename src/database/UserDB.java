@@ -1,5 +1,6 @@
 package database;
 
+import users.Administrator;
 import users.Doctor;
 import users.Patient;
 import users.Pharmacist;
@@ -116,7 +117,8 @@ public class UserDB extends Database<User> {
                         users.add(pharmacist);
                         break;
                     case "Administrator":
-                        // Handle Administrator
+                    	Administrator administrator = new Administrator(id, name, password, phoneNumber, emailAddress, dateOfBirth, gender);
+                        users.add(administrator);
                         break;
                     default:
                         System.out.println("Unknown user role for ID: " + id);
