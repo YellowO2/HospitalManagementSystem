@@ -117,7 +117,7 @@ public class UserDB extends Database<User> {
                         users.add(pharmacist);
                         break;
                     case "Administrator":
-                    	Administrator administrator = new Administrator(id, name, password, phoneNumber, emailAddress, dateOfBirth, gender);
+                    	Administrator administrator = new Administrator(id, name, password, phoneNumber, emailAddress, dob, gender);
                         users.add(administrator);
                         break;
                     default:
