@@ -7,6 +7,8 @@ import users.User;
 import users.Patient;
 import menus.PatientMenu;
 import database.DatabaseManager;
+import users.Pharmacist;
+import menus.PharmacistMenu;
 
 public class HospitalManagementSystem {
 
@@ -60,8 +62,13 @@ public class HospitalManagementSystem {
         } else if (role.equals("Doctor")) {
             // Implement the doctor menu
             // runDoctorMenu(scanner, (Doctor) currentUser);
-        } else {
-            System.out.println("Invalid role. Logging out.");
+            if (role.equals("Pharmacist")) {
+                Pharmacist pharmacist = (Pharmacist) currentUser;
+                PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist);
+                pharmacistMenu.displayMenu();
+            } else {
+                System.out.println("Invalid role. Logging out.");
+            }
         }
     }
 }

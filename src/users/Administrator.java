@@ -1,13 +1,12 @@
 package users;
 
-import data.ReadFile;
 import database.UserDB;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import medicine.Inventory;
-import medicine.Medicine;
+import inventory.Inventory;
+import inventory.Medicine;
 
 public class Administrator extends User {
 
@@ -22,8 +21,8 @@ public class Administrator extends User {
 
     // Constructor to initialize Administrator with user properties, inventory, and
     // a reference to UserDB
-    public Administrator(String id, String name, String password, String phoneNumber, String emailAddress,
-            LocalDate dateOfBirth, String gender, UserDB userDB) throws IOException {
+    public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
+            String emailAddress, String password) throws IOException {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
         this.inventory = new Inventory("Medicine_List.csv");
@@ -103,7 +102,7 @@ public class Administrator extends User {
 
     // Method to view the entire inventory
     public void viewInventory() {
-        Medicine[] inventoryList = inventory.GetInventory();
+        Medicine[] inventoryList = inventory.displayInventory();
         System.out.println("=== Inventory List ===");
         for (Medicine medicine : inventoryList) {
             System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +

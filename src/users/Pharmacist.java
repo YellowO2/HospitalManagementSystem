@@ -1,10 +1,10 @@
 package users;
 
-import java.util.ArrayList;
-import java.util.List;
+import appointments.AppointmentOutcomeRecord;
 import inventory.Inventory;
 import inventory.Medicine;
-import appointments.AppointmentOutcomeRecord;
+import java.util.ArrayList;
+import java.util.List;
 import medicalrecords.Prescription;
 
 public class Pharmacist extends User {
