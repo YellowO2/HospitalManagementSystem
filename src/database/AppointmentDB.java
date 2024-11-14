@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appointments.Appointment;
+import medicalrecords.MedicalRecord;
 
 public class AppointmentDB extends Database<Appointment>{
     private List<Appointment> appointments;
@@ -38,6 +39,11 @@ public class AppointmentDB extends Database<Appointment>{
             }
         }
         return null; // Appointment not found
+    }
+
+    @Override
+    public List<Appointment> getAll(){
+        return appointments;
     }
 
     // Update an existing appointment

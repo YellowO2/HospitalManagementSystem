@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appointments.DoctorAvailability;
+import medicalrecords.MedicalRecord;
 
 public class DoctorAvailabilityDB extends Database<DoctorAvailability> {
     private List<DoctorAvailability> doctorAvailabilities;
@@ -37,6 +38,11 @@ public class DoctorAvailabilityDB extends Database<DoctorAvailability> {
         }
         return null; // Return null if not found
     }
+
+    @Override
+    public List<DoctorAvailability> getAll(){
+        return doctorAvailabilities;
+    } 
 
     @Override
     public boolean update(DoctorAvailability availability) {
