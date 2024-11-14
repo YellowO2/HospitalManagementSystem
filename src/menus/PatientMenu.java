@@ -7,6 +7,7 @@ package menus;
 
 import java.util.Scanner;
 
+import database.DoctorAvailabilityDB;
 import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
@@ -14,13 +15,15 @@ public class PatientMenu {
     private Patient patient; // The currently logged-in patient
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
+    private DoctorAvailabilityDB doctorAvailabilityDB;
 
     // TODO: Waiting for appointment manager to be integrated here
     // TODO: Consider passing scanner from the main app
-    public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager) {
-        this.medicalRecordManager = medicalRecordManager;
+    public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager, DoctorAvailabilityDB doctorAvailabiliiAvailabilityDB) {
         this.patient = patient;
         this.scanner = new Scanner(System.in);
+        this.medicalRecordManager = medicalRecordManager;
+        this.doctorAvailabilityDB = doctorAvailabiliiAvailabilityDB;
     }
 
     // Method to display the menu and handle user input

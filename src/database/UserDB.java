@@ -111,9 +111,9 @@ public class UserDB extends Database<User> {
                         users.add(doctor);
                         break;
                     case "Pharmacist":
-                        Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress,
-                                password);
-                        users.add(pharmacist);
+                        // Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress,
+                        //         password);
+                        // users.add(pharmacist);
                         break;
                     case "Administrator":
                         // Handle Administrator

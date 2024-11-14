@@ -38,6 +38,11 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
     }
 
     @Override
+    public List<MedicalRecord> getAll(){
+        return medicalRecords;
+    }
+
+    @Override
     public boolean update(MedicalRecord medicalRecord) {
         MedicalRecord existingRecord = getById(medicalRecord.getPatientId());
         if (existingRecord != null) {

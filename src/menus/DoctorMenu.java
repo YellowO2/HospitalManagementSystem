@@ -1,8 +1,12 @@
 package menus;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
+import medicalrecords.Diagnosis;
 import medicalrecords.MedicalRecordManager;
+import medicalrecords.Prescription;
+import medicalrecords.Treatment;
 import users.Doctor;
 import users.Patient;
 
@@ -71,8 +75,7 @@ public class DoctorMenu {
         } while (choice != 8);
     }
 
-    // To Do: Doctor can only update his own list of patients. To be implemented
-    // with database
+    // To Do: Doctor can only update his own list of patients. To be implemented with database
     private void viewPatientMedicalRecords() {
         String patientId;
 
@@ -89,7 +92,82 @@ public class DoctorMenu {
         System.out.print("Enter the patient ID to update their medical record: ");
         patientId = scanner.nextLine();
 
-        boolean updated = doctor.updatePatientMedicalRecords(patientId);
+        /* Diagnosis */
+        String severity;
+        LocalDate diagnosisDate = LocalDate.now();
+        String doctorName = this.getName();
+
+        // Obtain diagnosis information
+        System.out.print("Enter the diagnosis name: ");
+        String diagnosisName = scanner.nextLine();
+
+        while (true){
+            System.out.print("Enter the severity (Mild, Moderate, Severe): ");
+            severity = scanner.nextLine();
+
+            if (severity.equalsIgnoreCase("Mild") || severity.equalsIgnoreCase("Moderate") || severity.equalsIgnoreCase("Severe")) {
+                break; // Valid input, exit the loop
+            } else {
+                System.out.println("Invalid input. Please enter either 'Mild', 'Moderate', or 'Severe'.");
+            }
+        }
+
+        // Create the Diagnosis object
+        Diagnosis diagnosis = new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
+
+        /* Prescription */
+        Prescription prescription = null;
+
+        // Obtain prescription information (Optional, skipped if input is No)
+        System.out.print("Do you want to add a prescription? (Yes/No): ");
+        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+            System.out.print("Enter medication name: ");
+            String medicationName = scanner.nextLine();
+        
+            System.out.print("Enter the dosage to be taken per administration: ");
+            String dosage = scanner.nextLine();
+        
+            System.out.print("Enter instructions for patient: ");
+            String instructions = scanner.nextLine();
+        
+            System.out.print("Enter how often the medication should be taken: ");
+            String frequency = scanner.nextLine();
+        
+            System.out.print("Enter the total quantity to prescribe: ");
+            int amount;
+
+            int status = 0;
+            
+            while (true) {
+                try {
+                    amount = Integer.parseInt(scanner.nextLine());
+                    if (amount > 0) break; // Valid input, exit the loop
+                    System.out.println("The quantity must be positive. Please enter a valid number.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a numeric value for the amount.");
+                }
+            }
+            // Create the Prescription object
+            prescription = new Prescription(medicationName, dosage, instructions, frequency, amount, status);
+        }
+
+        /* Treatment */
+        Treatment treatment = null;
+
+        // Obtain treatment information (Optional, skipped if input is No)
+        System.out.print("Do you want to add a treatment? (Yes/No): ");
+        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+            System.out.print("Enter treatment details: ");
+            String treatmentName = scanner.nextLine();
+
+            System.out.print("Enter treatment details: ");
+            String treatmentDetails = scanner.nextLine();
+
+            // Create the Treatment object, surely there will not be any error using diagnosisDate right?
+            treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
+        }
+
+        boolean updated = medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
 
         if (updated) {
             System.out.println("Medical record updated successfully.");

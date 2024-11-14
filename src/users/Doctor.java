@@ -28,87 +28,87 @@ public class Doctor extends User {
         this.medicalRecordManager = medicalRecordManager;
     }
 
-    public boolean updatePatientMedicalRecords(String patientId){
-        Scanner scanner = new Scanner(System.in);
+    // public boolean updatePatientMedicalRecords(String patientId){
+    //     Scanner scanner = new Scanner(System.in);
 
-        /* Diagnosis */
-        String severity;
-        LocalDate diagnosisDate = LocalDate.now();
-        String doctorName = this.getName();
+    //     /* Diagnosis */
+    //     String severity;
+    //     LocalDate diagnosisDate = LocalDate.now();
+    //     String doctorName = this.getName();
 
-        // Obtain diagnosis information
-        System.out.print("Enter the diagnosis name: ");
-        String diagnosisName = scanner.nextLine();
+    //     // Obtain diagnosis information
+    //     System.out.print("Enter the diagnosis name: ");
+    //     String diagnosisName = scanner.nextLine();
 
-        while (true){
-            System.out.print("Enter the severity (Mild, Moderate, Severe): ");
-            severity = scanner.nextLine();
+    //     while (true){
+    //         System.out.print("Enter the severity (Mild, Moderate, Severe): ");
+    //         severity = scanner.nextLine();
 
-            if (severity.equalsIgnoreCase("Mild") || severity.equalsIgnoreCase("Moderate") || severity.equalsIgnoreCase("Severe")) {
-                break; // Valid input, exit the loop
-            } else {
-                System.out.println("Invalid input. Please enter either 'Mild', 'Moderate', or 'Severe'.");
-            }
-        }
+    //         if (severity.equalsIgnoreCase("Mild") || severity.equalsIgnoreCase("Moderate") || severity.equalsIgnoreCase("Severe")) {
+    //             break; // Valid input, exit the loop
+    //         } else {
+    //             System.out.println("Invalid input. Please enter either 'Mild', 'Moderate', or 'Severe'.");
+    //         }
+    //     }
 
-        // Create the Diagnosis object
-        Diagnosis diagnosis = new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
+    //     // Create the Diagnosis object
+    //     Diagnosis diagnosis = new Diagnosis(diagnosisName, severity, diagnosisDate, doctorName);
 
-        /* Prescription */
-        Prescription prescription = null;
+    //     /* Prescription */
+    //     Prescription prescription = null;
 
-        // Obtain prescription information (Optional, skipped if input is No)
-        System.out.print("Do you want to add a prescription? (Yes/No): ");
-        if (scanner.nextLine().equalsIgnoreCase("yes")) {
-            System.out.print("Enter medication name: ");
-            String medicationName = scanner.nextLine();
+    //     // Obtain prescription information (Optional, skipped if input is No)
+    //     System.out.print("Do you want to add a prescription? (Yes/No): ");
+    //     if (scanner.nextLine().equalsIgnoreCase("yes")) {
+    //         System.out.print("Enter medication name: ");
+    //         String medicationName = scanner.nextLine();
         
-            System.out.print("Enter the dosage to be taken per administration: ");
-            String dosage = scanner.nextLine();
+    //         System.out.print("Enter the dosage to be taken per administration: ");
+    //         String dosage = scanner.nextLine();
         
-            System.out.print("Enter instructions for patient: ");
-            String instructions = scanner.nextLine();
+    //         System.out.print("Enter instructions for patient: ");
+    //         String instructions = scanner.nextLine();
         
-            System.out.print("Enter how often the medication should be taken: ");
-            String frequency = scanner.nextLine();
+    //         System.out.print("Enter how often the medication should be taken: ");
+    //         String frequency = scanner.nextLine();
         
-            System.out.print("Enter the total quantity to prescribe: ");
-            int amount;
+    //         System.out.print("Enter the total quantity to prescribe: ");
+    //         int amount;
 
-            int status = 0;
+    //         int status = 0;
             
-            while (true) {
-                try {
-                    amount = Integer.parseInt(scanner.nextLine());
-                    if (amount > 0) break; // Valid input, exit the loop
-                    System.out.println("The quantity must be positive. Please enter a valid number.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a numeric value for the amount.");
-                }
-            }
-            // Create the Prescription object
-            prescription = new Prescription(medicationName, dosage, instructions, frequency, amount, status);
-        }
+    //         while (true) {
+    //             try {
+    //                 amount = Integer.parseInt(scanner.nextLine());
+    //                 if (amount > 0) break; // Valid input, exit the loop
+    //                 System.out.println("The quantity must be positive. Please enter a valid number.");
+    //             } catch (NumberFormatException e) {
+    //                 System.out.println("Invalid input. Please enter a numeric value for the amount.");
+    //             }
+    //         }
+    //         // Create the Prescription object
+    //         prescription = new Prescription(medicationName, dosage, instructions, frequency, amount, status);
+    //     }
 
-        /* Treatment */
-        Treatment treatment = null;
+    //     /* Treatment */
+    //     Treatment treatment = null;
 
-        // Obtain treatment information (Optional, skipped if input is No)
-        System.out.print("Do you want to add a treatment? (Yes/No): ");
-        if (scanner.nextLine().equalsIgnoreCase("yes")) {
-            System.out.print("Enter treatment details: ");
-            String treatmentName = scanner.nextLine();
+    //     // Obtain treatment information (Optional, skipped if input is No)
+    //     System.out.print("Do you want to add a treatment? (Yes/No): ");
+    //     if (scanner.nextLine().equalsIgnoreCase("yes")) {
+    //         System.out.print("Enter treatment details: ");
+    //         String treatmentName = scanner.nextLine();
 
-            System.out.print("Enter treatment details: ");
-            String treatmentDetails = scanner.nextLine();
+    //         System.out.print("Enter treatment details: ");
+    //         String treatmentDetails = scanner.nextLine();
 
-            // Create the Treatment object, surely there will not be any error using diagnosisDate right?
-            treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
-        }
+    //         // Create the Treatment object, surely there will not be any error using diagnosisDate right?
+    //         treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
+    //     }
 
-        // Update the medical record
-        return medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
-    }
+    //     // Update the medical record
+    //     return medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
+    // }
 
     // TODO: These methods needs to be moved into Medical Record Manager
     // public String viewPatientMedicalRecord(Patient patient){
