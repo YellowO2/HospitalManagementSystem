@@ -43,7 +43,7 @@ public class AppointmentManager {
     }
 
     // Method to show all doctors with their IDs
-    public List<String> showAllDoctors() {
+    public List<String> getAllAvailableDoctors() {
         List<Doctor> allDoctors = userDB.getAllDocters();
         List<String> doctorList = new ArrayList<>();
 

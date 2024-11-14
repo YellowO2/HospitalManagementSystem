@@ -138,7 +138,7 @@ public class PatientMenu {
             System.out.println("Viewing available appointment slots...");
 
             System.out.println("List of Doctors");
-            appointmentManager.showAllDoctors();
+            System.out.println(appointmentManager.getAllAvailableDoctors());
 
             System.out.print(
                     "Enter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
