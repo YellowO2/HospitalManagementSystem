@@ -1,25 +1,28 @@
 package appointments;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+// import java.time.LocalTime;
 
 public class DoctorAvailability {
+    private String appointmentId;
     private String doctorId;
     private LocalDate date;
-    private LocalTime timeSlotStart;
-    private LocalTime timeSlotEnd;
-    private String availabilityStatus;
+    private String timeSlot;
+    private boolean availabilityStatus;
 
 
-    public DoctorAvailability(String doctorId, LocalDate date, LocalTime timeSlotStart, LocalTime timeSlotEnd, String availabilityStatus) {
+    public DoctorAvailability(String appointmentId, String doctorId, LocalDate date, String timeSlot, boolean availabilityStatus) {
         this.doctorId = doctorId;
         this.date = date;
-        this.timeSlotStart = timeSlotStart;
-        this.timeSlotEnd = timeSlotEnd;
+        this.timeSlot = timeSlot;
         this.availabilityStatus = availabilityStatus;
     }
 
     // Getters
+    public String getAppointmentId(){
+        return appointmentId;
+    }
+
     public String getDoctorId() {
         return doctorId;
     }
@@ -28,19 +31,19 @@ public class DoctorAvailability {
         return date;
     }
 
-    public LocalTime getTimeSlotStart() {
-        return timeSlotStart;
+    public String getTimeSlot() {
+        return timeSlot;
     }
 
-    public LocalTime getTimeSlotEnd() {
-        return timeSlotEnd;
-    }
-
-    public String getAvailabilityStatus() {
+    public boolean getAvailabilityStatus() {
         return availabilityStatus;
     }
 
     // Setters
+    public void setAppointmentId(String appointmentId){
+        this.appointmentId = appointmentId;
+    }
+
     public void setDoctorId(String doctorId) {
         this.doctorId = doctorId;
     }
@@ -49,15 +52,11 @@ public class DoctorAvailability {
         this.date = date;
     }
 
-    public void setTimeSlotStart(LocalTime timeSlotStart) {
-        this.timeSlotStart = timeSlotStart;
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
     }
 
-    public void setTimeSlotEnd(LocalTime timeSlotEnd) {
-        this.timeSlotEnd = timeSlotEnd;
-    }
-
-    public void setAvailabilityStatus(String availabilityStatus) {
+    public void setAvailabilityStatus(boolean availabilityStatus) {
         this.availabilityStatus = availabilityStatus;
     }
 }

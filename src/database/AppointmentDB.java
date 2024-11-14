@@ -2,17 +2,17 @@ package database;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
+// import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import appointments.Appointment;
-import medicalrecords.MedicalRecord;
+// import medicalrecords.MedicalRecord;
 
 public class AppointmentDB extends Database<Appointment>{
     private List<Appointment> appointments;
     private static final String filename = "csv_data/Appointment_List.csv";
-    private static final String header = "AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlotStart,TimeSlotEnd,Status";
+    private static final String header = "AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlot,Status";
     
     // Constructor
     public AppointmentDB() {
@@ -89,9 +89,8 @@ public class AppointmentDB extends Database<Appointment>{
                     tokens[1],  // PatientID
                     tokens[2],  // DoctorID
                     LocalDate.parse(tokens[3]),
-                    LocalTime.parse(tokens[4]),
-                    LocalTime.parse(tokens[5]),  // Status
-                    tokens[6]
+                    tokens[4],  // TimeSlot
+                    tokens[5]   // Status
                 );
                 appointments.add(appointment);
             }

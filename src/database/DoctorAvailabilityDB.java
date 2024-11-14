@@ -12,7 +12,7 @@ import medicalrecords.MedicalRecord;
 public class DoctorAvailabilityDB extends Database<DoctorAvailability> {
     private List<DoctorAvailability> doctorAvailabilities;
     private static final String filename = "csv_data/Doctor_Availability_List.csv";
-    private static final String header = "DoctorID,Date,Time Slot Start,Time Slot End,Availability Status";
+    private static final String header = "AppointmentID,DoctorID,Date,TimeSlot,AvailabilityStatus";
 
     public DoctorAvailabilityDB() {
         super(filename);
@@ -79,11 +79,11 @@ public class DoctorAvailabilityDB extends Database<DoctorAvailability> {
 
             if (tokens.length >= 5) {
                 DoctorAvailability availability = new DoctorAvailability(
-                        tokens[0], // DoctorID
-                        LocalDate.parse(tokens[1]), // Date
-                        LocalTime.parse(tokens[2]), // Time Slot Start
-                        LocalTime.parse(tokens[3]), // Time Slot End
-                        tokens[4] // Availability Status
+                    tokens[0], // AppointmentID
+                    tokens[1], // DoctorID
+                    LocalDate.parse(tokens[2]), // Date
+                    tokens[3], // Time Slot (e.g., "0900-1000")
+                    Boolean.parseBoolean(tokens[4]) // Availability Status
                 );
                 doctorAvailabilities.add(availability);
             } else {
