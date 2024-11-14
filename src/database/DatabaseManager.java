@@ -10,14 +10,14 @@ public class DatabaseManager {
     private MedicalRecordDB medicalRecordDB;
     private AppointmentDB appointmentDB;
     private AppointmentOutcomeRecordDB appointmentOutcomeRecordDB;
-    private DoctorAvailabilityDB doctorAvailabilityDB;
+    private DoctorUnavailabilityDB doctorAvailabilityDB;
 
-    public DatabaseManager() { 
+    public DatabaseManager() {
         this.userDB = new UserDB();
         this.medicalRecordDB = new MedicalRecordDB();
         this.appointmentDB = new AppointmentDB();
         this.appointmentOutcomeRecordDB = new AppointmentOutcomeRecordDB();
-        this.doctorAvailabilityDB = new DoctorAvailabilityDB();
+        this.doctorAvailabilityDB = new DoctorUnavailabilityDB();
     }
 
     public void initialize() throws IOException {
@@ -50,11 +50,11 @@ public class DatabaseManager {
         return appointmentDB;
     }
 
-    public AppointmentOutcomeRecordDB getAppointmentOutcomeRecordDB(){
+    public AppointmentOutcomeRecordDB getAppointmentOutcomeRecordDB() {
         return appointmentOutcomeRecordDB;
     }
 
-    public DoctorAvailabilityDB getdoctorAvailabilityDB() {
+    public DoctorUnavailabilityDB getdoctorAvailabilityDB() {
         return doctorAvailabilityDB;
     }
 }

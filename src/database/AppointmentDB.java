@@ -111,4 +111,14 @@ public class AppointmentDB extends Database<Appointment> {
         }
         return doctorAppointments;
     }
+
+    public List<Appointment> getPatientAppointments(String patientId) {
+        List<Appointment> patientAppointments = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatientId().equals(patientId)) {
+                patientAppointments.add(appointment);
+            }
+        }
+        return patientAppointments;
+    }
 }

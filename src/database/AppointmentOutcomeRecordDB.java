@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appointments.AppointmentOutcomeRecord;
-import appointments.DoctorAvailability;
+import appointments.DoctorUnavailableSlots;
 import medicalrecords.Prescription;
 
 public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecord> {
@@ -42,9 +42,9 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
     }
 
     @Override
-    public List<AppointmentOutcomeRecord> getAll(){
+    public List<AppointmentOutcomeRecord> getAll() {
         return outcomeRecords;
-    } 
+    }
 
     @Override
     public boolean update(AppointmentOutcomeRecord updatedRecord) {

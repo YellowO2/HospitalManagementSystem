@@ -8,7 +8,7 @@ package menus;
 import java.util.Scanner;
 
 import appointments.AppointmentManager;
-import database.DoctorAvailabilityDB;
+import database.DoctorUnavailabilityDB;
 import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
@@ -138,6 +138,7 @@ public class PatientMenu {
             System.out.println("Viewing available appointment slots...");
 
             System.out.println("List of Doctors");
+            // TODO: Ugh need fix this printing
             System.out.println(appointmentManager.getAllAvailableDoctors());
 
             System.out.print(
@@ -150,7 +151,7 @@ public class PatientMenu {
 
             } else {
                 // Show available slots for the selected doctor
-                appointmentManager.viewAvailableSlots(input); // Passing Doctor ID
+                System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing Doctor ID
 
                 System.out.print("\nWould you like to view another doctor's availability? (Yes/No): ");
                 input = scanner.nextLine().trim().toLowerCase();
@@ -218,6 +219,8 @@ public class PatientMenu {
 
     private void viewScheduledAppointments() {
         System.out.println("Viewing scheduled appointments...");
+        // TODO: Ugh need fix this printing
+        System.out.println(appointmentManager.getPatientAppointments(patient.getId()));
         // Implement logic to display scheduled appointments
     }
 

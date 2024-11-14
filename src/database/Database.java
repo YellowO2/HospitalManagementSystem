@@ -63,7 +63,7 @@ public abstract class Database<T> {
             // Display a warning if the CSV file contains only the header row, implying
             // empty
             if (!scanner.hasNextLine()) {
-                System.out.println("Warning: The CSV file is empty or contains only the header row.");
+                System.out.println("Warning: The CSV file" + filename + " is empty or contains only the header row.");
             }
 
             // Read the remaining lines
