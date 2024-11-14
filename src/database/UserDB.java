@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.Doc;
+
 public class UserDB extends Database<User> {
     private List<User> users;
     private static final String USER_FILE = "csv_data/User_List.csv";
@@ -46,7 +48,7 @@ public class UserDB extends Database<User> {
     }
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return users;
     }
 
@@ -116,8 +118,9 @@ public class UserDB extends Database<User> {
                         users.add(doctor);
                         break;
                     case "Pharmacist":
-                        // Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress,
-                        //         password);
+                        // Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber,
+                        // emailAddress,
+                        // password);
                         // users.add(pharmacist);
                         break;
                     case "Administrator":
@@ -132,5 +135,16 @@ public class UserDB extends Database<User> {
             }
         }
         return true;
+    }
+
+    public List<Doctor> getAllDocters() {
+        List<Doctor> docters = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Doctor) {
+                // downcast to Doctor
+                docters.add((Doctor) user);
+            }
+        }
+        return docters;
     }
 }

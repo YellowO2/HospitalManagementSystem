@@ -20,7 +20,8 @@ public class PatientMenu {
 
     // TODO: Waiting for appointment manager to be integrated here
     // TODO: Consider passing scanner from the main app
-    public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager, AppointmentManager appointmentManager) {
+    public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
+            AppointmentManager appointmentManager) {
         this.patient = patient;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
@@ -135,24 +136,25 @@ public class PatientMenu {
 
         while (!returnToMenu) {
             System.out.println("Viewing available appointment slots...");
-            
+
             System.out.println("List of Doctors");
             appointmentManager.showAllDoctors();
 
-            System.out.print("Enter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
+            System.out.print(
+                    "Enter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
             input = scanner.nextLine().trim().toLowerCase();
 
-            if (input.equals("back")){
+            if (input.equals("back")) {
                 returnToMenu = true;
                 System.out.println("\nReturning to the Patient Menu...");
 
             } else {
                 // Show available slots for the selected doctor
-                appointmentManager.viewAvailableSlots(input);  // Passing Doctor ID
-    
+                appointmentManager.viewAvailableSlots(input); // Passing Doctor ID
+
                 System.out.print("\nWould you like to view another doctor's availability? (Yes/No): ");
                 input = scanner.nextLine().trim().toLowerCase();
-                
+
                 if (input.equals("no")) {
                     // Exit to the Patient Menu
                     returnToMenu = true;
@@ -163,7 +165,7 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
-    
+
         System.out.println("Scheduling an appointment...");
         System.out.print("Enter Doctor ID: ");
         String doctorId = scanner.nextLine().trim();
@@ -171,9 +173,9 @@ public class PatientMenu {
         String date = scanner.nextLine().trim();
         System.out.print("Enter Appointment Time (HH:MM): ");
         String time = scanner.nextLine().trim();
-        
+
         boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, date, time);
-        
+
         if (success) {
             System.out.println("Appointment scheduled successfully.");
         } else {
@@ -189,9 +191,9 @@ public class PatientMenu {
         String newDate = scanner.nextLine().trim();
         System.out.print("Enter new Appointment Time (HH:MM): ");
         String newTime = scanner.nextLine().trim();
-        
+
         boolean success = appointmentManager.rescheduleAppointment(appointmentId, newDate, newTime);
-        
+
         if (success) {
             System.out.println("Appointment rescheduled successfully.");
         } else {
@@ -200,17 +202,18 @@ public class PatientMenu {
     }
 
     private void cancelAppointment() {
-        System.out.println("Canceling an appointment...");
-        System.out.print("Enter Appointment ID: ");
-        String appointmentId = scanner.nextLine().trim();
-        
-        boolean success = appointmentManager.cancelAppointment(appointmentId);
-        
-        if (success) {
-            System.out.println("Appointment canceled successfully.");
-        } else {
-            System.out.println("Failed to cancel the appointment. Please try again.");
-        }
+        // System.out.println("Canceling an appointment...");
+        // System.out.print("Enter Appointment ID: ");
+        // String appointmentId = scanner.nextLine().trim();
+
+        // boolean success = appointmentManager.cancelAppointment(appointmentId);
+
+        // if (success) {
+        // System.out.println("Appointment canceled successfully.");
+        // } else {
+        // System.out.println("Failed to cancel the appointment. Please try again.");
+        // }
+
     }
 
     private void viewScheduledAppointments() {

@@ -13,8 +13,10 @@ public class HospitalManagementSystem {
 
     private static DatabaseManager databaseManager = new DatabaseManager();
     private static AuthenticationManager loginSystem = new AuthenticationManager(databaseManager.getUserDB());
-    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(databaseManager.getMedicalRecordDB());
-    private static AppointmentManager appointmentManager = new AppointmentManager(databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB());
+    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(
+            databaseManager.getMedicalRecordDB());
+    private static AppointmentManager appointmentManager = new AppointmentManager(
+            databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
 
     private static Scanner scanner = new Scanner(System.in);
 
