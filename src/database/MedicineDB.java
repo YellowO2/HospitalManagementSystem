@@ -6,28 +6,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicineDB extends Database<Medicine> {
-    private List<Medicine> inventoryRecords;
-    private static final String filename = "csv_data/Inventory_List.csv";
-    private static final String header = "ID,Name,Dosage,StockLevel,LowStockLevelAlert";
+    private List<Medicine> medicines;
+    private static final String MEDICINE_FILE = "csv_data/Inventory_List.csv";
+    private static final String MEDICINE_HEADER = "ID,Name,Dosage,StockLevel,LowStockLevelAlert";
 
     public MedicineDB() {
-        super(filename);
-        this.inventoryRecords = new ArrayList<>();
+        super(MEDICINE_FILE);
+        medicines = new ArrayList<>();
     }
 
     @Override
     public boolean create(Medicine medicine) {
         if (medicine != null) {
-            inventoryRecords.add(medicine);
-            return true;
+            medicines.add(medicine);
+            try {
+                save();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return false;
     }
 
     @Override
     public Medicine getById(String id) {
-        for (Medicine medicine : inventoryRecords) {
-            if (medicine.getId().equalsIgnoreCase(id)) {
+        for (Medicine medicine : medicines) {
+            if (medicine.getId().equals(id)) {
                 return medicine;
             }
         }
@@ -38,57 +44,63 @@ public class MedicineDB extends Database<Medicine> {
     public boolean update(Medicine updatedMedicine) {
         Medicine existingMedicine = getById(updatedMedicine.getId());
         if (existingMedicine != null) {
-            inventoryRecords.remove(existingMedicine);
-            inventoryRecords.add(updatedMedicine);
-            return true;
+            medicines.remove(existingMedicine);
+            medicines.add(updatedMedicine);
+            try {
+                save();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return false;
     }
 
     @Override
     public boolean delete(String id) {
-        Medicine existingMedicine = getById(id);
-        if (existingMedicine != null) {
-            inventoryRecords.remove(existingMedicine);
-            return true;
+        Medicine medicine = getById(id);
+        if (medicine != null) {
+            medicines.remove(medicine);
+            try {
+                save();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
 
     @Override
     public boolean save() throws IOException {
-        saveData(filename, inventoryRecords, header);
+        saveData(MEDICINE_FILE, medicines, MEDICINE_HEADER);
         return true;
     }
 
     @Override
     public boolean load() throws IOException {
-        inventoryRecords.clear();
-        List<String> lines = readFile(filename);
+        List<String> lines = readFile(MEDICINE_FILE);
         for (String line : lines) {
-            try {
-                Medicine medicine = Medicine.fromCSV(line);
-                inventoryRecords.add(medicine);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid line in CSV: " + line + " - " + e.getMessage());
+            String[] tokens = splitLine(line);
+            if (tokens.length == 5) {
+                String id = tokens[0].split(": ")[1].trim(); // Extract and trim the value after "ID:"
+                String name = tokens[1].split(": ")[1].trim(); // Extract and trim the value after "Name:"
+                String dosage = tokens[2].split(": ")[1].trim(); // Extract and trim the value after "Dosage:"
+                int stockLevel = Integer.parseInt(tokens[3].split(": ")[1].trim()); // Parse and trim the value after "Stock Level:"
+                int lowStockLevelAlert = Integer.parseInt(tokens[4].split(": ")[1].trim()); // Parse and trim the value after "Low Stock Alert Level:"
+
+                Medicine medicine = new Medicine(id, name, dosage, stockLevel, lowStockLevelAlert);
+                medicines.add(medicine);
+            } else {
+                System.out.println("Invalid line in CSV: " + line);
             }
         }
         return true;
     }
 
-    // Method to check for low stock alerts
-    public List<Medicine> getLowStockAlerts() {
-        List<Medicine> lowStockAlerts = new ArrayList<>();
-        for (Medicine medicine : inventoryRecords) {
-            if (medicine.isStockLow()) {
-                lowStockAlerts.add(medicine);
-            }
-        }
-        return lowStockAlerts;
-    }
-
     @Override
     public List<Medicine> getAll() {
-        return inventoryRecords;
+        return medicines;
     }
 }

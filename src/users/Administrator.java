@@ -1,30 +1,34 @@
 package users;
 
+import database.ReplenishmentDB;
 import database.UserDB;
 import inventory.Inventory;
+import inventory.Medicine;
+import inventory.ReplenishmentRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Administrator extends User {
-
-    // List to store staff members (Doctors & Pharmacist)
     private List<Doctor> staffList;
-
-    // Inventory object for managing medication
     private Inventory inventory;
-
-    // Reference to UserDB for user management
     private UserDB userDB;
+    private ReplenishmentDB replenishmentDB; // Ensure this is initialized
 
-    // Constructor to initialize Administrator with user properties, inventory, and
-    // a reference to UserDB
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) throws IOException {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
         this.inventory = new Inventory();
-        this.userDB = userDB;
+        this.userDB = new UserDB(); // Initialize userDB properly
+        this.replenishmentDB = new ReplenishmentDB(); // Properly initialize ReplenishmentDB
+
+        try {
+            replenishmentDB.load();
+            System.out.println("Replenishment requests loaded successfully.");
+    }   catch (IOException e) {
+            System.out.println("Error loading replenishment requests: " + e.getMessage());
+    }
     }
 
     // Method to initialize the staff list using UserDB
@@ -111,17 +115,37 @@ public class Administrator extends User {
         System.out.println("=== Inventory List ===");
         inventory.displayInventory();
     }
-    public  void approveRequest(){
-        inventory.displayReplenishmentRequests();
-        List<String> requests = inventory.getReplenishmentRequests();
-        for (String request : new ArrayList<>(requests)) {
-            System.out.println("Approving request: " + request);
-            // Remove the approved request from the list
-            requests.remove(request);
-            System.out.println("Request approved and removed: " + request);
-    }
+    public void displayReplenishmentRequests() {
+        List<ReplenishmentRequest> requests = replenishmentDB.getAll();
+        if (requests.isEmpty()) {
+            System.out.println("No replenishment requests have been submitted.");
+        } else {
+            System.out.println("Replenishment Requests:");
+            for (ReplenishmentRequest request : requests) {
+                System.out.println(request);
+            }
+        }
     }
 
+    // Method to approve replenishment requests directly from ReplenishmentDB
+    public void approveRequest() {
+        List<ReplenishmentRequest> requests = replenishmentDB.getAll();
+        if (requests.isEmpty()) {
+            System.out.println("No replenishment requests to approve.");
+            return;
+        }
+
+        for (ReplenishmentRequest request : new ArrayList<>(requests)) {
+            Medicine medicine = inventory.getMedicineById(request.getMedicineId());
+            if (medicine != null) {
+                inventory.updateMedicine(request.getMedicineId(), medicine.getStockLevel() + request.getQuantity());
+                replenishmentDB.delete(request.getMedicineId()); // Remove approved request from ReplenishmentDB
+                System.out.println("Replenishment request approved and processed for medicine ID: " + request.getMedicineId());
+            } else {
+                System.out.println("Medicine with ID " + request.getMedicineId() + " not found in inventory. Skipping request.");
+            }
+        }
+    }
 }
     // Existing methods related to inventory and staff management remain unchanged
 

@@ -1,18 +1,40 @@
 package inventory;
 
+import database.MedicineDB;
+import database.ReplenishmentDB;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class Inventory {
     private Map<String, Medicine> medicines;
     private List<String> replenishmentRequests;
+    private MedicineDB medicineDB; // Reference to the MedicineDB
+    private ReplenishmentDB replenishmentDB;
 
     public Inventory() {
         this.medicines = new HashMap<>();
         this.replenishmentRequests = new ArrayList<>();
+        this.medicineDB = new MedicineDB(); // Initialize MedicineDB
+        this.replenishmentDB = new ReplenishmentDB();
+
+        try {
+            loadFromMedicineDB(); // Load data from MedicineDB when Inventory is created
+        } catch (IOException e) {
+            System.out.println("Error loading medicines from the database: " + e.getMessage());
+        }
+    }
+
+    // Load medicines from MedicineDB
+    public void loadFromMedicineDB() throws IOException {
+        medicineDB.load(); // Load the data from the CSV file
+        List<Medicine> medicineList = medicineDB.getAll();
+        for (Medicine medicine : medicineList) {
+            medicines.put(medicine.getId(), medicine);
+        }
+        System.out.println("Loaded " + medicineList.size() + " medicines from the database.");
     }
 
     public void addMedicine(Medicine medicine) {
@@ -66,7 +88,6 @@ public class Inventory {
         }
     }
 
-    // Check if a specific medicine is below its low stock alert level
     public boolean isLow(String id) {
         if (medicines.containsKey(id)) {
             return medicines.get(id).isStockLow();
@@ -74,13 +95,12 @@ public class Inventory {
         return false;
     }
 
-    // Display all medicines that are below their low stock alert levels
     public void displayLowStockMedicines() {
         boolean lowStockFound = false;
         for (Medicine medicine : medicines.values()) {
             if (medicine.isStockLow()) {
-                System.out.println("Low stock alert for: " + medicine.getName() + 
-                                   " (Current Stock: " + medicine.getStockLevel() + 
+                System.out.println("Low stock alert for: " + medicine.getName() +
+                                   " (Current Stock: " + medicine.getStockLevel() +
                                    ", Alert Level: " + medicine.getLowStockLevelAlert() + ")");
                 lowStockFound = true;
             }
@@ -89,11 +109,13 @@ public class Inventory {
             System.out.println("No medicines are currently below their low stock levels.");
         }
     }
-    
+
     public Medicine getMedicineById(String id) {
         return medicines.get(id);
     }
-     public void displayReplenishmentRequests() {
+
+    public void displayReplenishmentRequests() {
+        List<ReplenishmentRequest> requests = replenishmentDB.getAll();
         if (replenishmentRequests.isEmpty()) {
             System.out.println("No replenishment requests have been submitted.");
         } else {
