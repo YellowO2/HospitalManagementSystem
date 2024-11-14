@@ -11,7 +11,7 @@ import inventory.Medicine;
 public class Administrator extends User {
 
     // List to store staff members (Doctors & Pharmacists)
-    private List<Staff> staffList;
+    private List<Doctor> staffList;
 
     // Inventory object for managing medication
     private Inventory inventory;
@@ -25,7 +25,7 @@ public class Administrator extends User {
             String emailAddress, String password) throws IOException {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.staffList = new ArrayList<>();
-        this.inventory = new Inventory("Medicine_List.csv");
+        this.inventory = new Inventory();
         this.userDB = userDB;
     }
 
@@ -36,8 +36,8 @@ public class Administrator extends User {
 
             this.staffList.clear(); // Clear current list
             for (User user : allUsers) {
-                if (user instanceof Staff) {
-                    this.staffList.add((Staff) user); // Add only staff members
+                if (user instanceof Doctor) {
+                    this.staffList.add((Doctor) user); // Add only staff members
                 }
             }
             System.out.println("Staff list initialized from UserDB.");

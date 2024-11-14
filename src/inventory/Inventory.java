@@ -1,13 +1,18 @@
 package inventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 
 public class Inventory {
     private Map<String, Medicine> medicines;
+    private List<String> replenishmentRequests;
 
     public Inventory() {
         this.medicines = new HashMap<>();
+        this.replenishmentRequests = new ArrayList<>();
     }
 
     public void addMedicine(Medicine medicine) {
@@ -87,5 +92,19 @@ public class Inventory {
     
     public Medicine getMedicineById(String id) {
         return medicines.get(id);
+    }
+     public void displayReplenishmentRequests() {
+        if (replenishmentRequests.isEmpty()) {
+            System.out.println("No replenishment requests have been submitted.");
+        } else {
+            System.out.println("Replenishment Requests:");
+            for (String request : replenishmentRequests) {
+                System.out.println(request);
+            }
+        }
+    }
+
+    public List<String> getReplenishmentRequests() {
+        return replenishmentRequests;
     }
 }
