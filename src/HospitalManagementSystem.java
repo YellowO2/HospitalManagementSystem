@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import authentication.AuthenticationManager;
+import appointments.AppointmentManager;
 import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
@@ -12,8 +13,8 @@ public class HospitalManagementSystem {
 
     private static DatabaseManager databaseManager = new DatabaseManager();
     private static AuthenticationManager loginSystem = new AuthenticationManager(databaseManager.getUserDB());
-    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(
-            databaseManager.getMedicalRecordDB());
+    private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(databaseManager.getMedicalRecordDB());
+    private static AppointmentManager appointmentManager = new AppointmentManager(databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB());
 
     private static Scanner scanner = new Scanner(System.in);
 
@@ -55,7 +56,7 @@ public class HospitalManagementSystem {
 
         if (role.equals("Patient")) {
             Patient patient = (Patient) currentUser;
-            PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager);
+            PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager, appointmentManager);
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
             // Implement the doctor menu

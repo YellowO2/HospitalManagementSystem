@@ -69,6 +69,14 @@ public class Appointment {
     }
 
      // Setters
+    public void setAppointmentDate(LocalDate appointmenDate) {
+        this.appointmentDate = appointmenDate;
+    }
+
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
+    }
+
      public void setStatus(String status){
         this.status = status;
     }
