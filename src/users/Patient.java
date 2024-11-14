@@ -11,7 +11,7 @@ public class Patient extends User {
 
     // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
     public Patient(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-            String emailAddress, String password) {
+            String emailAddress) {
         super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.bloodType = bloodType;
     }
