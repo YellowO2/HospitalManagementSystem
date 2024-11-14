@@ -2,6 +2,7 @@ package database;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 // import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.List;
 import appointments.Appointment;
 // import medicalrecords.MedicalRecord;
 
-public class AppointmentDB extends Database<Appointment>{
+public class AppointmentDB extends Database<Appointment> {
     private List<Appointment> appointments;
     private static final String filename = "csv_data/Appointment_List.csv";
     private static final String header = "AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlot,Status";
-    
+
     // Constructor
     public AppointmentDB() {
         super(filename); // Pass the filename to the parent class
@@ -42,7 +43,7 @@ public class AppointmentDB extends Database<Appointment>{
     }
 
     @Override
-    public List<Appointment> getAll(){
+    public List<Appointment> getAll() {
         return appointments;
     }
 
@@ -82,23 +83,32 @@ public class AppointmentDB extends Database<Appointment>{
         List<String> lines = readFile(filename); // Read the CSV file
         for (String line : lines) {
             String[] tokens = splitLine(line); // Split line into tokens
-            
+
             if (tokens.length >= 7) { // Make sure there are enough tokens in the line
                 Appointment appointment = new Appointment(
-                    tokens[0],  // AppointmentID
-                    tokens[1],  // PatientID
-                    tokens[2],  // DoctorID
-                    LocalDate.parse(tokens[3]),
-                    tokens[4],  // TimeSlot
-                    tokens[5]   // Status
+                        tokens[0], // AppointmentID
+                        tokens[1], // PatientID
+                        tokens[2], // DoctorID
+                        LocalDate.parse(tokens[3]), // AppointmentDate
+                        LocalTime.parse(tokens[4]), // AppointmentTime
+                        tokens[5] // Status
+
                 );
                 appointments.add(appointment);
-            }
-            else {
+            } else {
                 System.out.println("Invalid line in CSV: " + line);
             }
         }
         return true;
     }
-}
 
+    public List<Appointment> getDoctorAppointments(String doctorId) {
+        List<Appointment> doctorAppointments = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorId().equals(doctorId)) {
+                doctorAppointments.add(appointment);
+            }
+        }
+        return doctorAppointments;
+    }
+}

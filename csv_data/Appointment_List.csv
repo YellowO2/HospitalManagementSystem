@@ -1,1 +1,1 @@
-AppointmentID,DoctorID,PatientID,Date,TimeSlotStart,TimeSlotEnd,Status
+AppointmentID,DoctorID,PatientID,Date,Time,Status

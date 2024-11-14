@@ -11,6 +11,7 @@ public class Appointment {
     private String doctorId;
     private String patientId; // Links to the patient's ID
     private LocalDate appointmentDate; // Date and time of the appointment
+    private LocalTime appointmentTime;
     private String status; // confirmed, canceled, completed, etc.
 
     // Outcome record
@@ -18,12 +19,13 @@ public class Appointment {
 
     // Constructor
     public Appointment(String appointmentId, String doctorId, String patientId, LocalDate appointmentDate,
-            String timeSlot,
+            LocalTime appointmentTime,
             String status) {
         this.appointmentId = appointmentId;
         this.doctorId = doctorId;
         this.patientId = patientId;
         this.appointmentDate = appointmentDate;
+        this.appointmentTime = appointmentTime;
         this.status = status;
         // this.outcomeRecord = null; // Outcome record is initially null
     }
@@ -54,6 +56,14 @@ public class Appointment {
 
     public LocalDate getAppointmentDate() {
         return appointmentDate;
+    }
+
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
     // public String getTimeSlot() {
