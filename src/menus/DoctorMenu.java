@@ -95,7 +95,7 @@ public class DoctorMenu {
         /* Diagnosis */
         String severity;
         LocalDate diagnosisDate = LocalDate.now();
-        String doctorName = this.getName();
+        String doctorName = doctor.getName();
 
         // Obtain diagnosis information
         System.out.print("Enter the diagnosis name: ");

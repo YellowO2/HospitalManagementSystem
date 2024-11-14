@@ -2,7 +2,7 @@ package database;
 
 import users.Doctor;
 import users.Patient;
-import users.Pharmacist;
+// import users.Pharmacist;
 import users.User;
 
 import java.io.IOException;
@@ -43,6 +43,11 @@ public class UserDB extends Database<User> {
             }
         }
         return null; // Return null if not found
+    }
+
+    @Override
+    public List<User> getAll(){
+        return users;
     }
 
     @Override

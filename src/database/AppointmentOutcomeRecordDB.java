@@ -85,7 +85,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                         tokens[0], // appointmentId
                         LocalDate.parse(tokens[1]), // date
                         tokens[2], // type of service
-                        parsePrescriptions(tokens[3]), // prescriptions (convert from string)
+                        tokens[3], // prescriptions (convert from string)
                         tokens[4], // medication status
                         tokens[5] // consultation notes
                 );
