@@ -10,6 +10,7 @@ import medicalrecords.Prescription;
 public class Pharmacist extends User {
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
     private Inventory inventory;
+    private List<String> replenishmentRequests;
 
     public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password)  {
@@ -52,9 +53,27 @@ public class Pharmacist extends User {
     public void submitReplenishmentRequest(String medicationId, int quantity) {
         Medicine medicine = inventory.getMedicineById(medicationId);
         if (medicine != null && medicine.isStockLow()) {
+            String requestDetails = "Replenishment request: " + quantity + " units of " + medicine.getName() + " (ID: " + medicationId + ")";
+            replenishmentRequests.add(requestDetails);
             System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
         } else {
             System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
         }
+    }
+
+    // Method to display all replenishment requests
+    public void displayReplenishmentRequests() {
+        if (replenishmentRequests.isEmpty()) {
+            System.out.println("No replenishment requests have been submitted.");
+        } else {
+            System.out.println("Replenishment Requests:");
+            for (String request : replenishmentRequests) {
+                System.out.println(request);
+            }
+        }
+    }
+
+    public List<String> getReplenishmentRequests() {
+        return replenishmentRequests;
     }
 }
