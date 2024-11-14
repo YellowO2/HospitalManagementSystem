@@ -1,12 +1,10 @@
 package users;
 
 import database.UserDB;
+import inventory.Inventory;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import inventory.Inventory;
-import inventory.Medicine;
 
 public class Administrator extends User {
 
@@ -98,17 +96,44 @@ public class Administrator extends User {
         }
     }
 
+    public void displayAllDoctors() {
+    if (staffList.isEmpty()) {
+        System.out.println("No doctors found in the staff list.");
+    } else {
+        System.out.println("=== Doctor List ===");
+        for (Doctor doctor : staffList) {
+            System.out.println(doctor);
+        }
+    }
+}
+        //Method to view the entire inventory
+    public void viewInventory() {
+        System.out.println("=== Inventory List ===");
+        inventory.displayInventory();
+    }
+    public  void approveRequest(){
+        inventory.displayReplenishmentRequests();
+        List<String> requests = inventory.getReplenishmentRequests();
+        for (String request : new ArrayList<>(requests)) {
+            System.out.println("Approving request: " + request);
+            // Remove the approved request from the list
+            requests.remove(request);
+            System.out.println("Request approved and removed: " + request);
+    }
+    }
+
+}
     // Existing methods related to inventory and staff management remain unchanged
 
     // Method to view the entire inventory
-/*    public void viewInventory() {
-        Medicine[] inventoryList = inventory.displayInventory();
-        System.out.println("=== Inventory List ===");
-        for (Medicine medicine : inventoryList) {
-            System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
-                    ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
-        }
-    }*/
+    // public void viewInventory() {
+    //     Medicine[] inventoryList = Inventory.displayInventory();
+    //     System.out.println("=== Inventory List ===");
+    //     for (Medicine medicine : inventoryList) {
+    //         System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
+    //                 ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
+    //     }
+    // }
 
     // Method to update stock for an existing medicine
  /*   public void updateInventoryStock(String medicineName, int stockNum) {

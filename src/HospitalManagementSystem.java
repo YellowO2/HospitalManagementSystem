@@ -1,16 +1,15 @@
+import authentication.AuthenticationManager;
+import database.DatabaseManager;
 import java.io.IOException;
 import java.util.Scanner;
-
-import authentication.AuthenticationManager;
 import medicalrecords.MedicalRecordManager;
-import users.User;
-import users.Patient;
+import menus.AdministratorMenu;
 import menus.PatientMenu;
-import database.DatabaseManager;
-import users.Pharmacist;
 import menus.PharmacistMenu;
 import users.Administrator;
-import menus.AdministratorMenu;
+import users.Patient;
+import users.Pharmacist;
+import users.User;
 
 public class HospitalManagementSystem {
 
@@ -64,16 +63,16 @@ public class HospitalManagementSystem {
         } else if (role.equals("Doctor")) {
             // Implement the doctor menu
             // runDoctorMenu(scanner, (Doctor) currentUser);
-        if (role.equals("Pharmacist")) {
+        } else if (role.equals("Pharmacist")) {
             Pharmacist pharmacist = (Pharmacist) currentUser;
             PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist);
             pharmacistMenu.displayMenu();
-        if (role.equals("Administrator")){
+        } else if (role.equals("Administrator")){
             Administrator administrator = (Administrator) currentUser;
-            AdminstratorMenu adminstratorMenu = new AdministratorMenu(administrator);
-            AdministratorMenu.displayMenu();
+            AdministratorMenu administratorMenu = new AdministratorMenu(administrator);
+            administratorMenu.displayMenu();
         }
-        } else {
+         else {
             System.out.println("Invalid role. Logging out.");
         }
     }
