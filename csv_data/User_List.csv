@@ -5,4 +5,6 @@ P1003,Rizz,1990-07-08,Female,11111111,rizz003@example.com,password,Patient
 P1004,Jian An,1975-11-23,Female,11111111,jianan004@example.com,password,Patient
 P1005,Yu Xuan,1980-05-15,Female,11111111,yuxuan005@example.com,password,Patient
 D001,John Smith,1980-05-14,Male,99899998,john@example.com,password,Doctor
-P1005,ParmacistX,1980-05-15,Female,11111111,yuxuan005@example.com,password,Parmacist
+D002,Jane Smith,1985-05-18,Female,99899998,jane@example.com,password,Doctor
+PH1001,Dr Strange,1981-05-15,Female,11111111,yuxuan005@example.com,password,Pharmacist
+A1001,James,1982-06-15,Male,11111111,james001@example.com,password,Administrator

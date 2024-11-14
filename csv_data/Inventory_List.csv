@@ -1,1 +1,4 @@
 ID,Name,Dosage,StockLevel,LowStockLevelAlert
+M1001,Paracetamol,"50 ml",100,20
+M1002,Ibuprofen,"25 ml",50,10
+M1003,Amoxicillin,"35 ml",75,15
