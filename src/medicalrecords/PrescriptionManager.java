@@ -11,7 +11,7 @@ public class PrescriptionManager {
         this.medicalRecord = medicalRecord;
     }
 
-    // Method to check if a prescription already exists in the patient's medical history
+    // Method to check if a prescription already exists in the patient's medical histories
     public boolean prescriptionExists(Prescription newPrescription) {
         return medicalRecord.getPrescriptions().stream()
                 .anyMatch(prescription -> prescription.getMedicationName().equals(newPrescription.getMedicationName())

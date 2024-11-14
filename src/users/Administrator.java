@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Administrator extends User {
 
-    // List to store staff members (Doctors & Pharmacists)
+    // List to store staff members (Doctors & Pharmacist)
     private List<Doctor> staffList;
 
     // Inventory object for managing medication

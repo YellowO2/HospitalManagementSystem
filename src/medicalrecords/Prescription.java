@@ -1,7 +1,7 @@
 package medicalrecords;
 
 public class Prescription {
-    private String prescriptionId; // Unique ID for the prescription
+    private String prescriptionId; // Unique ID for the prescriptions 
     private String medicationName; // Name of the medication
     private String dosage; // Dosage information (e.g., "500mg twice a day")
     private String frequency; // Frequency of administration (e.g., "2 times per day")

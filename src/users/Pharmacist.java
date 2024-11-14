@@ -14,7 +14,7 @@ public class Pharmacist extends User {
 
     public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password)  {
-        super(id, name, "PHARMACIST", password, phoneNumber, emailAddress, dateOfBirth, gender);
+        super(id, name, "Pharmacist", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentOutcomeRecords = new ArrayList<>();
         this.inventory = new Inventory();
     }

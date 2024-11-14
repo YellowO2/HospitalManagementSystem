@@ -11,7 +11,7 @@ import users.Administrator;
 
 public class AdministratorMenu {
 
-    private Administrator administrator; // The currently logged-in administrator
+    private Administrator administrator; // The currently logged-in administrators
     private Scanner scanner;
 
 // Constructor
