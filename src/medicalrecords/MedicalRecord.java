@@ -1,8 +1,7 @@
 package medicalrecords;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 //Very ANGRY that they want us to have non medical information like FUCKING email-address etc in the fucking MEDICAL record, 
 //can we ask if we can do it our own way?
