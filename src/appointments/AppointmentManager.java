@@ -166,7 +166,7 @@ public class AppointmentManager {
     }
 
     // Cancel the existing appointment
-    private boolean cancelAppointment(String appointmentId) {
+    public boolean cancelAppointment(String appointmentId) {
         Appointment appointment = appointmentDB.getById(appointmentId);
         if (appointment == null) {
             System.out.println("Appointment not found.");

@@ -229,17 +229,17 @@ public class PatientMenu {
     }
 
     private void cancelAppointment() {
-        // System.out.println("Canceling an appointment...");
-        // System.out.print("Enter Appointment ID: ");
-        // String appointmentId = scanner.nextLine().trim();
+        System.out.println("Canceling an appointment...");
+        System.out.print("Enter Appointment ID: ");
+        String appointmentId = scanner.nextLine().trim();
 
-        // boolean success = appointmentManager.cancelAppointment(appointmentId);
+        boolean success = appointmentManager.cancelAppointment(appointmentId);
 
-        // if (success) {
-        // System.out.println("Appointment canceled successfully.");
-        // } else {
-        // System.out.println("Failed to cancel the appointment. Please try again.");
-        // }
+        if (success) {
+            System.out.println("Appointment canceled successfully.");
+        } else {
+            System.out.println("Failed to cancel the appointment. Please try again.");
+        }
     }
 
     private void viewScheduledAppointments() {
