@@ -1,57 +1,71 @@
 package appointments;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
-import java.util.List;
-
-import medicalrecords.Prescription;
+import java.time.LocalTime;
 
 public class Appointment {
     private String appointmentId;
+    private String doctorId;
     private String patientId; // Links to the patient's ID
-    private String doctorId; // Doctor assigned to this appointment
-    private LocalDateTime appointmentDate; // Date and time of the appointment
+    private LocalDate appointmentDate; // Date and time of the appointment
+    private LocalTime appointmentTime;
     private String status; // confirmed, canceled, completed, etc.
 
     // Outcome record
     private AppointmentOutcomeRecord outcomeRecord;
 
     // Constructor
-    public Appointment(String appointmentId, String patientId, String doctorId, LocalDateTime appointmentDate,
+    public Appointment(String appointmentId, String doctorId, String patientId, LocalDate appointmentDate,
+            LocalTime appointmentTime,
             String status) {
         this.appointmentId = appointmentId;
-        this.patientId = patientId;
         this.doctorId = doctorId;
+        this.patientId = patientId;
         this.appointmentDate = appointmentDate;
+        this.appointmentTime = appointmentTime;
         this.status = status;
-        this.outcomeRecord = null; // Outcome record is initially null
+        // this.outcomeRecord = null; // Outcome record is initially null
     }
 
     // Method to complete the appointment and create an outcome record
-    public void completeAppointment(String serviceProvided, String consultationNotes,
-            List<Prescription> prescriptions) {
-        this.outcomeRecord = new AppointmentOutcomeRecord(appointmentId, LocalDate.now(), serviceProvided,
-                consultationNotes, prescriptions);
-        this.outcomeRecord.setConsultationNotes(consultationNotes);
-        this.status = "completed"; // Update the appointment status
-    }
+    // public void completeAppointment(String serviceProvided, String
+    // consultationNotes,
+    // List<Prescription> prescriptions) {
+    // this.outcomeRecord = new AppointmentOutcomeRecord(appointmentId,
+    // LocalDate.now(), serviceProvided,
+    // consultationNotes, prescriptions);
+    // this.outcomeRecord.setConsultationNotes(consultationNotes);
+    // this.status = "completed"; // Update the appointment status
+    // }
 
     // Getters for appointment details
     public String getAppointmentId() {
         return appointmentId;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
     public String getDoctorId() {
         return doctorId;
     }
 
-    public LocalDateTime getAppointmentDate() {
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public LocalDate getAppointmentDate() {
         return appointmentDate;
     }
+
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
+    // public String getTimeSlot() {
+    // return timeSlot;
+    // }
 
     public String getStatus() {
         return status;
@@ -61,5 +75,28 @@ public class Appointment {
         return outcomeRecord; // Return the outcome record if it exists
     }
 
-    // Other methods for appointment management can be added here
+    // Setters
+    public void setAppointmentDate(LocalDate appointmenDate) {
+        this.appointmentDate = appointmenDate;
+    }
+
+    // public void setTimeSlot(String timeSlot) {
+    // this.timeSlot = timeSlot;
+    // }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s,%s,%s,%s,%s,%s", appointmentId, doctorId, patientId, appointmentDate.toString(),
+                appointmentTime.toString(), status);
+    }
+
+    // Implement fromCSV
+    public static Appointment fromCSV(String csvString) {
+        throw new UnsupportedOperationException("This method should be overridden by subclasses");
+    }
+
 }

@@ -3,12 +3,14 @@ package database;
 import users.Administrator;
 import users.Doctor;
 import users.Patient;
-import users.Pharmacist;
+// import users.Pharmacist;
 import users.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.print.Doc;
 
 public class UserDB extends Database<User> {
     private List<User> users;
@@ -44,6 +46,11 @@ public class UserDB extends Database<User> {
             }
         }
         return null; // Return null if not found
+    }
+
+    @Override
+    public List<User> getAll() {
+        return users;
     }
 
     @Override
@@ -112,9 +119,10 @@ public class UserDB extends Database<User> {
                         users.add(doctor);
                         break;
                     case "Pharmacist":
-                        Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress,
-                                password);
-                        users.add(pharmacist);
+                        // Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber,
+                        // emailAddress,
+                        // password);
+                        // users.add(pharmacist);
                         break;
                     case "Administrator":
                         Administrator administrator = new Administrator(id, name, dob, gender, phoneNumber,
@@ -126,14 +134,31 @@ public class UserDB extends Database<User> {
                         break;
                 }
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
     }
 
-    @Override
-    public List<User> getAll() {
-        return users;
+    public List<Doctor> getAllDoctors() {
+        List<Doctor> doctors = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Doctor) {
+                // downcast to Doctor
+                doctors.add((Doctor) user);
+            }
+        }
+        return doctors;
+    }
+
+    public List<Patient> getAllPatients() {
+        List<Patient> patients = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Patient) {
+                // downcast to Patient
+                patients.add((Patient) user);
+            }
+        }
+        return patients;
     }
 }

@@ -14,7 +14,6 @@ public class Pharmacist extends User {
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
     private Inventory inventory;
     private ReplenishmentDB replenishmentDB; // Ensure this is initialized
-    
 
     public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) {
@@ -26,9 +25,9 @@ public class Pharmacist extends User {
         try {
             replenishmentDB.load();
             System.out.println("Replenishment requests loaded successfully.");
-    }   catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error loading replenishment requests: " + e.getMessage());
-    }
+        }
     }
 
     // Method to view all appointment outcome records
@@ -62,24 +61,26 @@ public class Pharmacist extends User {
     }
 
     // Method to submit a replenishment request if stock is low
-public void submitReplenishmentRequest(String medicationId, int quantity) {
-    Medicine medicine = inventory.getMedicineById(medicationId);
-    if (medicine != null && medicine.isStockLow()) {
-        ReplenishmentRequest request = new ReplenishmentRequest(medicationId, quantity);
-        if (replenishmentDB.create(request)) { // Ensure the request is created successfully
-            try {
-                replenishmentDB.save(); // Save changes to persist the new request
-                System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
-            } catch (IOException e) {
-                System.out.println("Error saving replenishment request: " + e.getMessage());
+    public void submitReplenishmentRequest(String medicationId, int quantity) {
+        Medicine medicine = inventory.getMedicineById(medicationId);
+        if (medicine != null && medicine.isStockLow()) {
+            ReplenishmentRequest request = new ReplenishmentRequest(medicationId, quantity);
+            if (replenishmentDB.create(request)) { // Ensure the request is created successfully
+                try {
+                    replenishmentDB.save(); // Save changes to persist the new request
+                    System.out.println(
+                            "Replenishment request submitted for " + quantity + " units of " + medicine.getName());
+                } catch (IOException e) {
+                    System.out.println("Error saving replenishment request: " + e.getMessage());
+                }
+            } else {
+                System.out.println("Failed to create replenishment request.");
             }
         } else {
-            System.out.println("Failed to create replenishment request.");
+            System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine")
+                    + " are sufficient.");
         }
-    } else {
-        System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
     }
-}
 
     // Method to display all replenishment requests from ReplenishmentDB
     public void displayReplenishmentRequests() {
