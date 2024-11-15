@@ -55,14 +55,7 @@ public class AppointmentManager {
         // Filter out unavailable and booked times
         List<String> availableSlots = new ArrayList<>();
         for (LocalTime slot : allPossibleSlots) {
-            boolean isUnavailable = unavailableSlots.stream()
-                    .anyMatch(unavailable -> unavailable.getTime().equals(slot))
-                    || doctorAppointments.stream()
-                            .anyMatch(appointment -> appointment.getAppointmentDate().equals(date)
-                                    && appointment.getAppointmentTime().equals(slot));
-
-            // If the slot is available, add it to the availableSlots list
-            if (!isUnavailable) {
+            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
                 availableSlots.add(slot.toString());
             }
         }
