@@ -3,17 +3,14 @@
 package users;
 
 import appointments.Appointment;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import medicalrecords.Diagnosis;
-import medicalrecords.MedicalRecord;
 import medicalrecords.MedicalRecordManager;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.Scanner;
 
 public class Doctor extends User {
     private List<Appointment> appointmentSchedule;

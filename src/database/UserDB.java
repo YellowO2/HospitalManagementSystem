@@ -1,16 +1,16 @@
 package database;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import users.Administrator;
 import users.Doctor;
 import users.Patient;
 import users.Pharmacist;
 import users.User;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserDB extends Database<User> {
+
     private List<User> users;
     private static final String USER_FILE = "csv_data/User_List.csv";
     private static final String USER_HEADER = "ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role";
@@ -22,17 +22,25 @@ public class UserDB extends Database<User> {
 
     @Override
     public boolean create(User user) {
-        if (user != null) {
-            users.add(user);
-            try {
-                this.save(); // Save changes immediately
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace(); // Handle errors appropriately
-                return false;
+        // Check if a user with the same ID already exists
+        for (User existingUser : users) {
+            if (existingUser.getId().equals(user.getId())) {
+                System.out.println("A user with ID " + user.getId() + " already exists. No new entry created.");
+                return false; // Prevent adding a duplicate
             }
         }
-        return false; // Invalid user
+        // Add the new user if not already present
+        users.add(user);
+        return true;
+    }
+
+    public boolean exists(String id) {
+        for (User user : users) {
+            if (user.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -135,5 +143,39 @@ public class UserDB extends Database<User> {
     @Override
     public List<User> getAll() {
         return users;
+    }
+
+    public void addCsvEntry(String csvLine) {
+        String[] tokens = splitLine(csvLine);
+        if (tokens.length == 8) { // Check if all fields are present
+            String id = tokens[0];
+            String name = tokens[1];
+            String dob = tokens[2];
+            String gender = tokens[3];
+            String phoneNumber = tokens[4];
+            String emailAddress = tokens[5];
+            String password = tokens[6];
+            String role = tokens[7];
+
+            // Create specific user objects based on the role if needed, or just store the CSV directly
+            switch (role) {
+                case "Doctor":
+                    users.add(new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    break;
+                case "Pharmacist":
+                    users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    break;
+                case "Administrator":
+                    try {
+                        users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    } catch (IOException e) {
+                        System.out.println("Error initializing new Administrator: " + e.getMessage());
+                    }
+                    break;
+                default:
+                    System.out.println("Unknown role. Entry not added.");
+                    break;
+            }
+        }
     }
 }

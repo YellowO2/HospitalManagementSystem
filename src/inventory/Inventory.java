@@ -29,12 +29,12 @@ public class Inventory {
 
     // Load medicines from MedicineDB
     public void loadFromMedicineDB() throws IOException {
+        medicines.clear(); // Clear current data before loading new data
         medicineDB.load(); // Load the data from the CSV file
         List<Medicine> medicineList = medicineDB.getAll();
         for (Medicine medicine : medicineList) {
             medicines.put(medicine.getId(), medicine);
         }
-        System.out.println("Loaded " + medicineList.size() + " medicines from the database.");
     }
 
     public void addMedicine(Medicine medicine) {
@@ -50,6 +50,13 @@ public class Inventory {
 
             if (!medicine.isStockLow()) {
                 System.out.println("Stock level for " + medicine.getName() + " is now above the low stock alert level.");
+            }
+
+            // Save the updated data to the MedicineDB
+            try {
+                medicineDB.save();
+            } catch (IOException e) {
+                System.out.println("Error saving to MedicineDB: " + e.getMessage());
             }
         } else {
             System.out.println("Medicine not found.");

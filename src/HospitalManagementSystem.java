@@ -1,5 +1,6 @@
 import authentication.AuthenticationManager;
 import database.DatabaseManager;
+import database.UserDB;
 import java.io.IOException;
 import java.util.Scanner;
 import medicalrecords.MedicalRecordManager;
@@ -17,6 +18,7 @@ public class HospitalManagementSystem {
     private static AuthenticationManager loginSystem = new AuthenticationManager(databaseManager.getUserDB());
     private static MedicalRecordManager medicalRecordManager = new MedicalRecordManager(
             databaseManager.getMedicalRecordDB());
+    private static UserDB userDB = databaseManager.getUserDB();
 
     private static Scanner scanner = new Scanner(System.in);
 
@@ -31,7 +33,7 @@ public class HospitalManagementSystem {
             if (currentUser != null) {
                 handleUserRole(scanner, currentUser);
             }
-
+            
             // Save any changes to the database before exiting
             // hmsDatabase.savePatients();
             // hmsDatabase.saveMedicalRecords();

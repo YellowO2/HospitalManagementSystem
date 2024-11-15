@@ -6,13 +6,15 @@ public class DatabaseManager {
     private UserDB userDB;
     private MedicalRecordDB medicalRecordDB;
     private MedicineDB medicineDB;
-    private ReplenishmentDB replenishmentDB; // Add ReplenishmentDB instance
+    private ReplenishmentDB replenishmentDB; // Existing ReplenishmentDB instance
+    private AppointmentOutcomeRecordDB appointmentOutcomeRecordDB; // Add AppointmentOutcomeRecordDB instance
 
     public DatabaseManager() {
         this.userDB = new UserDB();
         this.medicalRecordDB = new MedicalRecordDB();
         this.medicineDB = new MedicineDB();
         this.replenishmentDB = new ReplenishmentDB(); // Initialize ReplenishmentDB
+        this.appointmentOutcomeRecordDB = new AppointmentOutcomeRecordDB(); // Initialize AppointmentOutcomeRecordDB
     }
 
     public void initialize() throws IOException {
@@ -20,6 +22,7 @@ public class DatabaseManager {
         medicalRecordDB.load();
         medicineDB.load();
         replenishmentDB.load(); // Load data for ReplenishmentDB
+        appointmentOutcomeRecordDB.load(); // Load data for AppointmentOutcomeRecordDB
     }
 
     public void save() throws IOException {
@@ -27,6 +30,7 @@ public class DatabaseManager {
         medicalRecordDB.save();
         medicineDB.save();
         replenishmentDB.save(); // Save data for ReplenishmentDB
+        appointmentOutcomeRecordDB.save(); // Save data for AppointmentOutcomeRecordDB
     }
 
     // Accessor methods for individual databases
@@ -44,5 +48,9 @@ public class DatabaseManager {
 
     public ReplenishmentDB getReplenishmentDB() { // Accessor method for ReplenishmentDB
         return replenishmentDB;
+    }
+
+    public AppointmentOutcomeRecordDB getAppointmentOutcomeRecordDB() { // Accessor method for AppointmentOutcomeRecordDB
+        return appointmentOutcomeRecordDB;
     }
 }

@@ -1,9 +1,7 @@
 package appointments;
 
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.util.List;
-
 import medicalrecords.Prescription;
 
 public class Appointment {
@@ -30,8 +28,7 @@ public class Appointment {
     // Method to complete the appointment and create an outcome record
     public void completeAppointment(String serviceProvided, String consultationNotes,
             List<Prescription> prescriptions) {
-        this.outcomeRecord = new AppointmentOutcomeRecord(appointmentId, LocalDate.now(), serviceProvided,
-                consultationNotes, prescriptions);
+        ;
         this.outcomeRecord.setConsultationNotes(consultationNotes);
         this.status = "completed"; // Update the appointment status
     }

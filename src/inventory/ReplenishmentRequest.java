@@ -21,4 +21,8 @@ public class ReplenishmentRequest {
     public String toString() {
         return medicineId + "," + quantity;
     }
+    // Setter method for quantity
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

@@ -1,7 +1,6 @@
 package medicalrecords;
 
 import appointments.AppointmentOutcomeRecord;
-import java.util.List;
 
 public class PrescriptionManager {
 
@@ -15,8 +14,8 @@ public class PrescriptionManager {
     public boolean prescriptionExists(Prescription newPrescription) {
         return medicalRecord.getPrescriptions().stream()
                 .anyMatch(prescription -> prescription.getMedicationName().equals(newPrescription.getMedicationName())
-                        && prescription.getDosage().equals(newPrescription.getDosage())
-                        && prescription.getFrequency().equals(newPrescription.getFrequency()));
+                && prescription.getDosage().equals(newPrescription.getDosage())
+                && prescription.getFrequency().equals(newPrescription.getFrequency()));
     }
 
     // Method to add a prescription to both the medical history and the appointment outcome record
@@ -24,8 +23,9 @@ public class PrescriptionManager {
         if (!prescriptionExists(newPrescription)) {
             medicalRecord.addPrescription(newPrescription); // Add to medical history if not already present
         }
-        List<Prescription> appointmentPrescriptions = appointmentOutcomeRecord.getPrescriptions();
-        appointmentPrescriptions.add(newPrescription); // Always add to the appointment outcome record
-        appointmentOutcomeRecord.setPrescriptions(appointmentPrescriptions);
+
+        // Append the new prescription to the `medications` string field
+        String newMedications = appointmentOutcomeRecord.getMedications() + "; " + newPrescription.toString();
+        appointmentOutcomeRecord.setMedications(newMedications.trim());
     }
 }

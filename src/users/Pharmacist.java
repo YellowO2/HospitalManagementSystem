@@ -1,34 +1,37 @@
 package users;
 
 import appointments.AppointmentOutcomeRecord;
+import database.AppointmentOutcomeRecordDB;
 import database.ReplenishmentDB;
 import inventory.Inventory;
 import inventory.Medicine;
 import inventory.ReplenishmentRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import medicalrecords.Prescription;
 
 public class Pharmacist extends User {
+    private AppointmentOutcomeRecordDB appointmentOutcomeRecordDB;
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
     private Inventory inventory;
-    private ReplenishmentDB replenishmentDB; // Ensure this is initialized
-    
+    private ReplenishmentDB replenishmentDB;
 
     public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-            String emailAddress, String password) {
+                      String emailAddress, String password) {
         super(id, name, "Pharmacist", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.appointmentOutcomeRecords = new ArrayList<>();
+        this.appointmentOutcomeRecordDB = new AppointmentOutcomeRecordDB();
         this.inventory = new Inventory();
-        this.replenishmentDB = new ReplenishmentDB(); // Properly initialize ReplenishmentDB
+        this.replenishmentDB = new ReplenishmentDB();
 
+        // Load data during initialization without printing any messages
         try {
-            replenishmentDB.load();
-            System.out.println("Replenishment requests loaded successfully.");
-    }   catch (IOException e) {
-            System.out.println("Error loading replenishment requests: " + e.getMessage());
-    }
+            this.appointmentOutcomeRecordDB.load();
+            this.replenishmentDB.load();
+            this.inventory.loadFromMedicineDB();
+            this.appointmentOutcomeRecords = appointmentOutcomeRecordDB.getAll();
+        } catch (IOException e) {
+            // Print an error message only if an exception occurs
+            System.err.println("Error during Pharmacist initialization: " + e.getMessage());
+        }
     }
 
     // Method to view all appointment outcome records
@@ -37,23 +40,38 @@ public class Pharmacist extends User {
             System.out.println("No appointment outcome records available.");
         } else {
             for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-                System.out.println(record);
+                System.out.println(record); // Display record in an appropriate format
             }
         }
     }
 
     // Method to update prescription status in appointment outcome records
-    public void updatePrescriptionStatus(String medicationName, int newStatus) {
-        for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
-            for (Prescription medication : record.getPrescriptions()) {
-                if (medication.getMedicationName().equals(medicationName)) {
-                    medication.setStatus(newStatus);
-                    System.out.println("Updated status for " + medicationName + " to " + newStatus);
-                    return;
+    public void updatePrescriptionStatus(String appointmentId, String newStatus) {
+        try {
+            appointmentOutcomeRecords = appointmentOutcomeRecordDB.getAll();
+            AppointmentOutcomeRecord recordToUpdate = null;
+
+            for (AppointmentOutcomeRecord record : appointmentOutcomeRecords) {
+                if (record.getAppointmentId().equals(appointmentId)) {
+                    recordToUpdate = record;
+                    break;
                 }
             }
+
+            if (recordToUpdate != null) {
+                if ("Pending".equalsIgnoreCase(recordToUpdate.getPrescribedStatus()) && "Fulfilled".equalsIgnoreCase(newStatus)) {
+                    recordToUpdate.setPrescribedStatus("Fulfilled");
+                    System.out.println("Updated status for prescriptions in Appointment ID " + appointmentId + " to 'Fulfilled'.");
+                    appointmentOutcomeRecordDB.save();
+                } else {
+                    System.out.println("The current prescription status is already '" + newStatus + "'. No changes made.");
+                }
+            } else {
+                System.out.println("Appointment ID not found.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating prescription status: " + e.getMessage());
         }
-        System.out.println("Medication not found in records.");
     }
 
     // Method to view medication inventory levels
@@ -62,22 +80,36 @@ public class Pharmacist extends User {
     }
 
     // Method to submit a replenishment request if stock is low
-public void submitReplenishmentRequest(String medicationId, int quantity) {
-    Medicine medicine = inventory.getMedicineById(medicationId);
-    if (medicine != null && medicine.isStockLow()) {
-        ReplenishmentRequest request = new ReplenishmentRequest(medicationId, quantity);
-        if (replenishmentDB.create(request)) { // Ensure the request is created successfully
-            try {
-                replenishmentDB.save(); // Save changes to persist the new request
-                System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
-            } catch (IOException e) {
-                System.out.println("Error saving replenishment request: " + e.getMessage());
+    public void submitReplenishmentRequest(String medicationId, int quantity) {
+    try {
+        Medicine medicine = inventory.getMedicineById(medicationId);
+        if (medicine != null && medicine.isStockLow()) {
+            ReplenishmentRequest existingRequest = replenishmentDB.getById(medicationId);
+            
+            if (existingRequest != null) {
+                // Update the quantity of the existing request
+                existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
+                if (replenishmentDB.update(existingRequest)) {
+                    replenishmentDB.save();
+                    System.out.println("Replenishment request updated for " + quantity + " additional units of " + medicine.getName());
+                } else {
+                    System.out.println("Failed to update the replenishment request.");
+                }
+            } else {
+                // Create a new request if one does not already exist
+                ReplenishmentRequest newRequest = new ReplenishmentRequest(medicationId, quantity);
+                if (replenishmentDB.create(newRequest)) {
+                    replenishmentDB.save();
+                    System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
+                } else {
+                    System.out.println("Failed to create replenishment request.");
+                }
             }
         } else {
-            System.out.println("Failed to create replenishment request.");
+            System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
         }
-    } else {
-        System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
+    } catch (IOException e) {
+        System.out.println("Error handling replenishment request: " + e.getMessage());
     }
 }
 
@@ -87,7 +119,6 @@ public void submitReplenishmentRequest(String medicationId, int quantity) {
         if (requests.isEmpty()) {
             System.out.println("No replenishment requests have been submitted.");
         } else {
-            System.out.println("Replenishment Requests:");
             for (ReplenishmentRequest request : requests) {
                 System.out.println(request);
             }

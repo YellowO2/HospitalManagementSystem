@@ -1,5 +1,6 @@
 package users;
 
+import database.MedicineDB;
 import database.ReplenishmentDB;
 import database.UserDB;
 import inventory.Inventory;
@@ -10,121 +11,119 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Administrator extends User {
-    private List<Doctor> staffList;
     private Inventory inventory;
     private UserDB userDB;
-    private ReplenishmentDB replenishmentDB; // Ensure this is initialized
+    private ReplenishmentDB replenishmentDB;
+    private MedicineDB medicineDB;
 
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-            String emailAddress, String password) throws IOException {
+                         String emailAddress, String password) throws IOException {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.staffList = new ArrayList<>();
         this.inventory = new Inventory();
-        this.userDB = new UserDB(); // Initialize userDB properly
-        this.replenishmentDB = new ReplenishmentDB(); // Properly initialize ReplenishmentDB
+        this.userDB = new UserDB(); // Initialize UserDB
+        this.replenishmentDB = new ReplenishmentDB();
+        this.medicineDB = new MedicineDB();
 
         try {
             replenishmentDB.load();
-            System.out.println("Replenishment requests loaded successfully.");
-    }   catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error loading replenishment requests: " + e.getMessage());
+        }
+        try {
+            medicineDB.load();
+        } catch (IOException e) {
+            System.out.println("Error loading Inventory or UserDB: " + e.getMessage());
+        }
     }
+    public void loadUserDB() {
+        try {
+            userDB.getAll().clear();
+            userDB.load();
+            System.out.println("UserDB loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("Error loading UserDB: " + e.getMessage());
+        }
     }
+    // Method to add a new medication
+    public void addNewMedication(Medicine medicine) {
+        if (inventory.getMedicineById(medicine.getId()) == null) {
+            inventory.addMedicine(medicine); // Add the new medicine to the inventory
 
-    // Method to initialize the staff list using UserDB
-    public void initializeStaffList() {
-        if (userDB != null) {
-            List<User> allUsers = userDB.getAll(); // Get all users from UserDB
-
-            this.staffList.clear(); // Clear current list
-            for (User user : allUsers) {
-                if (user instanceof Doctor) {
-                    this.staffList.add((Doctor) user); // Add only staff members
+            try {
+                if (medicineDB.create(medicine)) { // Ensure the new medicine is added successfully
+                    medicineDB.save(); // Save changes to persist the new medicine
+                    System.out.println("New medication added and saved to Inventory_List.csv: " + medicine.getName());
+                } else {
+                    System.out.println("Failed to add new medication to the database.");
                 }
+            } catch (IOException e) {
+                System.out.println("Error saving new medication to Inventory_List.csv: " + e.getMessage());
             }
-            System.out.println("Staff list initialized from UserDB.");
         } else {
-            System.out.println("UserDB reference is null. Cannot initialize staff list.");
+            System.out.println("Medication with ID " + medicine.getId() + " already exists in inventory.");
         }
     }
 
-    // Method to add a new user to the database
-    public void addUser(User user) {
-        if (userDB.create(user)) {
-            System.out.println("User added successfully: " + user.getName());
+    // Method to remove a medication by ID
+    public void removeMedication(String id) {
+        Medicine medicine = inventory.getMedicineById(id);
+        if (medicine != null) {
+            inventory.removeMedicine(id); // Remove the medicine from the in-memory inventory
+
+            try {
+                if (medicineDB.delete(id)) { // Ensure the medicine is deleted from the database
+                    medicineDB.save(); // Save changes to persist the removal
+                    System.out.println("Medication with ID " + id + " removed and changes saved to Inventory_List.csv.");
+                } else {
+                    System.out.println("Failed to remove the medication from the database.");
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving changes to Inventory_List.csv: " + e.getMessage());
+            }
         } else {
-            System.out.println("Failed to add user.");
+            System.out.println("Medication with ID " + id + " not found.");
         }
     }
 
-    // Method to remove an existing user from the database by ID
-    public void removeUser(String userId) {
-        if (userDB.delete(userId)) {
-            System.out.println("User with ID " + userId + " removed successfully.");
+    // Method to update medication stock
+    public void updateMedicationStock(String id, int newStockLevel) {
+        Medicine medicine = inventory.getMedicineById(id);
+        if (medicine != null) {
+            inventory.updateMedicine(id, newStockLevel);
+            System.out.println("Stock level updated for medication: " + medicine.getName());
         } else {
-            System.out.println("User not found or could not be removed.");
+            System.out.println("Medication not found in inventory.");
         }
     }
 
-    // Method to update user information in the database
-    public void updateUser(User updatedUser) {
-        if (userDB.update(updatedUser)) {
-            System.out.println("User information updated successfully for: " + updatedUser.getName());
-        } else {
-            System.out.println("Failed to update user information.");
-        }
-    }
-
-    // Method to get a user by ID from the database
-    public User getUserById(String userId) {
-        User user = userDB.getById(userId);
-        if (user != null) {
-            System.out.println("User found: " + user);
-            return user;
-        } else {
-            System.out.println("User not found.");
-            return null;
-        }
-    }
-
-    // Method to display all users
-    public void displayAllUsers() {
-        List<User> users = userDB.getAll();
-        if (users.isEmpty()) {
-            System.out.println("No users found in the database.");
-        } else {
-            System.out.println("=== User List ===");
-            for (User user : users) {
-                System.out.println(user);
+    // Method to display all staff
+    public void displayAllStaff(){
+        loadUserDB();
+        System.out.println("=== Staff List ===");
+        List<User> allUsers = userDB.getAll();
+        
+        boolean hasStaff = false;
+        for (User user : allUsers) {
+            if (user.getRole().equalsIgnoreCase("Doctor") || 
+                user.getRole().equalsIgnoreCase("Pharmacist") || 
+                user.getRole().equalsIgnoreCase("Administrator")) {
+                System.out.println("ID: " + user.getId() + ", Name: " + user.getName() + ", Role: " + user.getRole());
+                hasStaff = true;
             }
         }
-    }
-
-    public void displayAllDoctors() {
-    if (staffList.isEmpty()) {
-        System.out.println("No doctors found in the staff list.");
-    } else {
-        System.out.println("=== Doctor List ===");
-        for (Doctor doctor : staffList) {
-            System.out.println(doctor);
+        
+        if (!hasStaff) {
+            System.out.println("No staff members found.");
         }
     }
-}
-        //Method to view the entire inventory
+
     public void viewInventory() {
         System.out.println("=== Inventory List ===");
         inventory.displayInventory();
     }
-    public void displayReplenishmentRequests() {
-        List<ReplenishmentRequest> requests = replenishmentDB.getAll();
-        if (requests.isEmpty()) {
-            System.out.println("No replenishment requests have been submitted.");
-        } else {
-            System.out.println("Replenishment Requests:");
-            for (ReplenishmentRequest request : requests) {
-                System.out.println(request);
-            }
-        }
+
+    public UserDB getUserDB() {
+        return userDB;
     }
 
     // Method to approve replenishment requests directly from ReplenishmentDB
@@ -138,60 +137,56 @@ public class Administrator extends User {
         for (ReplenishmentRequest request : new ArrayList<>(requests)) {
             Medicine medicine = inventory.getMedicineById(request.getMedicineId());
             if (medicine != null) {
-                inventory.updateMedicine(request.getMedicineId(), medicine.getStockLevel() + request.getQuantity());
-                replenishmentDB.delete(request.getMedicineId()); // Remove approved request from ReplenishmentDB
-                System.out.println("Replenishment request approved and processed for medicine ID: " + request.getMedicineId());
+                int newStockLevel = medicine.getStockLevel() + request.getQuantity();
+                inventory.updateMedicine(request.getMedicineId(), newStockLevel);
+
+                boolean isDeleted = replenishmentDB.delete(request.getMedicineId());
+                if (isDeleted) {
+                    try {
+                        replenishmentDB.save(); // Save changes after deletion
+                        System.out.println("Replenishment request approved and processed for medicine ID: " + request.getMedicineId());
+                    } catch (IOException e) {
+                        System.out.println("Error saving replenishment database: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Failed to delete the replenishment request for medicine ID: " + request.getMedicineId());
+                }
             } else {
                 System.out.println("Medicine with ID " + request.getMedicineId() + " not found in inventory. Skipping request.");
             }
         }
     }
-}
-    // Existing methods related to inventory and staff management remain unchanged
 
-    // Method to view the entire inventory
-    // public void viewInventory() {
-    //     Medicine[] inventoryList = Inventory.displayInventory();
-    //     System.out.println("=== Inventory List ===");
-    //     for (Medicine medicine : inventoryList) {
-    //         System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getStock() +
-    //                 ", Low Stock Alert Level: " + medicine.getLowStockLevelAlert());
-    //     }
-    // }
-
-    // Method to update stock for an existing medicine
- /*   public void updateInventoryStock(String medicineName, int stockNum) {
-        int updated = inventory.setInventory(medicineName, stockNum);
-        if (updated == 1) {
-            System.out.println("Inventory updated for " + medicineName);
+    public void addNewStaff(User newStaff) {
+        if (userDB.getById(newStaff.getId()) == null) {
+            userDB.create(newStaff);
+            try {
+                userDB.save();
+                System.out.println("New staff member added: " + newStaff.getName());
+                displayAllStaff();
+            } catch (IOException e) {
+                System.out.println("Error saving new staff member: " + e.getMessage());
+            }
         } else {
-            System.out.println("Medicine not found in inventory.");
-        }
-    }*/
-
-    // Method to update stock and low stock alert for an existing medicine
-/*    public void updateInventoryStockWithAlert(String medicineName, int stockNum, int lowStockAlert) {
-        int updated = inventory.setInventory(medicineName, stockNum, lowStockAlert);
-        if (updated == 1) {
-            System.out.println("Inventory and low stock alert updated for " + medicineName);
-        } else {
-            System.out.println("Medicine not found in inventory.");
-        }
-    }*/
-
-/*    // Method to add a new medicine to the inventory
-    public void addNewMedicine(String medicineName, int initialStock, int lowStockAlert) {
-        inventory.addInventory(medicineName, initialStock, lowStockAlert);
-        System.out.println("New medicine added to the inventory: " + medicineName);
-    }*/
-
-  /*  // Method to remove a medicine from the inventory
-    public void removeMedicine(String medicineName) {
-        String updated = Inventory.removeMedicine(medicineName);
-        if (updated == 1) {
-            System.out.println(medicineName + " removed from the inventory.");
-        } else {
-            System.out.println("Medicine not found in the inventory.");
+            System.out.println("Staff member with ID " + newStaff.getId() + " already exists.");
         }
     }
-}*/
+
+// Method to remove a staff member by ID
+    public void removeStaff(String id) {
+        User staff = userDB.getById(id);
+        if (staff != null && (staff.getRole().equalsIgnoreCase("Doctor")
+                || staff.getRole().equalsIgnoreCase("Pharmacist")
+                || staff.getRole().equalsIgnoreCase("Administrator"))) {
+            userDB.delete(id);
+            try {
+                userDB.save();
+                System.out.println("Staff member with ID " + id + " removed.");
+            } catch (IOException e) {
+                System.out.println("Error saving after removing staff member: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Staff member with ID " + id + " not found or cannot be removed.");
+        }
+    }
+}

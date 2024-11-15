@@ -1,7 +1,6 @@
 package menus;
 
 import java.util.Scanner;
-
 import users.Pharmacist;
 
 public class PharmacistMenu {
@@ -34,7 +33,7 @@ public class PharmacistMenu {
                     viewAppointmentOutcomeRecords();
                     break;
                 case 2:
-                    updatePrescriptionStatus();
+                    InputPrescriptionStatus();
                     break;
                 case 3:
                     viewMedicationInventory();
@@ -60,12 +59,22 @@ public class PharmacistMenu {
         pharmacist.viewAppointmentOutcomeRecords();
     }
 
-    private void updatePrescriptionStatus() {
-        System.out.print("Enter the medication name: ");
-        String medicationName = scanner.nextLine();
+    private void InputPrescriptionStatus() {
+        // Display all available AORs before updating
+        pharmacist.viewAppointmentOutcomeRecords();
+
+        // Prompt the user for input
+        System.out.print("Enter the Appointment ID: ");
+        String appointmentId = scanner.nextLine();
         System.out.print("Enter the new status (0 for Pending, 1 for Fulfilled): ");
-        int newStatus = scanner.nextInt();
-        pharmacist.updatePrescriptionStatus(medicationName, newStatus);
+        int statusInput = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Convert the status input to a string ("Pending" or "Fulfilled")
+        String newStatus = (statusInput == 1) ? "Fulfilled" : "Pending";
+
+        // Call the method in the Pharmacist class to update the status
+        pharmacist.updatePrescriptionStatus(appointmentId, newStatus);
     }
 
     private void viewMedicationInventory() {
