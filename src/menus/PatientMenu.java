@@ -141,21 +141,22 @@ public class PatientMenu {
 
             System.out.println("List of Doctors");
             System.out.println("Doctor Name\t\tDoctor ID"); // 2 tab spaces for potentially long doctor names
-            
+
             receivedList = appointmentManager.getAllAvailableDoctors();
 
             for (String doctor : receivedList) {
-                String[] doctorDetails = doctor.split(" , ");  
-        
+                String[] doctorDetails = doctor.split(" , ");
+
                 String name = doctorDetails[0].trim();
                 String id = doctorDetails[1].trim();
-        
+
                 System.out.println(name + "\t\t" + id);
             }
 
             while (true) {
-                System.out.print("\nEnter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
-                input = scanner.nextLine().trim().toLowerCase();
+                System.out.print(
+                        "\nEnter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
+                input = scanner.nextLine().trim();
 
                 if (input.equals("back")) {
                     returnToMenu = true;
@@ -164,16 +165,17 @@ public class PatientMenu {
                 }
 
                 // Show available slots for the selected doctor
-                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing Doctor ID
+                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing
+                // Doctor ID
                 receivedList = appointmentManager.viewAvailableSlots(input);
-                if (receivedList == null){
+                if (receivedList == null) {
                     System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
                 } else {
                     previousTime = null;
 
-                    for (String timeSlot : receivedList){
+                    for (String timeSlot : receivedList) {
                         currentTime = timeSlot;
-                        if (previousTime != null){
+                        if (previousTime != null) {
                             System.out.println(previousTime + " - " + currentTime);
                         }
                         previousTime = currentTime;
@@ -182,7 +184,7 @@ public class PatientMenu {
                 }
             }
 
-            if (returnToMenu){
+            if (returnToMenu) {
                 break;
             }
 
