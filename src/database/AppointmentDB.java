@@ -96,7 +96,7 @@ public class AppointmentDB extends Database<Appointment> {
                 );
                 appointments.add(appointment);
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;

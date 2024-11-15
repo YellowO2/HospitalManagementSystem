@@ -91,7 +91,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                 );
                 outcomeRecords.add(record);
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;

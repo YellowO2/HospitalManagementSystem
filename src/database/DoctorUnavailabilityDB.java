@@ -86,7 +86,7 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
                 );
                 availabilities.add(availability);
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
