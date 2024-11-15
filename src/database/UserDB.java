@@ -6,6 +6,7 @@ import java.util.List;
 import users.Administrator;
 import users.Doctor;
 import users.Patient;
+import users.Pharmacist;
 import users.User;
 
 public class UserDB extends Database<User> {
@@ -21,14 +22,10 @@ public class UserDB extends Database<User> {
 
     @Override
     public boolean create(User user) {
-        // Check if a user with the same ID already exists
-        for (User existingUser : users) {
-            if (existingUser.getId().equals(user.getId())) {
-                System.out.println("A user with ID " + user.getId() + " already exists. No new entry created.");
-                return false; // Prevent adding a duplicate
-            }
+        if (exists(user.getId())) {
+            System.out.println("A user with ID " + user.getId() + " already exists. No new entry created.");
+            return false; // Prevent adding a duplicate
         }
-        // Add the new user if not already present
         users.add(user);
         return true;
     }
@@ -45,7 +42,6 @@ public class UserDB extends Database<User> {
     @Override
     public User getById(String id) {
         for (User user : users) {
-            //System.out.println(user);
             if (user.getId().equals(id)) {
                 return user; // Return the matching user
             }
@@ -113,39 +109,71 @@ public class UserDB extends Database<User> {
                 String password = tokens[6];
                 String role = tokens[7];
 
-                // Create specific User objects based on the roleee
+                // Create specific User objects based on the role
                 switch (role) {
                     case "Patient":
-                        Patient patient = new Patient(id, name, dob, gender, phoneNumber, emailAddress, password);
-                        users.add(patient);
+                        users.add(new Patient(id, name, dob, gender, phoneNumber, emailAddress, password));
                         break;
                     case "Doctor":
-                        Doctor doctor = new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password);
-                        users.add(doctor);
+                        users.add(new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password));
                         break;
                     case "Pharmacist":
-                        // Pharmacist pharmacist = new Pharmacist(id, name, dob, gender, phoneNumber,
-                        // emailAddress,
-                        // password);
-                        // users.add(pharmacist);
+                        users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
                         break;
                     case "Administrator":
-                        Administrator administrator = new Administrator(id, name, dob, gender, phoneNumber,
-                                emailAddress, password);
-                        users.add(administrator);
+                        try {
+                            users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
+                        } catch (IOException e) {
+                            System.out.println("Error initializing new Administrator: " + e.getMessage());
+                        }
                         break;
                     default:
                         System.out.println("Unknown user role for ID: " + id);
                         break;
                 }
             } else {
-                System.out.println("Invalid line in " + filename + ": " + line);
+                System.out.println("Invalid line in " + USER_FILE + ": " + line);
             }
         }
         return true;
     }
 
-    public List<Doctor> getAllDoctors() {
+    // Method to add a CSV entry directly
+    public void addCsvEntry(String csvLine) {
+        String[] tokens = splitLine(csvLine);
+        if (tokens.length == 8) { // Ensure all fields are present
+            String id = tokens[0];
+            String name = tokens[1];
+            String dob = tokens[2];
+            String gender = tokens[3];
+            String phoneNumber = tokens[4];
+            String emailAddress = tokens[5];
+            String password = tokens[6];
+            String role = tokens[7];
+
+            switch (role) {
+                case "Doctor":
+                    users.add(new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    break;
+                case "Pharmacist":
+                    users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    break;
+                case "Administrator":
+                    try {
+                        users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
+                    } catch (IOException e) {
+                        System.out.println("Error initializing new Administrator: " + e.getMessage());
+                    }
+                    break;
+                default:
+                    System.out.println("Unknown role. Entry not added.");
+                    break;
+            }
+        } else {
+            System.out.println("Invalid CSV entry. Not added to the list.");
+        }
+    }
+        public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
             if (user instanceof Doctor) {

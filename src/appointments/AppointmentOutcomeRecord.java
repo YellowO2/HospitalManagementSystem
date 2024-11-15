@@ -12,6 +12,7 @@ public class AppointmentOutcomeRecord {
     private List<Prescription> prescriptions; // Parsed prescriptions list
     private String prescribedStatus; // Status of the prescription (e.g., "Pending", "Fulfilled")
     private String consultationNotes; // Doctor's notes
+    private String medications; // String to hold medications
 
     // Constructor
     public AppointmentOutcomeRecord(
@@ -25,8 +26,9 @@ public class AppointmentOutcomeRecord {
         this.appointmentDate = appointmentDate;
         this.serviceProvided = serviceProvided;
         this.prescriptions = parsePrescriptions(prescriptionString);
-        this.prescribedStatus = prescribedStatus; // Ensure this is set in the constructor
+        this.prescribedStatus = prescribedStatus;
         this.consultationNotes = consultationNotes;
+        this.medications = prescriptionString; // Store the initial prescriptions as a string
     }
 
     private List<Prescription> parsePrescriptions(String prescriptionString) {
@@ -38,7 +40,6 @@ public class AppointmentOutcomeRecord {
                 Prescription prescription = Prescription.fromCSV(presc);
                 prescriptionsList.add(prescription);
             } catch (IllegalArgumentException e) {
-                // Replace with logging for production use
                 System.err.println("Error parsing prescription: " + e.getMessage());
             }
         }
@@ -87,11 +88,20 @@ public class AppointmentOutcomeRecord {
         this.consultationNotes = consultationNotes;
     }
 
+    public String getMedications() {
+        return medications;
+    }
+
+    public void setMedications(String medications) {
+        this.medications = medications;
+    }
+
     @Override
     public String toString() {
         return appointmentId + "," +
                appointmentDate + "," +
                serviceProvided + "," +
+               medications + "," +
                prescribedStatus + "," +
                consultationNotes;
     }
