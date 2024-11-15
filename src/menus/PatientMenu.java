@@ -6,7 +6,10 @@
 package menus;
 
 import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import appointments.AppointmentManager;
 import database.DoctorUnavailabilityDB;
@@ -155,9 +158,9 @@ public class PatientMenu {
 
             while (true) {
                 System.out.print("\nEnter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
-                input = scanner.nextLine().trim().toLowerCase();
+                input = scanner.nextLine().trim().toUpperCase();
 
-                if (input.equals("back")) {
+                if (input.equals("BACK")) {
                     returnToMenu = true;
                     System.out.println("\nReturning to the Patient Menu...");
                     break;
@@ -169,14 +172,24 @@ public class PatientMenu {
                 if (receivedList == null){
                     System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
                 } else {
-                    previousTime = null;
+                    previousTime = receivedList.get(0);
+                    currentTime = LocalTime.parse(previousTime, DateTimeFormatter.ofPattern("HH:mm")).plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+                    System.out.println(previousTime + " - " + currentTime);
 
-                    for (String timeSlot : receivedList){
-                        currentTime = timeSlot;
-                        if (previousTime != null){
+                    // for (String timeSlot : receivedList){
+                    //     currentTime = timeSlot;
+                    //     if (previousTime != null){
+                    //         System.out.println(previousTime + " - " + currentTime);
+                    //     }
+                    //     previousTime = currentTime;
+                    // }
+
+                    if (receivedList.size() > 1){
+                        for (int i = 1; i < receivedList.size() - 1; i++){
+                            previousTime = receivedList.get(i);
+                            currentTime = receivedList.get(i+1);
                             System.out.println(previousTime + " - " + currentTime);
                         }
-                        previousTime = currentTime;
                     }
                     break;
                 }
@@ -208,14 +221,17 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
+        String doctorId, date, time;
 
         System.out.println("Scheduling an appointment...");
         System.out.print("Enter Doctor ID: ");
-        String doctorId = scanner.nextLine().trim();
+        doctorId = scanner.nextLine().trim();
         System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
-        String date = scanner.nextLine().trim();
+        date = scanner.nextLine().trim();
         System.out.print("Enter Appointment Time (HH:MM): ");
-        String time = scanner.nextLine().trim();
+        time = scanner.nextLine().trim();
+
+
 
         boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, date, time);
 
