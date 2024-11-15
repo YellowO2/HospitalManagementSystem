@@ -47,7 +47,7 @@ public class AdministratorMenu {
                     viewAndManageStaff();
                     break;
                 case 2:
-                    viewAppointmentsDetails();
+                    administrator.viewAppointmentsDetails(); 
                     break;
                 case 3:
                     manageMedicationInventory();

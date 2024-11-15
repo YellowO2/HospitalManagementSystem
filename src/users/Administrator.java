@@ -1,5 +1,7 @@
 package users;
 
+import appointments.Appointment;
+import database.AppointmentDB;
 import database.MedicineDB;
 import database.ReplenishmentDB;
 import database.UserDB;
@@ -15,6 +17,7 @@ public class Administrator extends User {
     private UserDB userDB;
     private ReplenishmentDB replenishmentDB;
     private MedicineDB medicineDB;
+    private AppointmentDB appointmentDB;
 
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
                          String emailAddress, String password) throws IOException {
@@ -23,6 +26,7 @@ public class Administrator extends User {
         this.userDB = new UserDB(); // Initialize UserDB
         this.replenishmentDB = new ReplenishmentDB();
         this.medicineDB = new MedicineDB();
+        this.appointmentDB = new AppointmentDB();
 
         try {
             replenishmentDB.load();
@@ -34,6 +38,12 @@ public class Administrator extends User {
         } catch (IOException e) {
             System.out.println("Error loading Inventory or UserDB: " + e.getMessage());
         }
+        try {
+            appointmentDB.load();
+        } catch (IOException e) {
+            System.out.println("Error loading AppointmentDB: " + e.getMessage());
+        }
+        
     }
     public void loadUserDB() {
         try {
@@ -187,6 +197,19 @@ public class Administrator extends User {
             }
         } else {
             System.out.println("Staff member with ID " + id + " not found or cannot be removed.");
+        }
+    }
+    // Method to view all appointments
+    public void viewAppointmentsDetails() {
+        System.out.println("=== Viewing All Appointments ===");
+        List<Appointment> allAppointments = appointmentDB.getAll();
+
+        if (allAppointments.isEmpty()) {
+            System.out.println("No appointments found.");
+        } else {
+            for (Appointment appointment : allAppointments) {
+                System.out.println(appointment); // Assumes `toString()` method in `Appointment` prints the details in a readable format
+            }
         }
     }
 }
