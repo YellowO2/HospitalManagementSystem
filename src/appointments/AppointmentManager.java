@@ -7,8 +7,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import database.AppointmentDB;
@@ -37,7 +39,8 @@ public class AppointmentManager {
     }
 
     // TODO: Might have to change the logic of loadDoctorsIntoMap
-    // Right now, loadDoctorsIntoMap is making use of getAllAvailableDoctors to lazy load...
+    // Right now, loadDoctorsIntoMap is making use of getAllAvailableDoctors to lazy
+    // load...
     private void loadDoctorsIntoMap() {
         if (doctorMap.isEmpty()) {
             System.out.println("Loading doctors into map...");
@@ -74,6 +77,7 @@ public class AppointmentManager {
         List<String> availableSlots = new ArrayList<>();
         LocalDate today = LocalDate.now();
 
+        // Validate doctor ID
         if (!isValidDoctorId(doctorId)) {
             return null;
         }
@@ -89,38 +93,31 @@ public class AppointmentManager {
             allPossibleSlots.add(time);
         }
 
-        // Retrieve unavailable slots for the doctor (from DoctorUnavailabilityDB)
+        // Retrieve unavailable slots and appointments for the doctor
         List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, today);
-
-        // Retrieve all appointments for the doctor on this date
+        System.out.println("Unavailable slots size: " + unavailableSlots.size());
         List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
 
-        // Filter out unavailable slots and already booked appointments
+        // Use sets for fast lookup of unavailable and booked slots
+        Set<LocalTime> unavailableTimes = new HashSet<>();
+        Set<LocalTime> bookedTimes = new HashSet<>();
+
+        // Add all unavailable times to the set
+        for (DoctorUnavailableSlots unavailable : unavailableSlots) {
+            System.out.println("Unavailable time: " + unavailable.getTime());
+            unavailableTimes.add(unavailable.getTime());
+        }
+
+        // Add all booked appointment times to the set
+        for (Appointment appointment : doctorAppointments) {
+            if (appointment.getAppointmentDate().equals(today)) {
+                bookedTimes.add(appointment.getAppointmentTime());
+            }
+        }
+
+        // Check all possible slots for availability
         for (LocalTime slot : allPossibleSlots) {
-            boolean isUnavailable = false;
-
-            // Check if slot is marked as unavailable
-            for (DoctorUnavailableSlots unavailable : unavailableSlots) {
-                if (unavailable.getTime().equals(slot)) {
-                    isUnavailable = true;
-                    break;
-                }
-            }
-
-            // Check if slot is already booked
-            if (!isUnavailable) {
-                for (Appointment appointment : doctorAppointments) {
-                    if (appointment.getAppointmentDate().equals(today)
-                            && appointment.getAppointmentTime().equals(slot)) {
-                        isUnavailable = true;
-                        break;
-                    }
-                }
-            }
-
-            // If the slot is not unavailable or booked, it is available
-            if (!isUnavailable) {
-                // availableSlots.add("Time: " + slot);
+            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
                 availableSlots.add(slot.toString());
             }
         }
