@@ -2,9 +2,6 @@ package appointments;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-// import java.time.LocalDateTime;
-// import java.util.List;
-// import medicalrecords.Prescription;
 
 public class Appointment {
     private String appointmentId;
@@ -93,8 +90,8 @@ public class Appointment {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+        return String.format("%s,%s,%s,%s,%s,%s", appointmentId, doctorId, patientId, appointmentDate.toString(),
+                appointmentTime.toString(), status);
     }
 
     // Implement fromCSV

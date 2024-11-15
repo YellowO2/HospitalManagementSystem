@@ -84,7 +84,7 @@ public class AppointmentDB extends Database<Appointment> {
         for (String line : lines) {
             String[] tokens = splitLine(line); // Split line into tokens
 
-            if (tokens.length >= 7) { // Make sure there are enough tokens in the line
+            if (tokens.length == 6) { // Make sure there are enough tokens in the line
                 Appointment appointment = new Appointment(
                         tokens[0], // AppointmentID
                         tokens[1], // PatientID
@@ -113,6 +113,7 @@ public class AppointmentDB extends Database<Appointment> {
     }
 
     public List<Appointment> getPatientAppointments(String patientId) {
+
         List<Appointment> patientAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
             if (appointment.getPatientId().equals(patientId)) {
