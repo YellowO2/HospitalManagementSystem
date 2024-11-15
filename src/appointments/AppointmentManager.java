@@ -1,10 +1,14 @@
 package appointments;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.UUID;
 
 import database.AppointmentDB;
@@ -17,30 +21,61 @@ public class AppointmentManager {
     private AppointmentDB appointmentDB; // Reference to the AppointmentDB
     private DoctorUnavailabilityDB availabilityDB;
     private UserDB userDB; // Reference to UserDB
+    private Map<String, Doctor> doctorMap;
 
     // Constructor
     public AppointmentManager(DoctorUnavailabilityDB availabilityDB, AppointmentDB appointmentDB, UserDB userDB) {
         this.appointmentDB = appointmentDB;
         this.availabilityDB = availabilityDB;
         this.userDB = userDB;
+        this.doctorMap = new TreeMap<>(String::compareTo);
+    }
+
+    // Centralized normalization of doctor ID
+    private String normalizeDoctorId(String doctorId) {
+        return doctorId != null ? doctorId.trim().toLowerCase() : ""; // Normalize by trimming and making lowercase
+    }
+
+    // Right now, loadDoctorsIntoMap is making use of getAllAvailableDoctors to lazy load...
+    private void loadDoctorsIntoMap() {
+        if (doctorMap.isEmpty()) {
+            System.out.println("Loading doctors into map...");
+            List<Doctor> allDoctors = userDB.getAllDoctors();
+            for (Doctor doctor : allDoctors) {
+                String normalizedId = normalizeDoctorId(doctor.getId());
+                doctorMap.put(normalizedId, doctor);
+                // System.out.println("Loaded Doctor ID: " + doctor.normalizedId());
+            }
+        }
+    }
+
+    // Validate if doctorId exists using the map
+    private boolean isValidDoctorId(String doctorId) {
+        doctorId = normalizeDoctorId(doctorId);
+        return doctorMap.containsKey(doctorId); // Check if doctorId exists in the map
     }
 
     // Method to show all doctors with their IDs
     public List<String> getAllAvailableDoctors() {
-        List<Doctor> allDoctors = userDB.getAllDocters();
+        // List<Doctor> allDoctors = userDB.getAllDocters();
+        loadDoctorsIntoMap();
+
         List<String> doctorList = new ArrayList<>();
 
-        for (Doctor doctor : allDoctors) {
-            doctorList.add("Name: " + doctor.getName() + " - ID: " + doctor.getId() + "\n");
+        for (Doctor doctor : doctorMap.values()) {
+            doctorList.add(doctor.getName() + " , " + doctor.getId());
         }
         return doctorList;
     }
 
     // View available appointment slots for a specified doctor
-    // View available appointment slots for a specified doctor
     public List<String> viewAvailableSlots(String doctorId) {
         List<String> availableSlots = new ArrayList<>();
         LocalDate today = LocalDate.now();
+
+        if (!isValidDoctorId(doctorId)) {
+            return null;
+        }
 
         // Define working hours (9 AM to 5 PM)
         LocalTime startOfWork = LocalTime.of(9, 0);
@@ -84,7 +119,8 @@ public class AppointmentManager {
 
             // If the slot is not unavailable or booked, it is available
             if (!isUnavailable) {
-                availableSlots.add("Time: " + slot);
+                // availableSlots.add("Time: " + slot);
+                availableSlots.add(slot.toString());
             }
         }
 
@@ -95,7 +131,6 @@ public class AppointmentManager {
         return availableSlots;
     }
 
-    // Schedule a new appointment
     // Schedule a new appointment
     public boolean scheduleAppointment(String patientId, String doctorId, String date, String timeSlot) {
         LocalDate appointmentDate = LocalDate.parse(date);

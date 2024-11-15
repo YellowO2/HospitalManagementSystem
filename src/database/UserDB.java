@@ -138,14 +138,14 @@ public class UserDB extends Database<User> {
         return true;
     }
 
-    public List<Doctor> getAllDocters() {
-        List<Doctor> docters = new ArrayList<>();
+    public List<Doctor> getAllDoctors() {
+        List<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
             if (user instanceof Doctor) {
                 // downcast to Doctor
-                docters.add((Doctor) user);
+                doctors.add((Doctor) user);
             }
         }
-        return docters;
+        return doctors;
     }
 }

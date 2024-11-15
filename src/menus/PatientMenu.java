@@ -6,6 +6,7 @@
 package menus;
 
 import java.util.Scanner;
+import java.util.List;
 
 import appointments.AppointmentManager;
 import database.DoctorUnavailabilityDB;
@@ -130,37 +131,79 @@ public class PatientMenu {
     }
 
     private void viewAvailableAppointmentSlots() {
-        boolean returnToMenu = false;
-        boolean validInput = false;
+        boolean returnToMenu = false, validInput = false;
         String input = "";
+        String currentTime, previousTime;
+
+        List<String> receivedList;
 
         while (!returnToMenu) {
             System.out.println("Viewing available appointment slots...");
 
             System.out.println("List of Doctors");
-            // TODO: Ugh need fix this printing
-            System.out.println(appointmentManager.getAllAvailableDoctors());
+            System.out.println("Doctor Name\t\tDoctor ID"); // 2 tab spaces for potentially long doctor names
+            
+            receivedList = appointmentManager.getAllAvailableDoctors();
 
-            System.out.print(
-                    "Enter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
-            input = scanner.nextLine().trim().toLowerCase();
+            for (String doctor : receivedList) {
+                String[] doctorDetails = doctor.split(" , ");  
+        
+                String name = doctorDetails[0].trim();
+                String id = doctorDetails[1].trim();
+        
+                System.out.println(name + "\t\t" + id);
+            }
 
-            if (input.equals("back")) {
-                returnToMenu = true;
-                System.out.println("\nReturning to the Patient Menu...");
+            while (true) {
+                System.out.print("\nEnter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
+                input = scanner.nextLine().trim().toLowerCase();
 
-            } else {
+                if (input.equals("back")) {
+                    returnToMenu = true;
+                    System.out.println("\nReturning to the Patient Menu...");
+                    break;
+                }
+
                 // Show available slots for the selected doctor
-                System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing Doctor ID
+                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing Doctor ID
+                receivedList = appointmentManager.viewAvailableSlots(input);
+                if (receivedList == null){
+                    System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
+                } else {
+                    previousTime = null;
 
+                    for (String timeSlot : receivedList){
+                        currentTime = timeSlot;
+                        if (previousTime != null){
+                            System.out.println(previousTime + " - " + currentTime);
+                        }
+                        previousTime = currentTime;
+                    }
+                    break;
+                }
+            }
+
+            if (returnToMenu){
+                break;
+            }
+
+            while (true) {
                 System.out.print("\nWould you like to view another doctor's availability? (Yes/No): ");
                 input = scanner.nextLine().trim().toLowerCase();
 
-                if (input.equals("no")) {
-                    // Exit to the Patient Menu
+                if (input.equals("yes")) {
+                    break; // Continue viewing doctors
+                } else if (input.equals("no")) {
                     returnToMenu = true;
                     System.out.println("\nReturning to the Patient Menu...");
+                    break; // Exit to main menu
+                } else {
+                    System.out.println("Invalid input. Please enter either 'Yes' or 'No'.");
                 }
+            }
+
+            if (returnToMenu) {
+                break; // Exit the loop if 'No' is selected
             }
         }
     }
