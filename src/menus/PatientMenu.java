@@ -1,8 +1,3 @@
-/*
- * The menu class should be responsible for displaying options and handling user input. 
- * This class can call methods from the Patient class to get data and display it.
- */
-
 package menus;
 
 import java.util.Scanner;
@@ -17,13 +12,11 @@ import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
 public class PatientMenu {
-    private Patient patient; // The currently logged-in patient
+    private Patient patient;
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
 
-    // TODO: Waiting for appointment manager to be integrated here
-    // TODO: Consider passing scanner from the main app
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
             AppointmentManager appointmentManager) {
         this.patient = patient;
@@ -32,7 +25,6 @@ public class PatientMenu {
         this.appointmentManager = appointmentManager;
     }
 
-    // Method to display the menu and handle user input
     public void displayMenu() {
         int choice;
         do {
@@ -40,18 +32,15 @@ public class PatientMenu {
             System.out.println("1. View Medical Record");
             System.out.println("2. Update Personal Information");
             System.out.println("3. View Available Appointment Slots");
-            System.out.println("4. Schedule an Appointment");
+            System.out.println("4. Schedule Appointment");
             System.out.println("5. Reschedule an Appointment");
             System.out.println("6. Cancel an Appointment");
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Records");
             System.out.println("9. Logout");
-            System.out.print("Enter your choice: ");
+            System.out.print("Enter the number corresponding to your choice: ");
 
-            choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            System.out.println(); // Add a line break for spacing
+            choice = getValidMenuChoice(1, 9);
 
             switch (choice) {
                 case 1:
@@ -85,12 +74,27 @@ public class PatientMenu {
                     System.out.println("Invalid choice. Please try again.");
             }
 
-            System.out.println(); // Add a line break after the action is completed
-
         } while (choice != 9);
     }
 
-    // Placeholder methods for each menu option
+    private int getValidMenuChoice(int min, int max) {
+        int choice;
+        while (true) {
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= min && choice <= max) {
+                    return choice;
+                }
+            } else {
+                scanner.next(); // Consume invalid input
+            }
+            System.out.print("Invalid choice. Please enter a number between " + min + " and " + max + ": ");
+
+        }
+
+    }
+
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
         System.out.println(medicalRecordManager.getMedicalHistory(patient.getId()));
@@ -101,33 +105,17 @@ public class PatientMenu {
         System.out.println("1. Email");
         System.out.println("2. Phone Number");
 
-        int choice = -1;
-
-        // Validate input for choice
-        while (choice < 1 || choice > 2) {
-            if (scanner.hasNextInt()) {
-                choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                if (choice < 1 || choice > 2) {
-                    System.out.println("Please enter 1 for Email or 2 for Phone Number.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a number (1 or 2):");
-                scanner.next(); // Consume invalid input
-            }
-        }
+        int choice = getValidMenuChoice(1, 2);
 
         String newValue = null;
         if (choice == 1) {
             System.out.print("Enter new email: ");
-            newValue = scanner.nextLine().trim(); // Get and trim input
-            // Call MedicalRecordManager to update email
-            medicalRecordManager.updateContactInfo(patient.getId(), null, newValue); // Update email
+            newValue = scanner.nextLine().trim();
+            medicalRecordManager.updateContactInfo(patient.getId(), null, newValue);
         } else if (choice == 2) {
             System.out.print("Enter new phone number: ");
-            newValue = scanner.nextLine().trim(); // Get and trim input
-            // Call MedicalRecordManager to update phone number
-            medicalRecordManager.updateContactInfo(patient.getId(), newValue, null); // Update phone number
+            newValue = scanner.nextLine().trim();
+            medicalRecordManager.updateContactInfo(patient.getId(), newValue, null);
         }
 
         System.out.println("Personal information updated successfully.");
@@ -136,136 +124,88 @@ public class PatientMenu {
     private void viewAvailableAppointmentSlots() {
         boolean returnToMenu = false;
         String input = "";
-        String currentTime, previousTime;
         List<String> receivedList;
 
         while (!returnToMenu) {
             System.out.println("Viewing available appointment slots...");
 
-            System.out.println("List of Doctors");
-            System.out.println("Doctor Name\t\tDoctor ID"); // 2 tab spaces for potentially long doctor names
-
+            // List of doctors
+            System.out.println("List of Doctors:");
             receivedList = appointmentManager.getAllAvailableDoctors();
 
-            for (String doctor : receivedList) {
-                String[] doctorDetails = doctor.split(" , ");
-
-                String name = doctorDetails[0].trim();
-                String id = doctorDetails[1].trim();
-
-                System.out.println(name + "\t\t" + id);
+            // Print doctors
+            for (int i = 0; i < receivedList.size(); i++) {
+                System.out.println((i + 1) + ". " + receivedList.get(i));
             }
 
-            while (true) {
-                System.out.print(
-                        "\nEnter the Doctor ID to view available slots (or type 'back' to return to the menu screen): ");
-                input = scanner.nextLine().trim();
-                if (input.equals("BACK")) {
-                    returnToMenu = true;
-                    System.out.println("\nReturning to the Patient Menu...");
-                    break;
-                }
+            // Get the selected doctor index
+            System.out.print("Enter the number corresponding to the doctor you want to view: ");
+            int selectedDoctorIndex = getValidMenuChoice(1, receivedList.size()) - 1;
+            String doctorId = receivedList.get(selectedDoctorIndex).split(" - ")[1].trim();
 
-                // Show available slots for the selected doctor
-                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing
-                // Doctor ID
+            // Display available slots for the selected doctor
+            List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.now());
+            printSlotsWithNumber(availableSlots);
 
-                receivedList = appointmentManager.getAvailableSlots(input, LocalDate.now());
-                if (receivedList == null) {
-                    System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
-                } else {
-                    previousTime = receivedList.get(0);
-                    currentTime = LocalTime.parse(previousTime, DateTimeFormatter.ofPattern("HH:mm")).plusHours(1)
-                            .format(DateTimeFormatter.ofPattern("HH:mm"));
-                    System.out.println(previousTime + " - " + currentTime);
+            // Ask if the user wants to select a slot or return to the menu
+            System.out.print(
+                    "Would you like to view appointments for another doctor or return to the menu? (Enter 'another' or 'back'):");
+            input = scanner.nextLine().trim();
 
-                    // for (String timeSlot : receivedList){
-                    // currentTime = timeSlot;
-                    // if (previousTime != null){
-                    // System.out.println(previousTime + " - " + currentTime);
-                    // }
-                    // previousTime = currentTime;
-                    // }
-
-                    if (receivedList.size() > 1) {
-                        for (int i = 1; i < receivedList.size() - 1; i++) {
-                            previousTime = receivedList.get(i);
-                            currentTime = receivedList.get(i + 1);
-                            System.out.println(previousTime + " - " + currentTime);
-                        }
-                    }
-                    break;
-                }
-            }
-
-            if (returnToMenu) {
-                break;
-            }
-
-            while (true) {
-                System.out.print("\nWould you like to view another doctor's availability? (Yes/No): ");
-                input = scanner.nextLine().trim().toLowerCase();
-
-                if (input.equals("yes")) {
-                    break; // Continue viewing doctors
-                } else if (input.equals("no")) {
-                    returnToMenu = true;
-                    System.out.println("\nReturning to the Patient Menu...");
-                    break; // Exit to main menu
-                } else {
-                    System.out.println("Invalid input. Please enter either 'Yes' or 'No'.");
-                }
-            }
-
-            if (returnToMenu) {
-                break; // Exit the loop if 'No' is selected
+            if (input.equals("back")) {
+                returnToMenu = true;
+                System.out.println("\nReturning to the Patient Menu...");
+            } else if (input.equals("another")) {
+                // If they want to see another doctor's slots, continue the loop
+                System.out.println("Choosing another doctor...");
+            } else {
+                System.out.println("Invalid input. Please try again.");
             }
         }
     }
 
+    // Method to schedule an appointment (asks for doctor ID and slot)
     private void scheduleAppointment() {
-        System.out.println("Scheduling an appointment...");
+        String input = "";
 
-        String doctorId;
-        // Get doctor ID and appointment date from the user
-        System.out.print("Enter Doctor ID: ");
-        doctorId = scanner.nextLine().trim();
-        System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
-        String date = scanner.nextLine().trim();
+        System.out.println("\nScheduling an appointment...");
 
-        // Get available slots for the selected doctor
-        List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.parse(date));
+        // Ask the user to select a doctor ID (prompt for doctor selection if needed)
+        System.out.print("Please enter the doctor ID: ");
+        input = scanner.nextLine().trim();
+        String doctorId = input; // You could also validate the doctorId here based on available doctors
 
-        if (availableSlots != null && !availableSlots.isEmpty()) {
-            // Display the available slots
-            System.out.println("Available slots for " + date + ":");
-            for (int i = 0; i < availableSlots.size(); i++) {
-                System.out.println((i + 1) + ". " + availableSlots.get(i));
-            }
+        // Ask the user to select a slot
+        List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.now());
+        printSlotsWithNumber(availableSlots);
+        System.out.print("Please select a slot (1 to " + (availableSlots.size() - 1) + "): ");
+        int selectedSlotIndex = getValidMenuChoice(1, availableSlots.size());
 
-            // Ask the user to select a slot by entering the index
-            System.out.print("Select a slot by entering the corresponding number: ");
-            int selectedSlotIndex = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
-
-            // Validate the selected slot index
-            if (selectedSlotIndex < 1 || selectedSlotIndex > availableSlots.size()) {
-                System.out.println("Invalid slot selection. Please try again.");
-                return;
-            }
-
-            // Schedule the appointment
-            boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, date,
-                    selectedSlotIndex);
-
-            if (success) {
+        try {
+            if (appointmentManager.scheduleAppointment(patient.getId(), doctorId,
+                    LocalDate.now().toString(), selectedSlotIndex)) {
                 System.out.println("Appointment scheduled successfully.");
             } else {
                 System.out.println("Failed to schedule the appointment. Please try again.");
             }
-        } else {
-            System.out.println("No available slots for doctor on " + date);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please try again.");
         }
+    }
+
+    private void printSlotsWithNumber(List<String> availableSlots) {
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available slots.");
+        } else {
+            // -1 to not include last time, which is the ending time
+            for (int i = 0; i < availableSlots.size() - 1; i++) {
+                String currentTime = availableSlots.get(i);
+                String nextTime = i + 1 < availableSlots.size() ? availableSlots.get(i + 1) : null;
+
+                System.out.println((i + 1) + ". " + currentTime + " - " + (nextTime != null ? nextTime : "N/A"));
+            }
+        }
+        System.out.println();
     }
 
     private void rescheduleAppointment() {
@@ -277,13 +217,15 @@ public class PatientMenu {
         System.out.print("Enter new Appointment Time (HH:MM): ");
         String newTime = scanner.nextLine().trim();
 
-        boolean success = appointmentManager.rescheduleAppointment(appointmentId, newDate, newTime);
+        // boolean success = appointmentManager.rescheduleAppointment(appointmentId,
+        // newDate, newTime);
 
-        if (success) {
-            System.out.println("Appointment rescheduled successfully.");
-        } else {
-            System.out.println("Failed to reschedule the appointment. Please try again.");
-        }
+        // if (success) {
+        // System.out.println("Appointment rescheduled successfully.");
+        // } else {
+        // System.out.println("Failed to reschedule the appointment. Please try
+        // again.");
+        // }
     }
 
     private void cancelAppointment() {
@@ -298,14 +240,12 @@ public class PatientMenu {
         // } else {
         // System.out.println("Failed to cancel the appointment. Please try again.");
         // }
-
     }
 
     private void viewScheduledAppointments() {
         System.out.println("Viewing scheduled appointments...");
-        // TODO: Ugh need fix this printing
-        System.out.println(appointmentManager.getPatientAppointments(patient.getId()));
-        // Implement logic to display scheduled appointments
+        // // Implement logic to display scheduled appointments
+        // System.out.println(appointmentManager.getPatientAppointments(patient.getId()));
     }
 
     private void viewPastAppointmentOutcomeRecords() {

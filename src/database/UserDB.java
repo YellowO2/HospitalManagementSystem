@@ -147,4 +147,15 @@ public class UserDB extends Database<User> {
         }
         return doctors;
     }
+
+    public List<Patient> getAllPatients() {
+        List<Patient> patients = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Patient) {
+                // downcast to Patient
+                patients.add((Patient) user);
+            }
+        }
+        return patients;
+    }
 }

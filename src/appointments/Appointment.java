@@ -93,8 +93,8 @@ public class Appointment {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+        return String.format("%s,%s,%s,%s,%s,%s", appointmentId, doctorId, patientId, appointmentDate.toString(),
+                appointmentTime.toString(), status);
     }
 
     // Implement fromCSV

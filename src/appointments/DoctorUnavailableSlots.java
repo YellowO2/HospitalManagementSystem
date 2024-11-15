@@ -45,7 +45,7 @@ public class DoctorUnavailableSlots {
 
     @Override
     public String toString() {
-        return String.format("%s|%s|%s", doctorId, date.toString(), time.toString());
+        return String.format("%s,%s,%s", doctorId, date.toString(), time.toString());
     }
 
 }

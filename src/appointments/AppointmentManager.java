@@ -1,176 +1,61 @@
 package appointments;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import database.AppointmentDB;
 import database.DoctorUnavailabilityDB;
 import database.UserDB;
-import appointments.Appointment;
 import users.Doctor;
 
 public class AppointmentManager {
-    private AppointmentDB appointmentDB; // Reference to the AppointmentDB
+    private AppointmentDB appointmentDB;
     private DoctorUnavailabilityDB availabilityDB;
-    private UserDB userDB; // Reference to UserDB
-    private Map<String, Doctor> doctorMap; // Making use of Map for faster search time
+    private UserDB userDB;
 
     // Constructor
     public AppointmentManager(DoctorUnavailabilityDB availabilityDB, AppointmentDB appointmentDB, UserDB userDB) {
         this.appointmentDB = appointmentDB;
         this.availabilityDB = availabilityDB;
         this.userDB = userDB;
-        this.doctorMap = new TreeMap<>(String::compareTo);
     }
 
-    // Centralized normalization of doctor ID
-    private String normalizeDoctorId(String doctorId) {
-        return doctorId != null ? doctorId.trim().toUpperCase() : ""; // Normalize by trimming and making lowercase
-    }
-
-    // TODO: Might have to change the logic of loadDoctorsIntoMap
-    // Right now, loadDoctorsIntoMap is making use of isValidDoctorId to population
-    // the Map...
-    private void loadDoctorsIntoMap() {
-        if (doctorMap.isEmpty()) {
-            // System.out.println("Loading doctors into map...");
-            List<Doctor> allDoctors = userDB.getAllDoctors();
-            for (Doctor doctor : allDoctors) {
-                String normalizedId = normalizeDoctorId(doctor.getId());
-                doctorMap.put(normalizedId, doctor);
-                // System.out.println("Loaded Doctor ID: " + doctor.normalizedId());
-            }
-        }
-    }
-
-    // Validate if doctorId exists using the map
-    private boolean isValidDoctorId(String doctorId) {
-        loadDoctorsIntoMap();
-
-        doctorId = normalizeDoctorId(doctorId);
-        return doctorMap.containsKey(doctorId); // Check if doctorId exists in the map
-    }
-
-    // Method to show all doctors with their IDs
+    // Get all doctors with their number in the list
     public List<String> getAllAvailableDoctors() {
-        // List<Doctor> allDoctors = userDB.getAllDocters();
-        loadDoctorsIntoMap();
-
-        List<String> doctorList = new ArrayList<>();
-
-        for (Doctor doctor : doctorMap.values()) {
-            doctorList.add(doctor.getName() + " , " + doctor.getId());
+        List<Doctor> doctorList = userDB.getAllDoctors();
+        List<String> doctorListFormatted = new ArrayList<>();
+        for (int i = 0; i < doctorList.size(); i++) {
+            Doctor doctor = doctorList.get(i);
+            doctorListFormatted.add(doctor.getName() + " - " + doctor.getId());
         }
-        return doctorList;
+        return doctorListFormatted;
     }
 
-    // Schedule a new appointment
-    public boolean scheduleAppointment(String patientId, String doctorId, String date, int slotIndex) {
-        LocalDate appointmentDate = LocalDate.parse(date);
-
-        if (patientId == null || doctorId == null || date == null || slotIndex < 1) {
-            System.out.println("Invalid input. Please ensure all fields are filled correctly.");
-            return false;
-        }
-
-        // Get available slots from the getAvailableSlots method
-        List<String> availableSlots = getAvailableSlots(doctorId, appointmentDate);
-
-        if (availableSlots == null || availableSlots.isEmpty()) {
-            System.out.println("No available slots to book.");
-            return false;
-        }
-
-        // Ensure the selected index is within the valid range
-        if (slotIndex > availableSlots.size()) {
-            System.out.println("Invalid slot selection.");
-            return false;
-        }
-
-        // Convert the selected slot (based on index) back to LocalTime
-        LocalTime appointmentTime = LocalTime.parse(availableSlots.get(slotIndex - 1));
-
-        String appointmentId = UUID.randomUUID().toString(); // Generate a unique appointment ID
-
-        // Create the appointment
-        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, appointmentDate, appointmentTime,
-                "Pending");
-
-        // Save the appointment in the database
-        boolean isAdded = appointmentDB.create(appointment);
-
-        if (isAdded) {
-            System.out.println("Appointment scheduled successfully for " + patientId + " with Doctor " + doctorId
-                    + " on " + date + " at " + availableSlots.get(slotIndex - 1));
-            return true;
-        } else {
-            System.out.println("Failed to create the appointment.");
-            return false;
-        }
-    }
-
+    // Get all available slots for a doctor on a given date
     public List<String> getAvailableSlots(String doctorId, LocalDate date) {
-        List<String> availableSlots = new ArrayList<>();
-
-        // Validate doctor ID
-        if (!isValidDoctorId(doctorId)) {
-            return null; // Invalid doctor ID
-        }
-
-        // Define working hours (9 AM to 5 PM)
+        // Define working hours
         LocalTime startOfWork = LocalTime.of(9, 0);
         LocalTime endOfWork = LocalTime.of(17, 0);
 
-        // Create a list of all potential time slots for a day (9 AM to 5 PM, every
-        // hour)
+        // Create a list of all potential time slots
         List<LocalTime> allPossibleSlots = new ArrayList<>();
         for (LocalTime time = startOfWork; !time.isAfter(endOfWork); time = time.plusHours(1)) {
             allPossibleSlots.add(time);
         }
 
-        // Retrieve unavailable slots for the doctor (from DoctorUnavailabilityDB)
-        List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, date);
+        // Retrieve unavailable slots and existing appointments
+        Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
+        Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
 
-        // Retrieve all appointments for the doctor on this date
-        List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
-
-        // Use sets for fast lookup of unavailable and booked slots
-        Set<LocalTime> unavailableTimes = new HashSet<>();
-        Set<LocalTime> bookedTimes = new HashSet<>();
-
-        // Add all unavailable times to the set
-        for (DoctorUnavailableSlots unavailable : unavailableSlots) {
-            System.out.println("Unavailable time: " + unavailable.getTime());
-            unavailableTimes.add(unavailable.getTime());
-        }
-
-        // Add all booked appointment times to the set
-        for (Appointment appointment : doctorAppointments) {
-            if (appointment.getAppointmentDate().equals(date)) {
-                bookedTimes.add(appointment.getAppointmentTime());
-            }
-        }
-
-        // Check all possible slots for availability
+        // Filter out unavailable and booked times
+        List<String> availableSlots = new ArrayList<>();
         for (LocalTime slot : allPossibleSlots) {
-            boolean isUnavailable = unavailableSlots.stream()
-                    .anyMatch(unavailable -> unavailable.getTime().equals(slot))
-                    || doctorAppointments.stream()
-                            .anyMatch(appointment -> appointment.getAppointmentDate().equals(date)
-                                    && appointment.getAppointmentTime().equals(slot));
-
-            // If the slot is available, add it to the availableSlots list
-            if (!isUnavailable) {
+            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
                 availableSlots.add(slot.toString());
             }
         }
@@ -178,78 +63,107 @@ public class AppointmentManager {
         return availableSlots;
     }
 
-    // Reschedule an existing appointment
-    public boolean rescheduleAppointment(String appointmentId, String newDate, String newTimeSlot) {
-        LocalDate appointmentDate = LocalDate.parse(newDate);
-        LocalTime appointmentTime = LocalTime.parse(newTimeSlot);
-        Appointment existingAppointment = appointmentDB.getById(appointmentId);
+    // Helper method to retrieve unavailable times
+    private Set<LocalTime> getUnavailableTimes(String doctorId, LocalDate date) {
+        List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, date);
+        Set<LocalTime> unavailableTimes = new HashSet<>();
+        for (DoctorUnavailableSlots unavailable : unavailableSlots) {
+            unavailableTimes.add(unavailable.getTime());
+        }
+        return unavailableTimes;
+    }
 
-        if (existingAppointment == null) {
+    // Helper method to retrieve booked times
+    private Set<LocalTime> getBookedTimes(String doctorId, LocalDate date) {
+        List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
+        Set<LocalTime> bookedTimes = new HashSet<>();
+        for (Appointment appointment : doctorAppointments) {
+            if (appointment.getAppointmentDate().equals(date)) {
+                bookedTimes.add(appointment.getAppointmentTime());
+            }
+        }
+        return bookedTimes;
+    }
+
+    // Schedule appointment based on user-selected doctor index
+    public boolean scheduleAppointment(String patientId, String doctorId, String date, int slotIndex) {
+
+        LocalDate appointmentDate = LocalDate.parse(date);
+        List<String> availableSlots = getAvailableSlots(doctorId, appointmentDate);
+
+        if (!validateSlotSelection(slotIndex, availableSlots)) {
+            return false;
+        }
+
+        LocalTime appointmentTime = LocalTime.parse(availableSlots.get(slotIndex - 1));
+        return createAppointment(patientId, doctorId, appointmentDate, appointmentTime, "Pending");
+    }
+
+    // Helper method to validate slot selection
+    private boolean validateSlotSelection(int slotIndex, List<String> availableSlots) {
+        if (availableSlots == null || availableSlots.isEmpty()) {
+            System.out.println("No available slots.");
+            return false;
+        }
+        if (slotIndex < 1 || slotIndex > availableSlots.size()) {
+            System.out.println("Invalid slot selection.");
+            return false;
+        }
+        return true;
+    }
+
+    // Helper method to create a new appointment
+    private boolean createAppointment(String patientId, String doctorId, LocalDate date, LocalTime time,
+            String status) {
+        String appointmentId = UUID.randomUUID().toString();
+        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, date, time, status);
+        return appointmentDB.create(appointment);
+    }
+
+    // Reschedule an appointment
+    public boolean rescheduleAppointment(String originalAppointmentId,
+            String newDate, int slotIndex) {
+
+        // Find the existing appointment to cancel it first
+        Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
+        if (originalAppointment == null) {
             System.out.println("Appointment not found.");
             return false;
         }
 
-        String doctorId = existingAppointment.getDoctorId();
-
-        // Check if the selected time is within working hours (9 AM to 5 PM)
-        LocalTime startOfWork = LocalTime.of(9, 0);
-        LocalTime endOfWork = LocalTime.of(17, 0);
-        if (appointmentTime.isBefore(startOfWork) || appointmentTime.isAfter(endOfWork)) {
-            System.out.println("The selected time is outside of working hours (9 AM - 5 PM).");
+        // Cancel the original appointment
+        if (!cancelAppointment(originalAppointmentId)) {
+            System.out.println("Failed to cancel the original appointment.");
             return false;
         }
 
-        // Retrieve unavailable slots for the doctor on the new date from
-        // DoctorUnavailabilityDB
-        List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId,
-                appointmentDate);
+        LocalDate appointmentDate = LocalDate.parse(newDate);
 
-        // Check if the selected time slot is unavailable
-        for (DoctorUnavailableSlots unavailable : unavailableSlots) {
-            if (unavailable.getTime().equals(appointmentTime)) {
-                System.out.println("The selected time slot is unavailable.");
-                return false;
-            }
-        }
+        // Get available slots for the selected doctor on the new date
+        List<String> availableSlots = getAvailableSlots(originalAppointment.getDoctorId(), appointmentDate);
 
-        // Retrieve all appointments for the doctor on the new date
-        List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
-
-        // Check if the new time slot is already booked
-        for (Appointment appointment : doctorAppointments) {
-            if (appointment.getAppointmentDate().equals(appointmentDate)
-                    && appointment.getAppointmentTime().equals(appointmentTime)) {
-                System.out.println("No available slots for the new date and time.");
-                return false;
-            }
-        }
-
-        // Update the appointment
-        existingAppointment.setAppointmentDate(appointmentDate);
-        existingAppointment.setAppointmentTime(appointmentTime);
-        existingAppointment.setStatus("Rescheduled");
-
-        boolean isUpdated = appointmentDB.update(existingAppointment);
-
-        if (isUpdated) {
-            System.out.println("Appointment rescheduled successfully.");
-            return true;
-        } else {
-            System.out.println("Failed to reschedule the appointment.");
+        // Validate slot selection
+        if (!validateSlotSelection(slotIndex, availableSlots)) {
             return false;
         }
+
+        // Get the new appointment time
+        LocalTime newAppointmentTime = LocalTime.parse(availableSlots.get(slotIndex - 1));
+
+        // Create the new appointment
+        return createAppointment(originalAppointment.getPatientId(), originalAppointment.getDoctorId(), appointmentDate,
+                newAppointmentTime, "Pending");
     }
 
-    public List<String> getPatientAppointments(String patientId) {
-        List<String> patientAppointments = new ArrayList<>();
-
-        List<Appointment> appointments = appointmentDB.getPatientAppointments(patientId);
-
-        for (Appointment appointment : appointments) {
-            patientAppointments.add(appointment.toString());
+    // Cancel the existing appointment
+    private boolean cancelAppointment(String appointmentId) {
+        Appointment appointment = appointmentDB.getById(appointmentId);
+        if (appointment == null) {
+            System.out.println("Appointment not found.");
+            return false;
         }
 
-        return patientAppointments;
+        // Remove the appointment from the database
+        return appointmentDB.delete(appointment.getAppointmentId());
     }
-
 }
