@@ -6,6 +6,7 @@
 package menus;
 
 import java.util.Scanner;
+import java.time.LocalDate;
 import java.util.List;
 
 import appointments.AppointmentManager;
@@ -167,7 +168,8 @@ public class PatientMenu {
                 // Show available slots for the selected doctor
                 // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing
                 // Doctor ID
-                receivedList = appointmentManager.viewAvailableSlots(input);
+
+                receivedList = appointmentManager.getAvailableSlots(input, LocalDate.now());
                 if (receivedList == null) {
                     System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
                 } else {
@@ -210,21 +212,46 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
-
         System.out.println("Scheduling an appointment...");
+
+        // Get doctor ID and appointment date from the user
         System.out.print("Enter Doctor ID: ");
         String doctorId = scanner.nextLine().trim();
         System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
         String date = scanner.nextLine().trim();
-        System.out.print("Enter Appointment Time (HH:MM): ");
-        String time = scanner.nextLine().trim();
 
-        boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, date, time);
+        // Get available slots for the selected doctor
+        List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.parse(date));
 
-        if (success) {
-            System.out.println("Appointment scheduled successfully.");
+        if (availableSlots != null && !availableSlots.isEmpty()) {
+            // Display the available slots
+            System.out.println("Available slots for " + date + ":");
+            for (int i = 0; i < availableSlots.size(); i++) {
+                System.out.println((i + 1) + ". " + availableSlots.get(i));
+            }
+
+            // Ask the user to select a slot by entering the index
+            System.out.print("Select a slot by entering the corresponding number: ");
+            int selectedSlotIndex = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            // Validate the selected slot index
+            if (selectedSlotIndex < 1 || selectedSlotIndex > availableSlots.size()) {
+                System.out.println("Invalid slot selection. Please try again.");
+                return;
+            }
+
+            // Schedule the appointment
+            boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, date,
+                    selectedSlotIndex);
+
+            if (success) {
+                System.out.println("Appointment scheduled successfully.");
+            } else {
+                System.out.println("Failed to schedule the appointment. Please try again.");
+            }
         } else {
-            System.out.println("Failed to schedule the appointment. Please try again.");
+            System.out.println("No available slots for doctor on " + date);
         }
     }
 
