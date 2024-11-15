@@ -244,8 +244,35 @@ public class PatientMenu {
 
     private void viewScheduledAppointments() {
         System.out.println("Viewing scheduled appointments...");
-        // // Implement logic to display scheduled appointments
-        // System.out.println(appointmentManager.getPatientAppointments(patient.getId()));
+
+        List<String> appointments = appointmentManager.getPatientAppointments(patient.getId());
+
+        if (appointments.isEmpty()) {
+            System.out.println("No scheduled appointments found.");
+        } else {
+            for (String appointment : appointments) {
+                // Split the appointment details by comma
+                String[] details = appointment.split(",");
+
+                // Assuming the format is: appointmentId, doctorId, patientId, date, time,
+                // status
+                String appointmentId = details[0].trim();
+                String doctorId = details[1].trim();
+                String patientId = details[2].trim();
+                String date = details[3].trim();
+                String time = details[4].trim();
+                String status = details[5].trim();
+
+                // Print the appointment details in a nicer format
+                System.out.println("\nAppointment ID: " + appointmentId);
+                System.out.println("Doctor ID: " + doctorId);
+                System.out.println("Patient ID: " + patientId);
+                System.out.println("Date: " + date);
+                System.out.println("Time: " + time);
+                System.out.println("Status: " + status);
+                System.out.println("------------------------");
+            }
+        }
     }
 
     private void viewPastAppointmentOutcomeRecords() {

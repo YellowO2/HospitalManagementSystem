@@ -63,6 +63,16 @@ public class AppointmentManager {
         return availableSlots;
     }
 
+    public List<String> getPatientAppointments(String patientId) {
+        List<Appointment> patientAppointments = appointmentDB.getPatientAppointments(patientId);
+        List<String> patientAppointmentsFormatted = new ArrayList<>();
+        for (int i = 0; i < patientAppointments.size(); i++) {
+            Appointment appointment = patientAppointments.get(i);
+            patientAppointmentsFormatted.add(appointment.toString());
+        }
+        return patientAppointmentsFormatted;
+    }
+
     // Helper method to retrieve unavailable times
     private Set<LocalTime> getUnavailableTimes(String doctorId, LocalDate date) {
         List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, date);
