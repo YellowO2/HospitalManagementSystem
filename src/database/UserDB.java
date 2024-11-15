@@ -114,7 +114,6 @@ public class UserDB extends Database<User> {
                         users.add(patient);
                         break;
                     case "Doctor":
-                        // System.out.println("Creating a doctor with ID: " + id); // Debug
                         Doctor doctor = new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password);
                         users.add(doctor);
                         break;
@@ -132,7 +131,7 @@ public class UserDB extends Database<User> {
                         break;
                 }
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;

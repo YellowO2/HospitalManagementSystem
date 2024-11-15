@@ -144,15 +144,15 @@ public class PatientMenu {
 
             System.out.println("List of Doctors");
             System.out.println("Doctor Name\t\tDoctor ID"); // 2 tab spaces for potentially long doctor names
-            
+
             receivedList = appointmentManager.getAllAvailableDoctors();
 
             for (String doctor : receivedList) {
-                String[] doctorDetails = doctor.split(" , ");  
-        
+                String[] doctorDetails = doctor.split(" , ");
+
                 String name = doctorDetails[0].trim();
                 String id = doctorDetails[1].trim();
-        
+
                 System.out.println(name + "\t\t" + id);
             }
 
@@ -167,9 +167,10 @@ public class PatientMenu {
                 }
 
                 // Show available slots for the selected doctor
-                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing Doctor ID
+                // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing
+                // Doctor ID
                 receivedList = appointmentManager.viewAvailableSlots(input);
-                if (receivedList == null){
+                if (receivedList == null) {
                     System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
                 } else {
                     previousTime = receivedList.get(0);
@@ -195,7 +196,7 @@ public class PatientMenu {
                 }
             }
 
-            if (returnToMenu){
+            if (returnToMenu) {
                 break;
             }
 

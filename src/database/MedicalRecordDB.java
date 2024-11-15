@@ -38,7 +38,7 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
     }
 
     @Override
-    public List<MedicalRecord> getAll(){
+    public List<MedicalRecord> getAll() {
         return medicalRecords;
     }
 
@@ -91,7 +91,7 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
                 );
                 medicalRecords.add(record);
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
