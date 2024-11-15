@@ -47,7 +47,7 @@ public class Administrator extends User {
     // Method to add a new medication
     public void addNewMedication(Medicine medicine) {
         if (inventory.getMedicineById(medicine.getId()) == null) {
-            inventory.addMedicine(medicine); // Add the new medicine to the inventory
+            inventory.addMedicine(medicine); // Add the new medicine to the inventoryyyyyy
 
             try {
                 if (medicineDB.create(medicine)) { // Ensure the new medicine is added successfully

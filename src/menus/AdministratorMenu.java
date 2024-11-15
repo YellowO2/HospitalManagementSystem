@@ -40,7 +40,7 @@ public class AdministratorMenu {
             }
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
-            System.out.println(); // Add a line break for spacing
+            System.out.println(); // Add a line break for spacinggggg
 
             switch (choice) {
                 case 1:

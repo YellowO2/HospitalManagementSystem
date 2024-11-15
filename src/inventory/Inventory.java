@@ -11,7 +11,7 @@ import java.util.Map;
 public class Inventory {
     private Map<String, Medicine> medicines;
     private List<String> replenishmentRequests;
-    private MedicineDB medicineDB; // Reference to the MedicineDB
+    private MedicineDB medicineDB; // Reference to the MedicineDBBB
     private ReplenishmentDB replenishmentDB;
 
     public Inventory() {

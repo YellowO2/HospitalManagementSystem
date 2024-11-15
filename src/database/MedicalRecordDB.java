@@ -1,10 +1,9 @@
 package database;
 
-import medicalrecords.MedicalRecord;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import medicalrecords.MedicalRecord;
 
 public class MedicalRecordDB extends Database<MedicalRecord> {
     private List<MedicalRecord> medicalRecords;

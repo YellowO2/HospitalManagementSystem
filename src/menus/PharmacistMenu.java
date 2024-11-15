@@ -26,7 +26,7 @@ public class PharmacistMenu {
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
-            System.out.println(); // Add a line break for spacing
+            System.out.println(); // Add a line break for spacingggg
 
             switch (choice) {
                 case 1:

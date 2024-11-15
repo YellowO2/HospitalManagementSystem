@@ -113,7 +113,7 @@ public class Pharmacist extends User {
     }
 }
 
-    // Method to display all replenishment requests from ReplenishmentDB
+    // Method to display all replenishment requests from ReplenishmentDBBB
     public void displayReplenishmentRequests() {
         List<ReplenishmentRequest> requests = replenishmentDB.getAll();
         if (requests.isEmpty()) {

@@ -46,7 +46,7 @@ public class UserDB extends Database<User> {
     @Override
     public User getById(String id) {
         for (User user : users) {
-            System.out.println(user);
+            //System.out.println(user);
             if (user.getId().equals(id)) {
                 return user; // Return the matching user
             }
@@ -109,7 +109,7 @@ public class UserDB extends Database<User> {
                 String password = tokens[6];
                 String role = tokens[7];
 
-                // Create specific User objects based on the role
+                // Create specific User objects based on the roleee
                 switch (role) {
                     case "Patient":
                         Patient patient = new Patient(id, name, dob, gender, phoneNumber, emailAddress, password);
