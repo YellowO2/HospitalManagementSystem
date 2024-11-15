@@ -3,11 +3,8 @@ package menus;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.util.List;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 import appointments.AppointmentManager;
-import database.DoctorUnavailabilityDB;
 import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
@@ -37,7 +34,8 @@ public class PatientMenu {
             System.out.println("6. Cancel an Appointment");
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Records");
-            System.out.println("9. Logout");
+            System.out.println("9. Change Password");
+            System.out.println("10. Logout");
             System.out.print("Enter the number corresponding to your choice: ");
 
             choice = getValidMenuChoice(1, 9);
@@ -68,6 +66,9 @@ public class PatientMenu {
                     viewPastAppointmentOutcomeRecords();
                     break;
                 case 9:
+                    changePassword();
+                    break;
+                case 10:
                     System.out.println("Logging out...");
                     break;
                 default:
@@ -90,9 +91,7 @@ public class PatientMenu {
                 scanner.next(); // Consume invalid input
             }
             System.out.print("Invalid choice. Please enter a number between " + min + " and " + max + ": ");
-
         }
-
     }
 
     private void viewMedicalRecord() {
@@ -293,5 +292,17 @@ public class PatientMenu {
     private void viewPastAppointmentOutcomeRecords() {
         System.out.println("Viewing past appointment outcome records...");
         // Implement logic to display past appointment outcomes
+    }
+
+    private void changePassword() {
+        System.out.println("Changing password...");
+        System.out.print("Enter new password: ");
+        String newPassword = scanner.nextLine().trim();
+        boolean success = patient.changePassword(newPassword);
+        if (success) {
+            System.out.println("Password changed successfully.");
+        } else {
+            System.out.println("Error: Failed to change password.");
+        }
     }
 }

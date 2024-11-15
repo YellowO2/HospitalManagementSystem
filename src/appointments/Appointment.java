@@ -2,9 +2,6 @@ package appointments;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-// import java.time.LocalDateTime;
-// import java.util.List;
-// import medicalrecords.Prescription;
 
 public class Appointment {
     private String appointmentId;

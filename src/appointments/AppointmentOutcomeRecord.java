@@ -9,18 +9,16 @@ public class AppointmentOutcomeRecord {
     private String appointmentId; // Links to the appointment
     private LocalDate appointmentDate;
     private String serviceProvided; // Type of service (e.g., consultation, X-ray)
-    // private List<Prescription> prescriptions; // Prescribed medications
     private List<Prescription> prescriptions;
     private String medicationStatus;
     private String consultationNotes; // Doctor's notes
-    // private List<Prescription> prescriptions; // Prescribed medications
 
     // Constructor
     public AppointmentOutcomeRecord(
-            String appointmentId, 
-            LocalDate appointmentDate, 
+            String appointmentId,
+            LocalDate appointmentDate,
             String serviceProvided,
-            String prescriptionString, 
+            String prescriptionString,
             String medicationStatus,
             String consultationNotes) {
         this.appointmentId = appointmentId;
@@ -55,7 +53,7 @@ public class AppointmentOutcomeRecord {
     public String getAppointmentId() {
         return appointmentId;
     }
-    
+
     public void setAppointmentId(String appointmentId) {
         this.appointmentId = appointmentId;
     }
