@@ -131,10 +131,9 @@ public class PatientMenu {
     }
 
     private void viewAvailableAppointmentSlots() {
-        boolean returnToMenu = false, validInput = false;
+        boolean returnToMenu = false;
         String input = "";
         String currentTime, previousTime;
-
         List<String> receivedList;
 
         while (!returnToMenu) {

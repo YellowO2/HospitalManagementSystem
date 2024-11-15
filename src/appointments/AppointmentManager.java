@@ -21,7 +21,7 @@ public class AppointmentManager {
     private AppointmentDB appointmentDB; // Reference to the AppointmentDB
     private DoctorUnavailabilityDB availabilityDB;
     private UserDB userDB; // Reference to UserDB
-    private Map<String, Doctor> doctorMap;
+    private Map<String, Doctor> doctorMap; // Making use of Map for faster search time
 
     // Constructor
     public AppointmentManager(DoctorUnavailabilityDB availabilityDB, AppointmentDB appointmentDB, UserDB userDB) {
@@ -36,6 +36,7 @@ public class AppointmentManager {
         return doctorId != null ? doctorId.trim().toLowerCase() : ""; // Normalize by trimming and making lowercase
     }
 
+    // TODO: Might have to change the logic of loadDoctorsIntoMap
     // Right now, loadDoctorsIntoMap is making use of getAllAvailableDoctors to lazy load...
     private void loadDoctorsIntoMap() {
         if (doctorMap.isEmpty()) {
