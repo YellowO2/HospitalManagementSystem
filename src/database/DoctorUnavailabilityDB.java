@@ -37,7 +37,6 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
                 doctorAvailability.add(unavailability);
             }
         }
-        System.out.println(doctorAvailability);
         return doctorAvailability;
     }
 

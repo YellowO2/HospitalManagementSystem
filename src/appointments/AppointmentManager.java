@@ -74,13 +74,12 @@ public class AppointmentManager {
     }
 
     // View available appointment slots for a specified doctor
-    public List<String> viewAvailableSlots(String doctorId) {
+    public List<String> getAvailableSlots(String doctorId, LocalDate date) {
         List<String> availableSlots = new ArrayList<>();
-        LocalDate today = LocalDate.now();
 
         // Validate doctor ID
         if (!isValidDoctorId(doctorId)) {
-            return null;
+            return null; // Invalid doctor ID
         }
 
         // Define working hours (9 AM to 5 PM)
@@ -94,9 +93,10 @@ public class AppointmentManager {
             allPossibleSlots.add(time);
         }
 
-        // Retrieve unavailable slots and appointments for the doctor
-        List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, today);
-        System.out.println("Unavailable slots size: " + unavailableSlots.size());
+        // Retrieve unavailable slots for the doctor (from DoctorUnavailabilityDB)
+        List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, date);
+
+        // Retrieve all appointments for the doctor on this date
         List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
 
         // Use sets for fast lookup of unavailable and booked slots
@@ -111,20 +111,23 @@ public class AppointmentManager {
 
         // Add all booked appointment times to the set
         for (Appointment appointment : doctorAppointments) {
-            if (appointment.getAppointmentDate().equals(today)) {
+            if (appointment.getAppointmentDate().equals(date)) {
                 bookedTimes.add(appointment.getAppointmentTime());
             }
         }
 
         // Check all possible slots for availability
         for (LocalTime slot : allPossibleSlots) {
-            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
+            boolean isUnavailable = unavailableSlots.stream()
+                    .anyMatch(unavailable -> unavailable.getTime().equals(slot))
+                    || doctorAppointments.stream()
+                            .anyMatch(appointment -> appointment.getAppointmentDate().equals(date)
+                                    && appointment.getAppointmentTime().equals(slot));
+
+            // If the slot is available, add it to the availableSlots list
+            if (!isUnavailable) {
                 availableSlots.add(slot.toString());
             }
-        }
-
-        if (availableSlots.isEmpty()) {
-            System.out.println("Doctor ID: " + doctorId + " has no available slots.");
         }
 
         return availableSlots;

@@ -26,7 +26,6 @@ public class DatabaseManager {
         appointmentDB.load();
         appointmentOutcomeRecordDB.load();
         doctorAvailabilityDB.load();
-
     }
 
     public void save() throws IOException {

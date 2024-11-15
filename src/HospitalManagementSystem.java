@@ -7,7 +7,10 @@ import medicalrecords.MedicalRecordManager;
 import users.User;
 import users.Patient;
 import menus.PatientMenu;
+import users.Doctor;
+import menus.DoctorMenu;
 import database.DatabaseManager;
+import database.DoctorUnavailabilityDB;
 
 public class HospitalManagementSystem {
 
@@ -17,6 +20,7 @@ public class HospitalManagementSystem {
             databaseManager.getMedicalRecordDB());
     private static AppointmentManager appointmentManager = new AppointmentManager(
             databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
+    private static DoctorUnavailabilityDB doctorUnavailabilityDB = new DoctorUnavailabilityDB();
 
     private static Scanner scanner = new Scanner(System.in);
 
@@ -61,8 +65,9 @@ public class HospitalManagementSystem {
             PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager, appointmentManager);
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
-            // Implement the doctor menu
-            // runDoctorMenu(scanner, (Doctor) currentUser);
+            Doctor doctor = (Doctor) currentUser;
+            DoctorMenu doctorMenu = new menus.DoctorMenu(doctor, medicalRecordManager, appointmentManager, doctorUnavailabilityDB);
+            doctorMenu.displayMenu();
         } else {
             System.out.println("Invalid role. Logging out.");
         }

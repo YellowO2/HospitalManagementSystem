@@ -28,7 +28,6 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
 
     @Override
     public MedicalRecord getById(String patientId) {
-        System.out.println("debugging" + medicalRecords.size());
         for (MedicalRecord record : medicalRecords) {
             if (record.getPatientId().equals(patientId)) {
                 return record; // Return the matching record

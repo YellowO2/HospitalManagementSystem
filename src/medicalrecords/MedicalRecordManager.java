@@ -50,7 +50,6 @@ public class MedicalRecordManager {
     public String getMedicalHistory(String patientId) {
         MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
         return (record != null) ? record.getMedicalRecordDescription() : null; // Return the description if found
-
     }
 
     // Update non-medical information such as contact info (for patients)

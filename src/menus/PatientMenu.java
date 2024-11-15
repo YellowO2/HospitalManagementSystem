@@ -8,6 +8,7 @@ package menus;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -169,7 +170,7 @@ public class PatientMenu {
                 // Show available slots for the selected doctor
                 // System.out.println(appointmentManager.viewAvailableSlots(input)); // Passing
                 // Doctor ID
-                receivedList = appointmentManager.viewAvailableSlots(input);
+                receivedList = appointmentManager.viewAvailableSlots(input, LocalDate.now());
                 if (receivedList == null) {
                     System.out.println("Invalid Doctor ID. Please enter a valid Doctor ID.");
                 } else {
