@@ -29,14 +29,15 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
         return false;
     }
 
-    // Get availability by doctor ID and date
+    // Get unavailability by doctor ID and date
     public List<DoctorUnavailableSlots> getDoctorUnavailability(String doctorId, LocalDate date) {
         List<DoctorUnavailableSlots> doctorAvailability = new ArrayList<>();
-        for (DoctorUnavailableSlots availability : availabilities) {
-            if (availability.getDoctorId().equals(doctorId) && availability.getDate().equals(date)) {
-                doctorAvailability.add(availability);
+        for (DoctorUnavailableSlots unavailability : availabilities) {
+            if (unavailability.getDoctorId().equals(doctorId) && unavailability.getDate().equals(date)) {
+                doctorAvailability.add(unavailability);
             }
         }
+        System.out.println(doctorAvailability);
         return doctorAvailability;
     }
 

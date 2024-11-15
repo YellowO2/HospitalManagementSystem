@@ -35,15 +35,15 @@ public class AppointmentManager {
 
     // Centralized normalization of doctor ID
     private String normalizeDoctorId(String doctorId) {
-        return doctorId != null ? doctorId.trim().toLowerCase() : ""; // Normalize by trimming and making lowercase
+        return doctorId != null ? doctorId.trim().toUpperCase() : ""; // Normalize by trimming and making lowercase
     }
 
     // TODO: Might have to change the logic of loadDoctorsIntoMap
-    // Right now, loadDoctorsIntoMap is making use of getAllAvailableDoctors to lazy
-    // load...
+    // Right now, loadDoctorsIntoMap is making use of isValidDoctorId to population
+    // the Map...
     private void loadDoctorsIntoMap() {
         if (doctorMap.isEmpty()) {
-            System.out.println("Loading doctors into map...");
+            // System.out.println("Loading doctors into map...");
             List<Doctor> allDoctors = userDB.getAllDoctors();
             for (Doctor doctor : allDoctors) {
                 String normalizedId = normalizeDoctorId(doctor.getId());
@@ -55,6 +55,8 @@ public class AppointmentManager {
 
     // Validate if doctorId exists using the map
     private boolean isValidDoctorId(String doctorId) {
+        loadDoctorsIntoMap();
+
         doctorId = normalizeDoctorId(doctorId);
         return doctorMap.containsKey(doctorId); // Check if doctorId exists in the map
     }
@@ -120,6 +122,7 @@ public class AppointmentManager {
     public List<String> getAvailableSlots(String doctorId, LocalDate date) {
         List<String> availableSlots = new ArrayList<>();
 
+        // Validate doctor ID
         if (!isValidDoctorId(doctorId)) {
             return null; // Invalid doctor ID
         }
@@ -141,7 +144,24 @@ public class AppointmentManager {
         // Retrieve all appointments for the doctor on this date
         List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
 
-        // Filter out unavailable slots and already booked appointments
+        // Use sets for fast lookup of unavailable and booked slots
+        Set<LocalTime> unavailableTimes = new HashSet<>();
+        Set<LocalTime> bookedTimes = new HashSet<>();
+
+        // Add all unavailable times to the set
+        for (DoctorUnavailableSlots unavailable : unavailableSlots) {
+            System.out.println("Unavailable time: " + unavailable.getTime());
+            unavailableTimes.add(unavailable.getTime());
+        }
+
+        // Add all booked appointment times to the set
+        for (Appointment appointment : doctorAppointments) {
+            if (appointment.getAppointmentDate().equals(date)) {
+                bookedTimes.add(appointment.getAppointmentTime());
+            }
+        }
+
+        // Check all possible slots for availability
         for (LocalTime slot : allPossibleSlots) {
             boolean isUnavailable = unavailableSlots.stream()
                     .anyMatch(unavailable -> unavailable.getTime().equals(slot))
