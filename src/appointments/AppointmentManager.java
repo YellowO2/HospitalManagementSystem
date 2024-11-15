@@ -100,22 +100,21 @@ public class AppointmentManager {
 
         LocalDate appointmentDate = LocalDate.parse(date);
         List<String> availableSlots = getAvailableSlots(doctorId, appointmentDate);
-
+        System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
         if (!validateSlotSelection(slotIndex, availableSlots)) {
             return false;
         }
 
-        LocalTime appointmentTime = LocalTime.parse(availableSlots.get(slotIndex - 1));
-        return createAppointment(patientId, doctorId, appointmentDate, appointmentTime, "Pending");
+        LocalTime appointmentTime = LocalTime.parse(availableSlots.get(slotIndex));
+        String appointmentId = UUID.randomUUID().toString();
+        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, appointmentDate, appointmentTime,
+                "Pending");
+        return appointmentDB.create(appointment);
     }
 
     // Helper method to validate slot selection
     private boolean validateSlotSelection(int slotIndex, List<String> availableSlots) {
-        if (availableSlots == null || availableSlots.isEmpty()) {
-            System.out.println("No available slots.");
-            return false;
-        }
-        if (slotIndex < 1 || slotIndex > availableSlots.size()) {
+        if (slotIndex < 0 || slotIndex >= availableSlots.size()) {
             System.out.println("Invalid slot selection.");
             return false;
         }
@@ -123,16 +122,18 @@ public class AppointmentManager {
     }
 
     // Helper method to create a new appointment
-    private boolean createAppointment(String patientId, String doctorId, LocalDate date, LocalTime time,
-            String status) {
-        String appointmentId = UUID.randomUUID().toString();
-        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, date, time, status);
-        return appointmentDB.create(appointment);
-    }
+    // private boolean createAppointment(String patientId, String doctorId,
+    // LocalDate date, LocalTime time,
+    // String status) {
+    // String appointmentId = UUID.randomUUID().toString();
+    // Appointment appointment = new Appointment(appointmentId, doctorId, patientId,
+    // date, time, status);
+    // return appointmentDB.create(appointment);
+    // }
 
     // Reschedule an appointment
     public boolean rescheduleAppointment(String originalAppointmentId,
-            String newDate, int slotIndex) {
+            String newDate, int newSlotIndex) {
 
         // Find the existing appointment to cancel it first
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
@@ -140,6 +141,8 @@ public class AppointmentManager {
             System.out.println("Appointment not found.");
             return false;
         }
+        String originalDoctorId = originalAppointment.getDoctorId();
+        String originalPatientId = originalAppointment.getPatientId();
 
         // Cancel the original appointment
         if (!cancelAppointment(originalAppointmentId)) {
@@ -147,22 +150,7 @@ public class AppointmentManager {
             return false;
         }
 
-        LocalDate appointmentDate = LocalDate.parse(newDate);
-
-        // Get available slots for the selected doctor on the new date
-        List<String> availableSlots = getAvailableSlots(originalAppointment.getDoctorId(), appointmentDate);
-
-        // Validate slot selection
-        if (!validateSlotSelection(slotIndex, availableSlots)) {
-            return false;
-        }
-
-        // Get the new appointment time
-        LocalTime newAppointmentTime = LocalTime.parse(availableSlots.get(slotIndex - 1));
-
-        // Create the new appointment
-        return createAppointment(originalAppointment.getPatientId(), originalAppointment.getDoctorId(), appointmentDate,
-                newAppointmentTime, "Pending");
+        return scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex);
     }
 
     // Cancel the existing appointment

@@ -124,24 +124,12 @@ public class PatientMenu {
     private void viewAvailableAppointmentSlots() {
         boolean returnToMenu = false;
         String input = "";
-        List<String> receivedList;
 
         while (!returnToMenu) {
             System.out.println("Viewing available appointment slots...");
 
             // List of doctors
-            System.out.println("List of Doctors:");
-            receivedList = appointmentManager.getAllAvailableDoctors();
-
-            // Print doctors
-            for (int i = 0; i < receivedList.size(); i++) {
-                System.out.println((i + 1) + ". " + receivedList.get(i));
-            }
-
-            // Get the selected doctor index
-            System.out.print("Enter the number corresponding to the doctor you want to view: ");
-            int selectedDoctorIndex = getValidMenuChoice(1, receivedList.size()) - 1;
-            String doctorId = receivedList.get(selectedDoctorIndex).split(" - ")[1].trim();
+            String doctorId = selectDoctor();
 
             // Display available slots for the selected doctor
             List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.now());
@@ -164,6 +152,36 @@ public class PatientMenu {
         }
     }
 
+    private String selectDoctor() {
+        System.out.println("\nSelect a doctor...");
+
+        // Ask the user to select a doctor
+        List<String> doctors = appointmentManager.getAllAvailableDoctors();
+        for (int i = 0; i < doctors.size(); i++) {
+            System.out.println((i + 1) + ". " + doctors.get(i));
+        }
+        System.out.print("Please enter the number corresponding to the doctor: ");
+        int selectedDoctorIndex = getValidMenuChoice(1, doctors.size()) - 1;
+
+        // Extract doctorId from the selected doctor
+        String doctorId = doctors.get(selectedDoctorIndex).split(" - ")[1].trim();
+        return doctorId;
+    }
+
+    private int selectDoctorSlot(String doctorId, LocalDate date) {
+        System.out.println("\nSelect an available time slot for doctor " + doctorId + "...");
+
+        // Ask the user to select a time slot
+        List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, date);
+        printSlotsWithNumber(availableSlots);
+
+        System.out.print("Please select a slot (1 to " + availableSlots.size() + "): ");
+        int selectedSlotIndex = getValidMenuChoice(1, availableSlots.size()) - 1;
+
+        // Return the selected slot
+        return selectedSlotIndex;
+    }
+
     // Method to schedule an appointment (asks for doctor ID and slot)
     private void scheduleAppointment() {
         String input = "";
@@ -175,12 +193,9 @@ public class PatientMenu {
         input = scanner.nextLine().trim();
         String doctorId = input; // You could also validate the doctorId here based on available doctors
 
-        // Ask the user to select a slot
-        List<String> availableSlots = appointmentManager.getAvailableSlots(doctorId, LocalDate.now());
-        printSlotsWithNumber(availableSlots);
-        System.out.print("Please select a slot (1 to " + (availableSlots.size() - 1) + "): ");
-        int selectedSlotIndex = getValidMenuChoice(1, availableSlots.size());
-
+        // TODO: Maybe replace current date to by dynamic
+        int selectedSlotIndex = selectDoctorSlot(doctorId, LocalDate.now());
+        System.out.println("DEBUG newSlot: " + selectedSlotIndex);
         try {
             if (appointmentManager.scheduleAppointment(patient.getId(), doctorId,
                     LocalDate.now().toString(), selectedSlotIndex)) {
@@ -212,20 +227,20 @@ public class PatientMenu {
         System.out.println("Rescheduling an appointment...");
         System.out.print("Enter Appointment ID: ");
         String appointmentId = scanner.nextLine().trim();
-        System.out.print("Enter new Appointment Date (YYYY-MM-DD): ");
+        String newDoctorID = selectDoctor();
+
+        System.out.print("Enter new date to reschedule to (YYYY-MM-DD): ");
         String newDate = scanner.nextLine().trim();
-        System.out.print("Enter new Appointment Time (HH:MM): ");
-        String newTime = scanner.nextLine().trim();
 
-        // boolean success = appointmentManager.rescheduleAppointment(appointmentId,
-        // newDate, newTime);
+        int newSlot = selectDoctorSlot(newDoctorID, LocalDate.parse(newDate));
+        System.out.println("DEBUG newSlot: " + newSlot);
+        boolean success = appointmentManager.rescheduleAppointment(appointmentId, newDate, newSlot);
 
-        // if (success) {
-        // System.out.println("Appointment rescheduled successfully.");
-        // } else {
-        // System.out.println("Failed to reschedule the appointment. Please try
-        // again.");
-        // }
+        if (success) {
+            System.out.println("Appointment rescheduled successfully.");
+        } else {
+            System.out.println("Failed to reschedule the appointment. Please try again.");
+        }
     }
 
     private void cancelAppointment() {
