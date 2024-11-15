@@ -27,13 +27,17 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
 
     @Override
     public MedicalRecord getById(String patientId) {
-        System.out.println("debugging" + medicalRecords.size());
         for (MedicalRecord record : medicalRecords) {
             if (record.getPatientId().equals(patientId)) {
                 return record; // Return the matching record
             }
         }
         return null; // Return null if not found
+    }
+
+    @Override
+    public List<MedicalRecord> getAll() {
+        return medicalRecords;
     }
 
     @Override
@@ -85,14 +89,9 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
                 );
                 medicalRecords.add(record);
             } else {
-                System.out.println("Invalid line in CSV: " + line);
+                System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
-    }
-
-    @Override
-    public List<MedicalRecord> getAll() {
-        return medicalRecords;
     }
 }

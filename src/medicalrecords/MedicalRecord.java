@@ -84,32 +84,32 @@ public class MedicalRecord {
                 .append("Email Address: ").append(emailAddress).append("\n\n");
 
         // Add diagnoses string
-        record.append("Diagnoses:\n");
+        record.append("-----Diagnoses-----\n");
         if (diagnoses.isEmpty()) {
             record.append("No diagnoses available.\n");
         } else {
             for (Diagnosis diagnosis : diagnoses) {
-                record.append(diagnosis.getDiagnosisDetails()).append("\n");
+                record.append(diagnosis.getDiagnosisDetails()).append("\n\n");
             }
         }
 
         // Add treatments string
-        record.append("\nTreatments:\n");
+        record.append("-----Treatments-----\n");
         if (treatments.isEmpty()) {
             record.append("No treatments available.\n");
         } else {
             for (Treatment treatment : treatments) {
-                record.append(treatment.getTreatment()).append("\n");
+                record.append(treatment.getTreatment()).append("\n\n");
             }
         }
 
         // Add prescriptions string
-        record.append("\nPrescriptions:\n");
+        record.append("-----Prescriptions-----\n");
         if (prescriptions.isEmpty()) {
             record.append("No prescriptions available.\n");
         } else {
             for (Prescription prescription : prescriptions) {
-                record.append(prescription.getDescriptionDetails()).append("\n");
+                record.append(prescription.getDescriptionDetails()).append("\n\n");
             }
         }
 

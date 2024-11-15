@@ -51,7 +51,7 @@ public class PharmacistMenu {
             System.out.println(); // Add a line break after the action is completed
 
         } while (choice != 5);
-        
+
         scanner.close();
     }
 
@@ -89,4 +89,3 @@ public class PharmacistMenu {
         pharmacist.submitReplenishmentRequest(medicationId, quantity);
     }
 }
-

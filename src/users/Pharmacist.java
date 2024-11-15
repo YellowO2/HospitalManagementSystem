@@ -22,7 +22,7 @@ public class Pharmacist extends User {
         this.inventory = new Inventory();
         this.replenishmentDB = new ReplenishmentDB();
 
-        // Load data during initialization without printing any messages
+        // Load data during initialization without printing unnecessary messages
         try {
             this.appointmentOutcomeRecordDB.load();
             this.replenishmentDB.load();
@@ -81,39 +81,39 @@ public class Pharmacist extends User {
 
     // Method to submit a replenishment request if stock is low
     public void submitReplenishmentRequest(String medicationId, int quantity) {
-    try {
-        Medicine medicine = inventory.getMedicineById(medicationId);
-        if (medicine != null && medicine.isStockLow()) {
-            ReplenishmentRequest existingRequest = replenishmentDB.getById(medicationId);
-            
-            if (existingRequest != null) {
-                // Update the quantity of the existing request
-                existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
-                if (replenishmentDB.update(existingRequest)) {
-                    replenishmentDB.save();
-                    System.out.println("Replenishment request updated for " + quantity + " additional units of " + medicine.getName());
+        try {
+            Medicine medicine = inventory.getMedicineById(medicationId);
+            if (medicine != null && medicine.isStockLow()) {
+                ReplenishmentRequest existingRequest = replenishmentDB.getById(medicationId);
+
+                if (existingRequest != null) {
+                    // Update the quantity of the existing request
+                    existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
+                    if (replenishmentDB.update(existingRequest)) {
+                        replenishmentDB.save();
+                        System.out.println("Replenishment request updated for " + quantity + " additional units of " + medicine.getName());
+                    } else {
+                        System.out.println("Failed to update the replenishment request.");
+                    }
                 } else {
-                    System.out.println("Failed to update the replenishment request.");
+                    // Create a new request if one does not already exist
+                    ReplenishmentRequest newRequest = new ReplenishmentRequest(medicationId, quantity);
+                    if (replenishmentDB.create(newRequest)) {
+                        replenishmentDB.save();
+                        System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
+                    } else {
+                        System.out.println("Failed to create replenishment request.");
+                    }
                 }
             } else {
-                // Create a new request if one does not already exist
-                ReplenishmentRequest newRequest = new ReplenishmentRequest(medicationId, quantity);
-                if (replenishmentDB.create(newRequest)) {
-                    replenishmentDB.save();
-                    System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
-                } else {
-                    System.out.println("Failed to create replenishment request.");
-                }
+                System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
             }
-        } else {
-            System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
+        } catch (IOException e) {
+            System.out.println("Error handling replenishment request: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("Error handling replenishment request: " + e.getMessage());
     }
-}
 
-    // Method to display all replenishment requests from ReplenishmentDBBB
+    // Method to display all replenishment requests from ReplenishmentDB
     public void displayReplenishmentRequests() {
         List<ReplenishmentRequest> requests = replenishmentDB.getAll();
         if (requests.isEmpty()) {

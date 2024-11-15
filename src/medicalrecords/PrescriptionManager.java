@@ -10,7 +10,8 @@ public class PrescriptionManager {
         this.medicalRecord = medicalRecord;
     }
 
-    // Method to check if a prescription already exists in the patient's medical histories
+    // Method to check if a prescription already exists in the patient's medical
+    // histories
     public boolean prescriptionExists(Prescription newPrescription) {
         return medicalRecord.getPrescriptions().stream()
                 .anyMatch(prescription -> prescription.getMedicationName().equals(newPrescription.getMedicationName())
@@ -18,7 +19,8 @@ public class PrescriptionManager {
                 && prescription.getFrequency().equals(newPrescription.getFrequency()));
     }
 
-    // Method to add a prescription to both the medical history and the appointment outcome record
+    // Method to add a prescription to both the medical history and the appointment
+    // outcome record
     public void addPrescription(Prescription newPrescription, AppointmentOutcomeRecord appointmentOutcomeRecord) {
         if (!prescriptionExists(newPrescription)) {
             medicalRecord.addPrescription(newPrescription); // Add to medical history if not already present
