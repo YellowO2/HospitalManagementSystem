@@ -12,7 +12,6 @@ public class AppointmentOutcomeRecord {
     private List<Prescription> prescriptions; // Parsed prescriptions list
     private String prescribedStatus; // Status of the prescription (e.g., "Pending", "Fulfilled")
     private String consultationNotes; // Doctor's notes
-    private String medications; // String to hold medications
 
     // Constructor
     public AppointmentOutcomeRecord(
@@ -28,7 +27,6 @@ public class AppointmentOutcomeRecord {
         this.prescriptions = parsePrescriptions(prescriptionString);
         this.prescribedStatus = prescribedStatus;
         this.consultationNotes = consultationNotes;
-        this.medications = prescriptionString; // Store the initial prescriptions as a string
     }
 
     private List<Prescription> parsePrescriptions(String prescriptionString) {
@@ -89,20 +87,25 @@ public class AppointmentOutcomeRecord {
     }
 
     public String getMedications() {
+        String medications = "";
+        for (Prescription prescription : prescriptions) {
+            medications += prescription.getMedicationName() + ", ";
+        }
+        medications = medications.substring(0, medications.length() - 2);
         return medications;
     }
 
-    public void setMedications(String medications) {
-        this.medications = medications;
-    }
+    // public void setMedications(String medications) {
+    // this.medications = medications;
+    // }
 
     @Override
     public String toString() {
         return appointmentId + "," +
-               appointmentDate + "," +
-               serviceProvided + "," +
-               medications + "," +
-               prescribedStatus + "," +
-               consultationNotes;
+                appointmentDate + "," +
+                serviceProvided + "," +
+                prescriptions.toString() + "," +
+                prescribedStatus + "," +
+                consultationNotes;
     }
 }
