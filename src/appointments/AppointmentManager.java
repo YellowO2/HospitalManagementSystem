@@ -36,8 +36,37 @@ public class AppointmentManager {
         return doctorListFormatted;
     }
 
-    // Get all available slots for a doctor on a given date
-    public List<String> getAvailableSlots(String doctorId, LocalDate date) {
+    public void showAvailableSlots(String doctorId, LocalDate startDate) {
+        System.out.println("Viewing available appointment slots for Doctor " + userDB.getById(doctorId).getName());
+        System.out.println("===================================================");
+
+        // Iterate through the next 7 days
+        for (int i = 0; i < 7; i++) {
+            LocalDate currentDate = startDate.plusDays(i);
+            System.out.print((i + 1) + ". Date: " + currentDate + "  "); // Print the date first
+
+            // Use the helper function to get available slots
+            List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, currentDate);
+
+            // Display the available slots
+            if (availableSlots.isEmpty()) {
+                System.out.print("No available slots.");
+            } else {
+                int slotNumber = 1; // Counter for numbering slots
+                for (LocalTime slot : availableSlots) {
+                    System.out.printf("%d. %s  ", slotNumber++, slot); // Print slots on the same line, separated by
+                                                                       // spaces
+                }
+            }
+            System.out.println(); // Move to the next line after printing all slots for the day
+            System.out.println("---------------------------------------------------");
+        }
+
+        System.out.println("===================================================");
+    }
+
+    // Get personal schedule for a doctor on a given date
+    public List<String> getPersonalSchedule(String doctorId, LocalDate date) {
         // Define working hours
         LocalTime startOfWork = LocalTime.of(9, 0);
         LocalTime endOfWork = LocalTime.of(17, 0);
@@ -50,16 +79,14 @@ public class AppointmentManager {
 
         // Retrieve unavailable slots and existing appointments
         Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
-        Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
 
         // Filter out unavailable and booked times
         List<String> availableSlots = new ArrayList<>();
         for (LocalTime slot : allPossibleSlots) {
-            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
+            if (!unavailableTimes.contains(slot)) {
                 availableSlots.add(slot.toString());
             }
         }
-
         return availableSlots;
     }
 
@@ -79,7 +106,8 @@ public class AppointmentManager {
 
         for (Appointment appointment : doctorAppointments) {
             if (statusFilter.equalsIgnoreCase("All") || 
-                (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending"))){
+                (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending"))||
+                (statusFilter.equalsIgnoreCase("Accepted") && appointment.getStatus().equalsIgnoreCase("Accepted"))){
                 doctorAppointmentsFormatted.add(appointment.toString());
             }
         }
@@ -108,45 +136,62 @@ public class AppointmentManager {
         return bookedTimes;
     }
 
-    // Schedule appointment based on user-selected doctor index
-    public boolean scheduleAppointment(String patientId, String doctorId, String date, int slotIndex) {
+    public List<LocalTime> getAvailableSlotsForDoctor(String doctorId, LocalDate date) {
+        // Define working hours
+        LocalTime startOfWork = LocalTime.of(9, 0);
+        LocalTime lastAppointmentTime = LocalTime.of(16, 0); // Changed from 17 to 16
 
-        LocalDate appointmentDate = LocalDate.parse(date);
-        List<String> availableSlots = getAvailableSlots(doctorId, appointmentDate);
+        // Create a list of all potential time slots for the day
+        List<LocalTime> allPossibleSlots = new ArrayList<>();
+        for (LocalTime time = startOfWork; !time.isAfter(lastAppointmentTime); time = time.plusHours(1)) {
+            allPossibleSlots.add(time);
+        }
+
+        // Retrieve unavailable slots and existing appointments
+        Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
+        Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
+
+        // Filter out unavailable and booked times
+        List<LocalTime> availableSlots = new ArrayList<>();
+        for (LocalTime slot : allPossibleSlots) {
+            if (!unavailableTimes.contains(slot) && !bookedTimes.contains(slot)) {
+                availableSlots.add(slot);
+            }
+        }
+
+        return availableSlots;
+    }
+
+    // Schedule appointment based on user-selected doctor index
+    public boolean scheduleAppointment(String patientId, String doctorId, LocalDate date, int slotIndex) {
+
+        // Use the helper function to get available slots
+        List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, date);
+
         System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
         if (!validateSlotSelection(slotIndex, availableSlots)) {
             return false;
         }
 
-        LocalTime appointmentTime = LocalTime.parse(availableSlots.get(slotIndex));
+        LocalTime appointmentTime = availableSlots.get(slotIndex);
         String appointmentId = UUID.randomUUID().toString();
-        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, appointmentDate, appointmentTime,
+        Appointment appointment = new Appointment(appointmentId, doctorId, patientId, date, appointmentTime,
                 "Pending");
         return appointmentDB.create(appointment);
     }
 
     // Helper method to validate slot selection
-    private boolean validateSlotSelection(int slotIndex, List<String> availableSlots) {
+    private boolean validateSlotSelection(int slotIndex, List<LocalTime> availableSlots) {
         if (slotIndex < 0 || slotIndex >= availableSlots.size()) {
-            System.out.println("Invalid slot selection.");
+            System.out.println("Invalid slot selection. Please choose a valid slot index.");
             return false;
         }
         return true;
     }
 
-    // Helper method to create a new appointment
-    // private boolean createAppointment(String patientId, String doctorId,
-    // LocalDate date, LocalTime time,
-    // String status) {
-    // String appointmentId = UUID.randomUUID().toString();
-    // Appointment appointment = new Appointment(appointmentId, doctorId, patientId,
-    // date, time, status);
-    // return appointmentDB.create(appointment);
-    // }
-
     // Reschedule an appointment
     public boolean rescheduleAppointment(String originalAppointmentId,
-            String newDate, int newSlotIndex) {
+            LocalDate newDate, int newSlotIndex) {
 
         // Find the existing appointment to cancel it first
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
@@ -178,7 +223,7 @@ public class AppointmentManager {
     }
 
     // TODO: Change boolean to void upon validation of method
-    public boolean updateAppointmentStatus(String appointmentId, String status){
+    public boolean updateAppointmentStatus(String appointmentId, String status) {
         Appointment appointment = appointmentDB.getById(appointmentId);
         if (appointment == null) {
             System.out.println("Appointment not found.");
@@ -189,15 +234,15 @@ public class AppointmentManager {
         return true;
     }
 
-    public boolean isValidDoctorId(String doctorId){
+    public boolean isValidDoctorId(String doctorId) {
         List<Doctor> doctorList = userDB.getAllDoctors();
 
         return doctorList.stream().anyMatch(doctor -> doctor.getId().equals(doctorId));
     }
 
-    public boolean isValidAppointmentId(String appointmentId){
+    public boolean isValidAppointmentId(String appointmentId) {
         Appointment appointment = appointmentDB.getById(appointmentId);
-        if (appointment != null){
+        if (appointment != null) {
             return true;
         }
         return false;

@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,8 @@ public class DoctorMenu {
     private AppointmentOutcomeManager appointmentOutcomeManager;
 
     // Constructor
-    public DoctorMenu(Doctor doctor, MedicalRecordManager medicalRecordManager, AppointmentManager appointmentManager, DoctorUnavailabilityDB doctorUnavailabilityDB, AppointmentOutcomeManager appointmentOutcomeManager) {
+    public DoctorMenu(Doctor doctor, MedicalRecordManager medicalRecordManager, AppointmentManager appointmentManager,
+            DoctorUnavailabilityDB doctorUnavailabilityDB, AppointmentOutcomeManager appointmentOutcomeManager) {
         this.doctor = doctor;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
@@ -60,8 +63,8 @@ public class DoctorMenu {
                 scanner.next();
             }
             choice = scanner.nextInt();
-            scanner.nextLine();     // Consume newline
-            System.out.println();   // Add a line break for spacing
+            scanner.nextLine(); // Consume newline
+            System.out.println(); // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -97,7 +100,8 @@ public class DoctorMenu {
         } while (choice != 9);
     }
 
-    // TODO: Doctor can only update his own list of patients. To be implemented with database
+    // TODO: Doctor can only update his own list of patients. To be implemented with
+    // database
     private void viewPatientMedicalRecords() {
         String patientId;
         String medicalHistory;
@@ -107,7 +111,7 @@ public class DoctorMenu {
 
         medicalHistory = medicalRecordManager.getMedicalHistory(patientId);
 
-        if (medicalHistory == null){
+        if (medicalHistory == null) {
             System.out.println("No medical record found for " + patientId + ":");
         }
 
@@ -132,11 +136,12 @@ public class DoctorMenu {
         System.out.print("Enter the diagnosis name: ");
         String diagnosisName = scanner.nextLine();
 
-        while (true){
+        while (true) {
             System.out.print("Enter the severity (Mild, Moderate, Severe): ");
             severity = scanner.nextLine();
 
-            if (severity.equalsIgnoreCase("Mild") || severity.equalsIgnoreCase("Moderate") || severity.equalsIgnoreCase("Severe")) {
+            if (severity.equalsIgnoreCase("Mild") || severity.equalsIgnoreCase("Moderate")
+                    || severity.equalsIgnoreCase("Severe")) {
                 break; // Valid input, exit the loop
             } else {
                 System.out.println("Invalid input. Please enter either 'Mild', 'Moderate', or 'Severe'.");
@@ -154,25 +159,26 @@ public class DoctorMenu {
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
             System.out.print("Enter medication name: ");
             String medicationName = scanner.nextLine();
-        
+
             System.out.print("Enter the dosage to be taken per administration: ");
             String dosage = scanner.nextLine();
-        
+
             System.out.print("Enter instructions for patient: ");
             String instructions = scanner.nextLine();
-        
+
             System.out.print("Enter how often the medication should be taken: ");
             String frequency = scanner.nextLine();
-        
+
             System.out.print("Enter the total quantity to prescribe: ");
             int amount;
 
             int status = 0;
-            
+
             while (true) {
                 try {
                     amount = Integer.parseInt(scanner.nextLine());
-                    if (amount > 0) break; // Valid input, exit the loop
+                    if (amount > 0)
+                        break; // Valid input, exit the loop
                     System.out.println("The quantity must be positive. Please enter a valid number.");
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a numeric value for the amount.");
@@ -194,7 +200,8 @@ public class DoctorMenu {
             System.out.print("Enter treatment details: ");
             String treatmentDetails = scanner.nextLine();
 
-            // Create the Treatment object, surely there will not be any error using diagnosisDate right?
+            // Create the Treatment object, surely there will not be any error using
+            // diagnosisDate right?
             treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
         }
 
@@ -207,7 +214,7 @@ public class DoctorMenu {
         }
     }
 
-    private static boolean isValidTime(String timeStr){
+    private static boolean isValidTime(String timeStr) {
         try {
             // Parse the time using the standard "HH:mm" format
             LocalTime.parse(timeStr, DateTimeFormatter.ofPattern("HH:mm"));
@@ -226,14 +233,16 @@ public class DoctorMenu {
         LocalDate selectedDate;
         DayOfWeek selectedDay;
 
-        while(true){
+        while (true) {
             for (DayOfWeek day : DayOfWeek.values()) {
                 LocalDate date = today.with(day);
 
-                if (date.isBefore(today)){
+                if (date.isBefore(today)) {
                     date = date.plusWeeks(1);
                 }
-                System.out.printf("%d. %s (%s)%n", day.getValue(), day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase(), date.format(formatter));
+                System.out.printf("%d. %s (%s)%n", day.getValue(),
+                        day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase(),
+                        date.format(formatter));
             }
             System.out.print("Enter the day (e.g., 1 for Monday, 2 for Tuesday): ");
             while (!scanner.hasNextInt()) {
@@ -242,11 +251,11 @@ public class DoctorMenu {
             }
             choice = scanner.nextInt();
 
-            if (choice >= 1 || choice <= 7){
+            if (choice >= 1 || choice <= 7) {
                 selectedDay = DayOfWeek.of(choice);
                 selectedDate = today.with(selectedDay);
 
-                if (selectedDate.isBefore(today)){
+                if (selectedDate.isBefore(today)) {
                     selectedDate = selectedDate.plusWeeks(1);
                 }
                 return selectedDate;
@@ -257,10 +266,12 @@ public class DoctorMenu {
     }
 
     private void viewPersonalSchedule(LocalDate selectedDate) {
-        List<String> scheduleList;
-        String currentTime, previousTime;
+        List<String> scheduleList, appointmentList, filteredAppointments = new ArrayList<>();;
+        String currentTime, previousTime, appointmentDetails;
 
-        if (selectedDate == null){
+        LocalDate date = selectedDate;
+
+        if (selectedDate == null) {
             System.out.println("Viewing personal schedule...");
             System.out.println("Select the day to view schedule:");
             selectedDate = getDayOfChoice();
@@ -269,30 +280,78 @@ public class DoctorMenu {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         System.out.println("Viewing personal schedule for: " + selectedDate.format(formatter));
     
-        scheduleList = appointmentManager.getAvailableSlots(doctor.getId(), selectedDate);
+        scheduleList = appointmentManager.getPersonalSchedule(doctor.getId(), selectedDate);
+        appointmentList = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+
+        // DEBUG
+        // System.out.println("DEBUG: scheduleList");
+        // for (String appointment : scheduleList) {
+        //     System.out.println(appointment);
+        // }
+
+        // System.out.println("DEBUG: appointmentList");
+        // for (String appointment : appointmentList) {
+        //     System.out.println(appointment);
+        // }
+
+        for (String appointment : appointmentList) {
+            String[] parts = appointment.split(",");
+            String appointmentDateString = parts[3].trim(); // Date of the appointment
+            try {
+                LocalDate appointmentDate = LocalDate.parse(appointmentDateString); // Convert to LocalDate
+                if (appointmentDate.equals(selectedDate)) {
+                    filteredAppointments.add(appointment); // Add to the filtered list if the dates match
+                }
+            } catch (Exception e) {
+                System.out.println("Error parsing date: " + appointmentDateString);
+            }
+        }
+
+        // DBUG
+        // System.out.println("DEBUG: filteredAppointments");
+        // for (String appointment : filteredAppointments) {
+        //     System.out.println(appointment);
+        // }
+
+
+        Map<String, String> appointmentMap = new HashMap<>();
+        for (String appointment : filteredAppointments) {
+            String[] parts = appointment.split(",");
+            String appointmentTime = parts[4];  // Time at index 4
+            String patientId = parts[2];        // Patient id at index 2
+            appointmentMap.put(appointmentTime, "Appointment with " + patientId);
+        }
+
+        // DEBUG
+        // System.out.println("DEBUG: Appointment map:");
+        // for (Map.Entry<String, String> entry : appointmentMap.entrySet()) {
+        //     System.out.printf("%s -> %s%n", entry.getKey(), entry.getValue());
+        // }
 
         if (scheduleList == null){
-            System.out.println("How did this happen?");
+            System.out.println("Your schedule list has not been created.");
         }
         // Assume that the Doctor_Unavailability.csv is completely populated for that day
         else if (scheduleList.isEmpty()){ 
-            System.out.println("Today is your day off");
+            System.out.println("It is your day off.");
         }
         else {
             previousTime = scheduleList.get(0);
             currentTime = LocalTime.parse(previousTime, DateTimeFormatter.ofPattern("HH:mm")).plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
-            System.out.println(previousTime + " - " + currentTime);
+            appointmentDetails = appointmentMap.getOrDefault(previousTime, "");
+            // System.out.println(previousTime + " - " + currentTime);
+            System.out.printf("%s - %s\t%s%n", previousTime, currentTime, appointmentDetails);
             
             if (scheduleList.size() > 1){
                 for (int i = 1; i < scheduleList.size() - 1; i++){
                     previousTime = scheduleList.get(i);
                     currentTime = scheduleList.get(i+1);
-                    System.out.println(previousTime + " - " + currentTime);
+                    appointmentDetails = appointmentMap.getOrDefault(previousTime, "");
+                    // System.out.println(previousTime + " - " + currentTime);
+                    System.out.printf("%s - %s\t%s%n", previousTime, currentTime, appointmentDetails);
                 }
             }
-
         }
-
     }
 
     private void setAvailabilityForAppointments() {
@@ -310,12 +369,12 @@ public class DoctorMenu {
         viewPersonalSchedule(selectedDate);
         scanner.nextLine(); // Consume newline
 
-        while(true){
+        while (true) {
             System.out.println("Enter the time range you are unavailability on this day (e.g., 09:00 - 12:00):");
             String timeRange = scanner.nextLine().trim();
 
             String[] times = timeRange.split(" - ");
-            if (times.length != 2){
+            if (times.length != 2) {
                 System.out.println("Invalid input format. Please enter the time range in the format HH:MM - HH:MM.");
                 continue;
             }
@@ -323,7 +382,7 @@ public class DoctorMenu {
             startTimeStr = times[0].trim();
             endTimeStr = times[1].trim();
 
-            if (!isValidTime(startTimeStr) || !isValidTime(endTimeStr)){
+            if (!isValidTime(startTimeStr) || !isValidTime(endTimeStr)) {
                 System.out.println("Invalid time format. Please use the format HH:MM (e.g., 09:00).");
                 continue;
             }
@@ -331,8 +390,8 @@ public class DoctorMenu {
             if (Integer.parseInt(startTimeStr.replace(":", "")) >= Integer.parseInt(endTimeStr.replace(":", ""))) {
                 System.out.println("Start time must be earlier than end time. Please enter a valid range.");
                 continue;
-            }   
-            break;      
+            }
+            break;
         }
 
         roundedStartTime = LocalTime.parse(startTimeStr).truncatedTo(ChronoUnit.HOURS);
@@ -343,18 +402,20 @@ public class DoctorMenu {
         roundedEndTime = LocalTime.parse(endTimeStr).truncatedTo(ChronoUnit.HOURS);
         if (LocalTime.parse(endTimeStr).getMinute() >= 1) {
             roundedEndTime = roundedEndTime.plusHours(1);
-        } 
+        }
 
         currenTime = roundedStartTime;
-        while (currenTime.isBefore(roundedEndTime)){
+        while (currenTime.isBefore(roundedEndTime)) {
             nextTime = currenTime.plusHours(1);
-            DoctorUnavailableSlots doctorUnavailableSlots = new DoctorUnavailableSlots(doctor.getId(), selectedDate, currenTime);
+            DoctorUnavailableSlots doctorUnavailableSlots = new DoctorUnavailableSlots(doctor.getId(), selectedDate,
+                    currenTime);
             doctorUnavailabilityDB.create(doctorUnavailableSlots);
 
             currenTime = nextTime;
         }
 
-        System.out.println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
+        System.out
+                .println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
     }
 
     // Helper used by acceptOrDeclineAppointmentRequests & viewUpcomingAppointments
@@ -367,7 +428,7 @@ public class DoctorMenu {
             String appointmentDate = details[3].trim();
             String appointmentTime = details[4].trim();
             String status = details[5].trim();
-    
+
             // Print the appointment details in a nicer format
             System.out.println("\nAppointment ID: " + appointmentId);
             System.out.println("Doctor ID: " + doctorId);
@@ -388,38 +449,39 @@ public class DoctorMenu {
             System.out.println("No scheduled appointments found.");
         } else {
             displayAppointments(appointments);
-        } 
+        }
 
-        while(true) {
-            System.out.print("Choose an appointment to accept or decline (enter the appointment number or type 'exit' to return to the menu): ");
+        while (true) {
+            System.out.print(
+                    "Choose an appointment to accept or decline (enter the appointment number or type 'exit' to return to the menu): ");
             String input = scanner.nextLine().trim();
 
-            if (input.equalsIgnoreCase("exit")){
+            if (input.equalsIgnoreCase("exit")) {
                 System.out.println("\nReturning to the Doctor Menu...");
                 break;
             }
 
-            if (!appointmentManager.isValidAppointmentId(input)){
+            if (!appointmentManager.isValidAppointmentId(input)) {
                 System.out.println("Invalid Appointment ID. Please enter a valid Appointment ID.");
                 continue;
             }
 
             System.out.println("\nAppointment ID: " + input + " selected.");
             System.out.println("\nDo you wish to:\n1.Accept this appointment\n2.Decline this appointment.\n3.Return to list of Pending appointment");
-            System.out.print("\nEnter your choice (1,2 or 3):");
+            System.out.print("\nEnter your choice (1,2 or 3): ");
             String choice = scanner.nextLine().trim();
 
-            while (true){
+            while (true) {
                 switch (choice) {
                     case "1":
-                        if (appointmentManager.updateAppointmentStatus(input, "Accepted")){
+                        if (appointmentManager.updateAppointmentStatus(input, "Accepted")) {
                             System.out.println("You have accepted the appointment.");
                         } else {
                             System.out.println("There was an error accepting the appointment.");
                         }
                         return;
                     case "2":
-                        if (appointmentManager.updateAppointmentStatus(input, "Declined")){
+                        if (appointmentManager.updateAppointmentStatus(input, "Declined")) {
                             System.out.println("You have declined the appointment.");
                         } else {
                             System.out.println("There was an error declining the appointment.");
@@ -436,11 +498,11 @@ public class DoctorMenu {
         }
     }
 
-    //TODO: Make use of the implemented getDoctorAppointment in Appointment Manager
+    // TODO: Make use of the implemented getDoctorAppointment in Appointment Manager
     private void viewUpcomingAppointments() {
         System.out.println("Viewing upcoming appointments...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "All");
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
 
         if (appointments.isEmpty()) {
             System.out.println("No scheduled appointments found.");
@@ -450,27 +512,60 @@ public class DoctorMenu {
     }
 
     private void recordAppointmentOutcome() {
-        LocalDate appointmentDate = LocalDate.now();
+        LocalDate todaysDate = LocalDate.now();
+        String input, patientId = null;
+
+        System.out.println("Recording the outcome of today's appointments...");
 
         List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+        System.out.println("DEBUG:" + appointments);
+
         List<String> todaysAppointment = appointments.stream()
-                                        .filter(appointment -> LocalDate.parse(appointment.split(",")[2]).equals(today))
+                                        .filter(appointment -> LocalDate.parse(appointment.split(",")[3]).equals(todaysDate))
                                         .collect(Collectors.toList());
 
-        for (String appointment : todaysAppointment){
-            System.out.println(appointment);
+        if (todaysAppointment.isEmpty()){
+            System.out.println("You have no appointments to record for today.");
+            return;   
+        } 
+        
+        for (int i = 0; i < todaysAppointment.size(); i++){
+            String appointment = todaysAppointment.get(i);
+            String[] parts = appointment.split(",");
+            String appointmentId = parts[0];
+            patientId = parts[2];
+            String appointmentTime = parts[4];
+
+            System.out.println("Appointment ID: " + appointmentId + ", Patient ID: " + patientId + ", Time: " + appointmentTime);
+        }
+
+        while(true){
+            System.out.print("\nChoose an appointment to record the outcome (enter the appointment number or type 'exit' to return to the menu): ");
+            input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("exit")) {
+                System.out.println("\nReturning to the Doctor Menu...");
+                return;
+            }
+
+            if (!appointmentManager.isValidAppointmentId(input)){
+                System.out.println("Invalid Appointment ID. Please enter a valid Appointment ID.");
+                //return;
+            }
+            else {
+                break;
+            }
         }
         
-
         System.out.println("Recording appointment outcome...");
 
         // Prompt the doctor for the appointment ID
-        System.out.print("Enter the Appointment ID: ");
-        String appointmentId = scanner.nextLine().trim();
+        // System.out.print("Enter the Appointment ID: ");
+        // String appointmentId = scanner.nextLine().trim();
         
         // Prompt for patient ID
-        System.out.print("Enter the Patient ID: ");
-        String patientId = scanner.nextLine().trim();
+        // System.out.print("Enter the Patient ID: ");
+        // String patientId = scanner.nextLine().trim();
         
         // Prompt for the appointment date
         // System.out.print("Enter the appointment date (YYYY-MM-DD): ");
@@ -478,23 +573,23 @@ public class DoctorMenu {
         // LocalDate appointmentDate = LocalDate.parse(dateString);  // assuming the input is in correct format
         
         // Prompt for the service provided
-        System.out.print("Enter the service provided: ");
+        System.out.print("Enter the Service provided: ");
         String serviceProvided = scanner.nextLine().trim();
         
         // Prompt for the prescription
-        System.out.print("Enter the prescription details (comma-separated): ");
+        System.out.print("Enter the Prescription Details (use '|' for more information on a prescription and ';' for multiple prescriptions): ");
         String prescription = scanner.nextLine().trim();
 
         // Prompt for the prescription status
-        System.out.print("Enter the prescribed status (e.g., completed, pending): ");
-        String prescriptionStatus = scanner.nextLine().trim();
+        // System.out.print("Enter the prescribed status (e.g., completed, pending): ");
+        // String prescriptionStatus = scanner.nextLine().trim();
         
         // Prompt for consultation notes
         System.out.print("Enter the consultation notes: ");
         String consultationNotes = scanner.nextLine().trim();
         
         // Call the recordOutcomeRecord method to store the outcome
-        boolean success = appointmentOutcomeManager.recordAppointmentOutcome(appointmentId, patientId, appointmentDate, serviceProvided, prescription, prescriptionStatus, consultationNotes);
+        boolean success = appointmentOutcomeManager.recordAppointmentOutcome(input, patientId, todaysDate, serviceProvided, prescription, "Pending", consultationNotes);
         
         // Provide feedback to the doctor
         if (success) {

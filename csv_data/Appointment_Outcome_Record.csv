@@ -1,2 +1,2 @@
 AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes
-testappointmentID,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Fulfilled,This patient very good
+testappointmentID,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Pending,This patient very good

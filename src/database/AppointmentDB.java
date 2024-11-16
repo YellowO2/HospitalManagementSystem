@@ -3,12 +3,10 @@ package database;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-// import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import appointments.Appointment;
-// import medicalrecords.MedicalRecord;
 
 public class AppointmentDB extends Database<Appointment> {
     private List<Appointment> appointments;
@@ -26,6 +24,11 @@ public class AppointmentDB extends Database<Appointment> {
     public boolean create(Appointment appointment) {
         if (appointment != null) {
             appointments.add(appointment);
+            try {
+                save(); // Automatically save after creating
+            } catch (IOException e) {
+                System.err.println("Error saving data after creating appointment: " + e.getMessage());
+            }
             return true;
         }
         return false;
@@ -54,6 +57,11 @@ public class AppointmentDB extends Database<Appointment> {
         if (existingAppointment != null) {
             appointments.remove(existingAppointment);
             appointments.add(appointment);
+            try {
+                save(); // Automatically save after updating
+            } catch (IOException e) {
+                System.err.println("Error saving data after updating appointment: " + e.getMessage());
+            }
             return true;
         }
         return false; // Appointment not found
@@ -65,6 +73,11 @@ public class AppointmentDB extends Database<Appointment> {
         Appointment existingAppointment = getById(appointmentId);
         if (existingAppointment != null) {
             appointments.remove(existingAppointment);
+            try {
+                save(); // Automatically save after deleting
+            } catch (IOException e) {
+                System.err.println("Error saving data after deleting appointment: " + e.getMessage());
+            }
             return true;
         }
         return false; // Appointment not found
@@ -92,7 +105,6 @@ public class AppointmentDB extends Database<Appointment> {
                         LocalDate.parse(tokens[3]), // AppointmentDate
                         LocalTime.parse(tokens[4]), // AppointmentTime
                         tokens[5] // Status
-
                 );
                 appointments.add(appointment);
             } else {
@@ -113,7 +125,6 @@ public class AppointmentDB extends Database<Appointment> {
     }
 
     public List<Appointment> getPatientAppointments(String patientId) {
-
         List<Appointment> patientAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
             if (appointment.getPatientId().equals(patientId)) {

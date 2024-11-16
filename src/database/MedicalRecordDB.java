@@ -15,16 +15,22 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
         this.medicalRecords = new ArrayList<>();
     }
 
-    // Implement the CRUD operations for MedicalRecord
+    // Create a new medical record
     @Override
     public boolean create(MedicalRecord medicalRecord) {
         if (medicalRecord != null) {
             medicalRecords.add(medicalRecord);
+            try {
+                save(); // Automatically save after creation
+            } catch (IOException e) {
+                System.err.println("Error saving data after creating medical record: " + e.getMessage());
+            }
             return true;
         }
         return false; // Invalid record
     }
 
+    // Get medical record by patient ID
     @Override
     public MedicalRecord getById(String patientId) {
         for (MedicalRecord record : medicalRecords) {
@@ -35,41 +41,55 @@ public class MedicalRecordDB extends Database<MedicalRecord> {
         return null; // Return null if not found
     }
 
+    // Get all medical records
     @Override
     public List<MedicalRecord> getAll() {
         return medicalRecords;
     }
 
+    // Update a medical record
     @Override
     public boolean update(MedicalRecord medicalRecord) {
         MedicalRecord existingRecord = getById(medicalRecord.getPatientId());
         if (existingRecord != null) {
             medicalRecords.remove(existingRecord);
             medicalRecords.add(medicalRecord);
+            try {
+                save(); // Automatically save after updating
+            } catch (IOException e) {
+                System.err.println("Error saving data after updating medical record: " + e.getMessage());
+            }
             return true;
         }
         return false; // Record not found
     }
 
+    // Delete a medical record by patient ID
     @Override
     public boolean delete(String patientId) {
         MedicalRecord existingRecord = getById(patientId);
         if (existingRecord != null) {
             medicalRecords.remove(existingRecord);
+            try {
+                save(); // Automatically save after deletion
+            } catch (IOException e) {
+                System.err.println("Error saving data after deleting medical record: " + e.getMessage());
+            }
             return true;
         }
         return false; // Record not found
     }
 
+    // Save medical records to CSV
     @Override
     public boolean save() throws IOException {
         saveData(filename, medicalRecords, header);
         return true;
     }
 
+    // Load medical records from CSV
     @Override
     public boolean load() throws IOException {
-
         List<String> lines = readFile(filename);
         for (String line : lines) {
             String[] tokens = splitLine(line);
