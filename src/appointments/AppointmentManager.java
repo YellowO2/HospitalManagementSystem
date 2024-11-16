@@ -37,27 +37,28 @@ public class AppointmentManager {
     }
 
     public void showAvailableSlots(String doctorId, LocalDate startDate) {
-        System.out.println("Available appointment slots for Doctor ID: " + doctorId);
+        System.out.println("Viewing available appointment slots for Doctor " + userDB.getById(doctorId).getName());
         System.out.println("===================================================");
-
-        int slotNumber = 1; // Counter for numbering slots
 
         // Iterate through the next 7 days
         for (int i = 0; i < 7; i++) {
             LocalDate currentDate = startDate.plusDays(i);
-            System.out.println("Date: " + currentDate);
+            System.out.print((i + 1) + ". Date: " + currentDate + "  "); // Print the date first
 
             // Use the helper function to get available slots
             List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, currentDate);
 
             // Display the available slots
             if (availableSlots.isEmpty()) {
-                System.out.println("  No available slots.");
+                System.out.print("No available slots.");
             } else {
+                int slotNumber = 1; // Counter for numbering slots
                 for (LocalTime slot : availableSlots) {
-                    System.out.printf("  %d. %s\n", slotNumber++, slot); // Numbered list format
+                    System.out.printf("%d. %s  ", slotNumber++, slot); // Print slots on the same line, separated by
+                                                                       // spaces
                 }
             }
+            System.out.println(); // Move to the next line after printing all slots for the day
             System.out.println("---------------------------------------------------");
         }
 
@@ -112,11 +113,11 @@ public class AppointmentManager {
     public List<LocalTime> getAvailableSlotsForDoctor(String doctorId, LocalDate date) {
         // Define working hours
         LocalTime startOfWork = LocalTime.of(9, 0);
-        LocalTime endOfWork = LocalTime.of(17, 0);
+        LocalTime lastAppointmentTime = LocalTime.of(16, 0); // Changed from 17 to 16
 
         // Create a list of all potential time slots for the day
         List<LocalTime> allPossibleSlots = new ArrayList<>();
-        for (LocalTime time = startOfWork; !time.isAfter(endOfWork); time = time.plusHours(1)) {
+        for (LocalTime time = startOfWork; !time.isAfter(lastAppointmentTime); time = time.plusHours(1)) {
             allPossibleSlots.add(time);
         }
 

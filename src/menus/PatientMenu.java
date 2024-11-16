@@ -29,7 +29,7 @@ public class PatientMenu {
     public void displayMenu() {
         int choice;
         do {
-            System.out.println("\n=== Patient Menu ===");
+            System.out.println("\n===== Patient Menu =====");
             System.out.println("1. View Medical Record");
             System.out.println("2. Update Personal Information");
             System.out.println("3. View Available Appointment Slots");
@@ -152,6 +152,10 @@ public class PatientMenu {
 
             String doctorId = selectDoctor();
             appointmentManager.showAvailableSlots(doctorId, LocalDate.now());
+
+            System.out.println("Return to menu? (Y/N)");
+            String choice = scanner.nextLine().trim().toUpperCase();
+            returnToMenu = choice.equals("Y");
         }
     }
 
@@ -169,6 +173,8 @@ public class PatientMenu {
     }
 
     private void selectAndScheduleDoctorSlot(String doctorId, LocalDate date) {
+        appointmentManager.showAvailableSlots(doctorId, date);
+
         System.out.println("\nSelect an available time slot for doctor " + doctorId + " on " + date + "...");
         List<LocalTime> availableSlots = appointmentManager.getAvailableSlotsForDoctor(doctorId, date);
 
@@ -198,16 +204,16 @@ public class PatientMenu {
         System.out.println("\nScheduling an appointment...");
 
         String doctorId = selectDoctor();
-        System.out.print("Please enter a date (YYYY-MM-DD): ");
-        String dateInput = scanner.nextLine().trim();
-        LocalDate date = LocalDate.parse(dateInput);
+        // System.out.print("Please enter a date (YYYY-MM-DD): ");
+        // String dateInput = scanner.nextLine().trim();
+        // LocalDate date = LocalDate.parse(dateInput);
 
-        selectAndScheduleDoctorSlot(doctorId, date);
+        selectAndScheduleDoctorSlot(doctorId, LocalDate.now());
     }
 
     private void rescheduleAppointment() {
         System.out.println("Rescheduling an appointment...");
-        System.out.print("Enter Appointment ID: ");
+        System.out.print("Enter old Appointment ID: ");
         String appointmentId = scanner.nextLine().trim();
 
         String newDoctorID = selectDoctor();
@@ -216,6 +222,8 @@ public class PatientMenu {
 
         // selectAndScheduleDoctorSlot(newDoctorID, newDate);
         appointmentManager.showAvailableSlots(newDoctorID, LocalDate.now());
+        System.out.println("==== Select a new appointment ====");
+
         int selectedDayIndex = selectDaySlot();
         LocalDate newDate = LocalDate.now().plusDays(selectedDayIndex);
 
