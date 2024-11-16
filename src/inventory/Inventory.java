@@ -3,22 +3,19 @@ package inventory;
 import database.MedicineDB;
 import database.ReplenishmentDB;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Inventory {
     private Map<String, Medicine> medicines;
-    private List<String> replenishmentRequests;
-    private MedicineDB medicineDB; // Reference to the MedicineDBBB
-    private ReplenishmentDB replenishmentDB;
+    private MedicineDB medicineDB; // Reference to MedicineDB
+    private ReplenishmentDB replenishmentDB; // Reference to ReplenishmentDB
 
-    public Inventory() {
+    public Inventory(MedicineDB medicineDB, ReplenishmentDB replenishmentDB) {
         this.medicines = new HashMap<>();
-        this.replenishmentRequests = new ArrayList<>();
-        this.medicineDB = new MedicineDB(); // Initialize MedicineDB
-        this.replenishmentDB = new ReplenishmentDB();
+        this.medicineDB = medicineDB;
+        this.replenishmentDB = replenishmentDB;
 
         try {
             loadFromMedicineDB(); // Load data from MedicineDB when Inventory is created
@@ -37,11 +34,19 @@ public class Inventory {
         }
     }
 
+    // Add a new medicine to the inventory and save to the database
     public void addMedicine(Medicine medicine) {
         medicines.put(medicine.getId(), medicine);
-        System.out.println("Added medicine: " + medicine.getName());
+        try {
+            medicineDB.create(medicine);
+            medicineDB.save();
+            System.out.println("Added medicine: " + medicine.getName());
+        } catch (IOException e) {
+            System.out.println("Error saving new medicine to the database: " + e.getMessage());
+        }
     }
 
+    // Update stock level for a medicine and save the changes
     public void updateMedicine(String id, int newStockLevel) {
         if (medicines.containsKey(id)) {
             Medicine medicine = medicines.get(id);
@@ -54,37 +59,57 @@ public class Inventory {
 
             // Save the updated data to the MedicineDB
             try {
+                medicineDB.update(medicine);
                 medicineDB.save();
             } catch (IOException e) {
-                System.out.println("Error saving to MedicineDB: " + e.getMessage());
+                System.out.println("Error saving updates to MedicineDB: " + e.getMessage());
             }
         } else {
             System.out.println("Medicine not found.");
         }
     }
 
+    // Remove a medicine from the inventory and the database
     public void removeMedicine(String id) {
         if (medicines.remove(id) != null) {
-            System.out.println("Removed medicine with ID: " + id);
-        } else {
-            System.out.println("Medicine not found.");
-        }
-    }
-
-    public void replenishStock(String id, int quantity) {
-        if (medicines.containsKey(id)) {
-            Medicine medicine = medicines.get(id);
-            medicine.setStockLevel(medicine.getStockLevel() + quantity);
-            System.out.println("Replenished " + quantity + " units of " + medicine.getName());
-
-            if (!medicine.isStockLow()) {
-                System.out.println("Stock level for " + medicine.getName() + " is now above the low stock alert level.");
+            try {
+                medicineDB.delete(id);
+                medicineDB.save();
+                System.out.println("Removed medicine with ID: " + id);
+            } catch (IOException e) {
+                System.out.println("Error saving removal to MedicineDB: " + e.getMessage());
             }
         } else {
             System.out.println("Medicine not found.");
         }
     }
 
+    // Replenish stock and create a request in the replenishment database if needed
+    public boolean replenishStock(String id, int quantity) {
+    if (medicines.containsKey(id)) {
+        Medicine medicine = medicines.get(id);
+        medicine.setStockLevel(medicine.getStockLevel() + quantity);
+        System.out.println("Replenished " + quantity + " units of " + medicine.getName());
+
+        if (!medicine.isStockLow()) {
+            System.out.println("Stock level for " + medicine.getName() + " is now above the low stock alert level.");
+        }
+
+        // Create or update a replenishment request using ReplenishmentDB and ReplenishmentRequest
+        try {
+            ReplenishmentRequest requestManager = new ReplenishmentRequest(replenishmentDB);
+            boolean requestSuccessful = requestManager.submitRequest(id, quantity, medicine);
+            return requestSuccessful; // Return true if the request was successfully submitted
+        } catch (Exception e) {
+            System.out.println("Error handling replenishment request: " + e.getMessage());
+        }
+    } else {
+        System.out.println("Medicine not found.");
+    }
+    return false; // Return false if the process failed
+    }
+
+    // Display current inventory
     public void displayInventory() {
         if (medicines.isEmpty()) {
             System.out.println("Inventory is empty.");
@@ -95,6 +120,7 @@ public class Inventory {
         }
     }
 
+    // Check if a specific medicine's stock is low
     public boolean isLow(String id) {
         if (medicines.containsKey(id)) {
             return medicines.get(id).isStockLow();
@@ -102,6 +128,7 @@ public class Inventory {
         return false;
     }
 
+    // Display medicines that are low on stock
     public void displayLowStockMedicines() {
         boolean lowStockFound = false;
         for (Medicine medicine : medicines.values()) {
@@ -117,23 +144,26 @@ public class Inventory {
         }
     }
 
+    // Get a specific medicine by ID
     public Medicine getMedicineById(String id) {
         return medicines.get(id);
     }
 
+    // Display all replenishment requests
     public void displayReplenishmentRequests() {
         List<ReplenishmentRequest> requests = replenishmentDB.getAll();
-        if (replenishmentRequests.isEmpty()) {
+        if (requests.isEmpty()) {
             System.out.println("No replenishment requests have been submitted.");
         } else {
             System.out.println("Replenishment Requests:");
-            for (String request : replenishmentRequests) {
+            for (ReplenishmentRequest request : requests) {
                 System.out.println(request);
             }
         }
     }
 
-    public List<String> getReplenishmentRequests() {
-        return replenishmentRequests;
+    // Get a list of all replenishment requests
+    public List<ReplenishmentRequest> getReplenishmentRequests() {
+        return replenishmentDB.getAll();
     }
 }

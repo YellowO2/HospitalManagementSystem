@@ -1,8 +1,6 @@
 package appointments;
 
-import appointments.AppointmentOutcomeRecord;
 import database.AppointmentOutcomeRecordDB;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -83,5 +81,8 @@ public class AppointmentOutcomeManager {
             return appointmentOutcomeRecordDB.update(record);
         }
         return false;
+    }
+    public AppointmentOutcomeRecordDB getAppointmentOutcomeRecordDB() {
+        return this.appointmentOutcomeRecordDB;
     }
 }

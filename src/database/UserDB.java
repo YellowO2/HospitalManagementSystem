@@ -121,11 +121,7 @@ public class UserDB extends Database<User> {
                         users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
                         break;
                     case "Administrator":
-                        try {
-                            users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
-                        } catch (IOException e) {
-                            System.out.println("Error initializing new Administrator: " + e.getMessage());
-                        }
+                        users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
                         break;
                     default:
                         System.out.println("Unknown user role for ID: " + id);
@@ -159,11 +155,7 @@ public class UserDB extends Database<User> {
                     users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
                     break;
                 case "Administrator":
-                    try {
-                        users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
-                    } catch (IOException e) {
-                        System.out.println("Error initializing new Administrator: " + e.getMessage());
-                    }
+                    users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
                     break;
                 default:
                     System.out.println("Unknown role. Entry not added.");
