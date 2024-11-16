@@ -2,6 +2,7 @@ package database;
 
 import appointments.AppointmentOutcomeRecord;
 import java.io.IOException;
+import java.security.Provider.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecord> {
     private List<AppointmentOutcomeRecord> outcomeRecords;
     private static final String filename = "csv_data/Appointment_Outcome_Record.csv";
-    private static final String header = "AppointmentID,Date,Service Type,Medications,Prescribed,Consultation Notes";
+    private static final String header = "AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes";
 
     public AppointmentOutcomeRecordDB() {
         super(filename);
@@ -71,6 +72,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
 
     @Override
     public boolean load() throws IOException {
+        System.out.println("DEBUG this load");
         List<String> lines = readFile(filename);
         for (String line : lines) {
             String[] tokens = splitLine(line);
@@ -79,17 +81,29 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                 // Assuming the format matches the CSV structure
                 AppointmentOutcomeRecord record = new AppointmentOutcomeRecord(
                         tokens[0], // appointmentId
-                        LocalDate.parse(tokens[1]), // date
-                        tokens[2], // type of service
-                        tokens[3], // prescriptions (convert from string)
-                        tokens[4], // medication status
-                        tokens[5] // consultation notes
+                        tokens[1], // patientId
+                        LocalDate.parse(tokens[2]), // date
+                        tokens[3], // type of service
+                        tokens[4], // prescriptions (convert from string)
+                        tokens[5], // Status
+                        tokens[6] // consultation notes
                 );
+                System.out.println("DEBUG record: " + record.getAppointmentId() + " " + record.getPatientId());
                 outcomeRecords.add(record);
             } else {
                 System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
+    }
+
+    public List<AppointmentOutcomeRecord> getByPatientId(String patientId) {
+        List<AppointmentOutcomeRecord> records = new ArrayList<>();
+        for (AppointmentOutcomeRecord record : outcomeRecords) {
+            if (record.getPatientId().equals(patientId)) {
+                records.add(record);
+            }
+        }
+        return records;
     }
 }

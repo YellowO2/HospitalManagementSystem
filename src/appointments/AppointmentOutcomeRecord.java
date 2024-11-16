@@ -8,27 +8,27 @@ import medicalrecords.Prescription;
 public class AppointmentOutcomeRecord {
     private String appointmentId; // Links to the appointment
     private LocalDate appointmentDate;
+    private String patientId;
     private String serviceProvided; // Type of service (e.g., consultation, X-ray)
     private List<Prescription> prescriptions; // Parsed prescriptions list
     private String prescribedStatus; // Status of the prescription (e.g., "Pending", "Fulfilled")
     private String consultationNotes; // Doctor's notes
-    private String medications; // String to hold medications
 
-    // Constructor
     public AppointmentOutcomeRecord(
             String appointmentId,
+            String patientId,
             LocalDate appointmentDate,
             String serviceProvided,
             String prescriptionString,
             String prescribedStatus,
             String consultationNotes) {
         this.appointmentId = appointmentId;
+        this.patientId = patientId;
         this.appointmentDate = appointmentDate;
         this.serviceProvided = serviceProvided;
         this.prescriptions = parsePrescriptions(prescriptionString);
         this.prescribedStatus = prescribedStatus;
         this.consultationNotes = consultationNotes;
-        this.medications = prescriptionString; // Store the initial prescriptions as a string
     }
 
     private List<Prescription> parsePrescriptions(String prescriptionString) {
@@ -50,6 +50,10 @@ public class AppointmentOutcomeRecord {
     // Getters and setters
     public String getAppointmentId() {
         return appointmentId;
+    }
+
+    public String getPatientId() {
+        return patientId;
     }
 
     public void setAppointmentId(String appointmentId) {
@@ -89,20 +93,25 @@ public class AppointmentOutcomeRecord {
     }
 
     public String getMedications() {
+        String medications = "";
+        for (Prescription prescription : prescriptions) {
+            medications += prescription.getMedicationName() + ", ";
+        }
+        medications = medications.substring(0, medications.length() - 2);
         return medications;
     }
 
-    public void setMedications(String medications) {
-        this.medications = medications;
-    }
+    // public void setMedications(String medications) {
+    // this.medications = medications;
+    // }
 
     @Override
     public String toString() {
         return appointmentId + "," +
-               appointmentDate + "," +
-               serviceProvided + "," +
-               medications + "," +
-               prescribedStatus + "," +
-               consultationNotes;
+                appointmentDate + "," +
+                serviceProvided + "," +
+                prescriptions.toString() + "," +
+                prescribedStatus + "," +
+                consultationNotes;
     }
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import appointments.AppointmentManager;
+import appointments.AppointmentOutcomeManager;
 import medicalrecords.MedicalRecordManager;
 import users.Patient;
 
@@ -13,13 +14,16 @@ public class PatientMenu {
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
+    private AppointmentOutcomeManager appointmentOutcomeManager;
 
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
-            AppointmentManager appointmentManager) {
+            AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager) {
         this.patient = patient;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
         this.appointmentManager = appointmentManager;
+        this.appointmentOutcomeManager = appointmentOutcomeManager;
+
     }
 
     public void displayMenu() {
@@ -69,7 +73,7 @@ public class PatientMenu {
                     viewScheduledAppointments();
                     break;
                 case 8:
-                    viewPastAppointmentOutcomeRecords();
+                    appointmentOutcomeManager.viewPatientOutcomeRecords(patient.getId());
                     break;
                 case 9:
                     changePassword();
@@ -308,11 +312,6 @@ public class PatientMenu {
                 System.out.println("------------------------");
             }
         }
-    }
-
-    private void viewPastAppointmentOutcomeRecords() {
-        System.out.println("Viewing past appointment outcome records...");
-        // Implement logic to display past appointment outcomes
     }
 
     private void changePassword() {
