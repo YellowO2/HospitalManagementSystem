@@ -108,9 +108,10 @@ public class AppointmentManager {
         List<String> doctorAppointmentsFormatted = new ArrayList<>();
 
         for (Appointment appointment : doctorAppointments) {
-            if (statusFilter.equalsIgnoreCase("All") || 
-                (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending"))||
-                (statusFilter.equalsIgnoreCase("Accepted") && appointment.getStatus().equalsIgnoreCase("Accepted"))){
+            if (statusFilter.equalsIgnoreCase("All") ||
+                    (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending")) ||
+                    (statusFilter.equalsIgnoreCase("Accepted")
+                            && appointment.getStatus().equalsIgnoreCase("Accepted"))) {
                 doctorAppointmentsFormatted.add(appointment.toString());
             }
         }
@@ -203,7 +204,8 @@ public class AppointmentManager {
     }
 
     // Reschedule an appointment
-    public void rescheduleAppointment(String originalAppointmentId, LocalDate newDate, int newSlotIndex) {
+    public void rescheduleAppointment(String doctorId, String originalAppointmentId, LocalDate newDate,
+            int newSlotIndex) {
         // Retrieve the original appointment
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
         if (originalAppointment == null) {
@@ -211,7 +213,6 @@ public class AppointmentManager {
             return;
         }
 
-        String doctorId = originalAppointment.getDoctorId();
         String patientId = originalAppointment.getPatientId();
 
         // Attempt to schedule the new appointment first

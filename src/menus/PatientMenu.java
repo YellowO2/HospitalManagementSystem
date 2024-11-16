@@ -229,7 +229,7 @@ public class PatientMenu {
         // System.out.println("DEBUG: THIS PRINTED");
         int selectedTimeSlotIndex = selectTimeSlot(appointmentManager.getAvailableSlotsForDoctor(newDoctorID, newDate));
 
-        appointmentManager.rescheduleAppointment(appointmentId, newDate, selectedTimeSlotIndex);
+        appointmentManager.rescheduleAppointment(newDoctorID, appointmentId, newDate, selectedTimeSlotIndex);
     }
 
     private void cancelAppointment() {
