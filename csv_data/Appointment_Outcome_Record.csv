@@ -1,2 +1,2 @@
-AppointmentID,Date,Service Type,Medications,Prescribed,Consultation Notes
-APP001,2024-11-13,Consultation,Paracetamol,Pending,Healthy
+AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes
+APP001,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Pending,This patient very good

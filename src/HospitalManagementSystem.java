@@ -45,10 +45,6 @@ public class HospitalManagementSystem {
                 handleUserRole(scanner, currentUser);
             }
 
-            // Save any changes to the database before exiting
-            // hmsDatabase.savePatients();
-            // hmsDatabase.saveMedicalRecords();
-
         } catch (Exception e) {
             System.out.println("Error loading the database: " + e.getMessage());
             e.printStackTrace();
