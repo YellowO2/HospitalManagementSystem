@@ -115,6 +115,8 @@ public class PatientMenu {
         if (choice == 1) {
             System.out.print("Enter new email: ");
             newValue = scanner.nextLine().trim();
+
+            // ToFix: This is updating Medical_Record csv, it also needs to update User_List
             medicalRecordManager.updateContactInfo(patient.getId(), null, newValue);
         } else if (choice == 2) {
             System.out.print("Enter new phone number: ");
@@ -207,7 +209,7 @@ public class PatientMenu {
                 System.out.println("Invalid input. Please enter a valid doctor ID.");
             }
         }
-        
+
         // TODO: Maybe replace current date to by dynamic
         int selectedSlotIndex = selectDoctorSlot(doctorId, LocalDate.now());
         System.out.println("DEBUG newSlot: " + selectedSlotIndex);
@@ -295,7 +297,10 @@ public class PatientMenu {
 
                 // Print the appointment details in a nicer format
                 System.out.println("\nAppointment ID: " + appointmentId);
-                System.out.println("Doctor ID: " + doctorId);
+
+                // ToFix: Test Case wants doctor name
+                // System.out.println("Doctor ID: " + doctorId);
+
                 System.out.println("Patient ID: " + patientId);
                 System.out.println("Date: " + date);
                 System.out.println("Time: " + time);
