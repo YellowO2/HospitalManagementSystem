@@ -77,7 +77,7 @@ public class HospitalManagementSystem {
             pharmacistMenu.displayMenu();
         } else if (role.equals("Administrator")) {
             Administrator administrator = (Administrator) currentUser;
-            AdministratorMenu administratorMenu = new AdministratorMenu(administrator, databaseManager.getUserDB(), inventory);
+            AdministratorMenu administratorMenu = new AdministratorMenu(administrator, databaseManager.getUserDB(), inventory, appointmentManager);
             administratorMenu.displayMenu();
         } else {
             System.out.println("Invalid role. Logging out.");

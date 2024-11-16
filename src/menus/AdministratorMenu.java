@@ -6,6 +6,7 @@ class to perform actions.
  */
 package menus;
 
+import appointments.AppointmentManager;
 import database.UserDB;
 import inventory.Inventory;
 import inventory.Medicine;
@@ -24,12 +25,14 @@ public class AdministratorMenu {
     private UserDB userDB;
     private Inventory inventory;
     private Scanner scanner;
+    private AppointmentManager appointmentManager;
 
     // Constructor
-    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory) {
+    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory, AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;
         this.inventory = inventory;
+        this.appointmentManager = appointmentManager;
         this.scanner = new Scanner(System.in);
     }
 
@@ -38,6 +41,7 @@ public class AdministratorMenu {
         do {
             System.out.println("\n=== Administrator Menu ===");
             System.out.println("1. View, Add, or Remove Hospital Staff");
+            System.out.println("2. View Appointment Details");
             System.out.println("2. View, Add, or Remove Medication Inventory");
             System.out.println("3. Approve Replenishment Requests");
             System.out.println("4. Change Password");
@@ -56,21 +60,24 @@ public class AdministratorMenu {
                     manageStaff();
                     break;
                 case 2:
-                    manageInventory();
+                    viewAppointmentsDetails();
                     break;
                 case 3:
-                    approveReplenishmentRequests();
+                    manageInventory();
                     break;
                 case 4:
-                    changePassword();
+                    approveReplenishmentRequests();
                     break;
                 case 5:
+                    changePassword();
+                    break;
+                case 6:
                     System.out.println("Logging out...");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice != 5);
+        } while (choice != 6);
     }
 
     private void manageStaff() {
@@ -135,6 +142,7 @@ public class AdministratorMenu {
         } else if (role.equalsIgnoreCase("Administrator")) {
             Administrator newAdministrator = new Administrator(id, name, dob, gender, phoneNumber, email, password);
             userDB.create(newAdministrator);
+            System.out.println("New staff member added successfully.");
         } else {
             System.out.println("Invalid role. Please use Doctor, Pharmacist, or Administrator.");
             return; // Exit the method early if the role is invalid
@@ -143,7 +151,6 @@ public class AdministratorMenu {
         // Save the new user to the database
         try {
             userDB.save();
-            System.out.println("New staff member added successfully.");
         } catch (IOException e) {
             System.out.println("Error saving new staff member: " + e.getMessage());
         }
@@ -168,6 +175,18 @@ public class AdministratorMenu {
         }
     }
 
+    // Method to view all appointments
+    public void viewAppointmentsDetails() {
+        System.out.println("=== Viewing All Appointments ===");
+        List<String> allAppointments = appointmentManager.viewAllAppointments();
+        if (allAppointments.isEmpty()) {
+            System.out.println("No appointments found.");
+        } else {
+            for (String appointment : allAppointments) {
+                System.out.println(appointment); // Assumes `toString()` method in `Appointment` prints the details in a readable format
+            }
+        }
+    }
     private void manageInventory() {
         System.out.println("=== Inventory ===");
         inventory.displayInventory();

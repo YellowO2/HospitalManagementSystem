@@ -88,14 +88,14 @@ public class PharmacistMenu {
     private void inputPrescriptionStatus() {
         System.out.print("Enter the Appointment ID: ");
         String appointmentId = scanner.nextLine();
-        System.out.print("Enter the new status (0 for Pending, 1 for Fulfilled): ");
+        System.out.print("Enter the new status (0 for Pending, 1 for Dispensed): ");
         while (!scanner.hasNextInt()) {
             System.out.println("Invalid input. Please enter a number.");
             scanner.next();
         }
         int statusInput = scanner.nextInt();
         scanner.nextLine(); // Consume newline
-        String newStatus = (statusInput == 1) ? "Fulfilled" : "Pending";
+        String newStatus = (statusInput == 1) ? "Dispensed" : "Pending";
 
         boolean updated = appointmentOutcomeManager.updatePrescriptionStatus(appointmentId, newStatus);
 

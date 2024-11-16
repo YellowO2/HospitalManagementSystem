@@ -1,16 +1,15 @@
 package appointments;
 
-import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import database.AppointmentDB;
 import database.DoctorUnavailabilityDB;
 import database.UserDB;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import users.Doctor;
 
 public class AppointmentManager {
@@ -246,5 +245,16 @@ public class AppointmentManager {
             return true;
         }
         return false;
+    }
+
+    public List<String> viewAllAppointments() {
+        List<Appointment> allAppointments = appointmentDB.getAll();
+        List<String> allAppointmentsFormatted = new ArrayList<>();
+
+        for (Appointment appointment : allAppointments) {
+            allAppointmentsFormatted.add(appointment.toString());
+        }
+
+        return allAppointmentsFormatted;
     }
 }
