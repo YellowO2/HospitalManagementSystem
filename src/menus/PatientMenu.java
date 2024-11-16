@@ -47,8 +47,8 @@ public class PatientMenu {
                 scanner.next();
             }
             choice = scanner.nextInt();
-            scanner.nextLine();     // Consume newline
-            System.out.println();   // Add a line break for spacing
+            scanner.nextLine(); // Consume newline
+            System.out.println(); // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -115,17 +115,19 @@ public class PatientMenu {
 
         int choice = getValidMenuChoice(1, 2);
 
-        String newValue = null;
         if (choice == 1) {
             System.out.print("Enter new email: ");
-            newValue = scanner.nextLine().trim();
+            String newEmail = scanner.nextLine().trim();
 
             // ToFix: This is updating Medical_Record csv, it also needs to update User_List
-            medicalRecordManager.updateContactInfo(patient.getId(), null, newValue);
+            medicalRecordManager.updateContactInfo(patient.getId(), patient.getPhoneNumber(), newEmail);
+            patient.setEmailAddress(newEmail);
+
         } else if (choice == 2) {
             System.out.print("Enter new phone number: ");
-            newValue = scanner.nextLine().trim();
-            medicalRecordManager.updateContactInfo(patient.getId(), newValue, null);
+            String newPhoneNo = scanner.nextLine().trim();
+            medicalRecordManager.updateContactInfo(patient.getId(), newPhoneNo, patient.getEmailAddress());
+            patient.setPhoneNumber(newPhoneNo);
         }
 
         System.out.println("Personal information updated successfully.");
@@ -199,12 +201,12 @@ public class PatientMenu {
 
         System.out.println("\nScheduling an appointment...");
 
-        while(true){
+        while (true) {
             // Ask the user to select a doctor ID (prompt for doctor selection if needed)
             System.out.print("Please enter the doctor ID: ");
             input = scanner.nextLine().trim();
 
-            if (appointmentManager.isValidDoctorId(input)){
+            if (appointmentManager.isValidDoctorId(input)) {
                 doctorId = input;
                 break;
             }
