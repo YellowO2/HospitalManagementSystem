@@ -1,20 +1,17 @@
-import authentication.AuthenticationManager;
-import database.DatabaseManager;
-import database.UserDB;
-import java.io.IOException;
-import java.util.Scanner;
-
-import authentication.AuthenticationManager;
 import appointments.AppointmentManager;
 import appointments.AppointmentOutcomeManager;
+import authentication.AuthenticationManager;
+import database.DatabaseManager;
+import inventory.Inventory;
+import java.io.IOException;
+import java.util.Scanner;
 import medicalrecords.MedicalRecordManager;
 import menus.AdministratorMenu;
-import menus.PatientMenu;
-import users.Doctor;
 import menus.DoctorMenu;
-import database.DatabaseManager;
+import menus.PatientMenu;
 import menus.PharmacistMenu;
 import users.Administrator;
+import users.Doctor;
 import users.Patient;
 import users.Pharmacist;
 import users.User;
@@ -27,10 +24,9 @@ public class HospitalManagementSystem {
             databaseManager.getMedicalRecordDB());
     private static AppointmentManager appointmentManager = new AppointmentManager(
             databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
-
     private static AppointmentOutcomeManager appointmentOutcomeManager = new AppointmentOutcomeManager(
             databaseManager.getAppointmentOutcomeRecordDB());
-
+    private static Inventory inventory = new Inventory(databaseManager.getMedicineDB(), databaseManager.getReplenishmentDB());
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -73,11 +69,11 @@ public class HospitalManagementSystem {
         } else if (role.equals("Doctor")) {
             Doctor doctor = (Doctor) currentUser;
             DoctorMenu doctorMenu = new menus.DoctorMenu(doctor, medicalRecordManager, appointmentManager,
-                    databaseManager.getdoctorAvailabilityDB());
+                    databaseManager.getdoctorAvailabilityDB(), appointmentOutcomeManager);
             doctorMenu.displayMenu();
         } else if (role.equals("Pharmacist")) {
             Pharmacist pharmacist = (Pharmacist) currentUser;
-            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist);
+            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist, appointmentOutcomeManager, inventory);
             pharmacistMenu.displayMenu();
         } else if (role.equals("Administrator")) {
             Administrator administrator = (Administrator) currentUser;

@@ -9,8 +9,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import appointments.AppointmentManager;
+import appointments.AppointmentOutcomeManager;
 import appointments.DoctorUnavailableSlots;
 import database.DoctorUnavailabilityDB;
 import medicalrecords.Diagnosis;
@@ -26,15 +28,17 @@ public class DoctorMenu {
     private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
     private DoctorUnavailabilityDB doctorUnavailabilityDB;
+    private AppointmentOutcomeManager appointmentOutcomeManager;
 
     // Constructor
     public DoctorMenu(Doctor doctor, MedicalRecordManager medicalRecordManager, AppointmentManager appointmentManager,
-            DoctorUnavailabilityDB doctorUnavailabilityDB) {
+            DoctorUnavailabilityDB doctorUnavailabilityDB, AppointmentOutcomeManager appointmentOutcomeManager) {
         this.doctor = doctor;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
         this.appointmentManager = appointmentManager;
         this.doctorUnavailabilityDB = doctorUnavailabilityDB;
+        this.appointmentOutcomeManager = appointmentOutcomeManager;
     }
 
     public void displayMenu() {
@@ -460,8 +464,59 @@ public class DoctorMenu {
     }
 
     private void recordAppointmentOutcome() {
+        LocalDate appointmentDate = LocalDate.now();
+
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+        List<String> todaysAppointment = appointments.stream()
+                .filter(appointment -> LocalDate.parse(appointment.split(",")[2]).equals(today))
+                .collect(Collectors.toList());
+
+        for (String appointment : todaysAppointment) {
+            System.out.println(appointment);
+        }
+
         System.out.println("Recording appointment outcome...");
-        // In doctorMenu, simply access the Medical Record Manager and use
+
+        // Prompt the doctor for the appointment ID
+        System.out.print("Enter the Appointment ID: ");
+        String appointmentId = scanner.nextLine().trim();
+
+        // Prompt for patient ID
+        System.out.print("Enter the Patient ID: ");
+        String patientId = scanner.nextLine().trim();
+
+        // Prompt for the appointment date
+        // System.out.print("Enter the appointment date (YYYY-MM-DD): ");
+        // String dateString = scanner.nextLine().trim();
+        // LocalDate appointmentDate = LocalDate.parse(dateString); // assuming the
+        // input is in correct format
+
+        // Prompt for the service provided
+        System.out.print("Enter the service provided: ");
+        String serviceProvided = scanner.nextLine().trim();
+
+        // Prompt for the prescription
+        System.out.print("Enter the prescription details (comma-separated): ");
+        String prescription = scanner.nextLine().trim();
+
+        // Prompt for the prescription status
+        System.out.print("Enter the prescribed status (e.g., completed, pending): ");
+        String prescriptionStatus = scanner.nextLine().trim();
+
+        // Prompt for consultation notes
+        System.out.print("Enter the consultation notes: ");
+        String consultationNotes = scanner.nextLine().trim();
+
+        // Call the recordOutcomeRecord method to store the outcome
+        boolean success = appointmentOutcomeManager.recordAppointmentOutcome(appointmentId, patientId, appointmentDate,
+                serviceProvided, prescription, prescriptionStatus, consultationNotes);
+
+        // Provide feedback to the doctor
+        if (success) {
+            System.out.println("Appointment outcome recorded successfully.");
+        } else {
+            System.out.println("Failed to record appointment outcome. Please try again.");
+        }
     }
 
     private void changePassword() {
