@@ -22,8 +22,10 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
     // Create a new availability slot
     @Override
     public boolean create(DoctorUnavailableSlots availability) {
+        System.out.println("debugging unavailability " + availability);
         if (availability != null) {
             availabilities.add(availability);
+            System.out.println("debugging unavailability " + availabilities.size());
             return true;
         }
         return false;
@@ -74,8 +76,10 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
     // Load availability from CSV
     @Override
     public boolean load() throws IOException {
+
         List<String> lines = readFile(filename); // Read the CSV file
         for (String line : lines) {
+
             String[] tokens = splitLine(line); // Split line into tokens
 
             if (tokens.length >= 3) { // Ensure there are enough tokens
@@ -89,6 +93,7 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
                 System.out.println("Invalid line in " + filename + ": " + line);
             }
         }
+        System.out.println("debugging unavailability " + availabilities.size());
         return true;
     }
 
