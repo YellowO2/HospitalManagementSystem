@@ -125,6 +125,10 @@ public class AppointmentManager {
         Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
         Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
 
+        System.out.println("DEBUG DAY: " + date);
+        System.out.println("DEBUG unavailable times: " + unavailableTimes);
+        System.out.println("DEBUG booked times: " + bookedTimes);
+
         // Filter out unavailable and booked times
         List<LocalTime> availableSlots = new ArrayList<>();
         for (LocalTime slot : allPossibleSlots) {
@@ -141,6 +145,7 @@ public class AppointmentManager {
 
         // Use the helper function to get available slots
         List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, date);
+        System.out.println("DEBUG available slots: " + availableSlots);
 
         System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
         if (!validateSlotSelection(slotIndex, availableSlots)) {
@@ -170,30 +175,30 @@ public class AppointmentManager {
     }
 
     // Reschedule an appointment
-    public void rescheduleAppointment(String originalAppointmentId,
-            LocalDate newDate, int newSlotIndex) {
-
-        // Find the existing appointment to cancel it first
+    public void rescheduleAppointment(String originalAppointmentId, LocalDate newDate, int newSlotIndex) {
+        // Retrieve the original appointment
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
         if (originalAppointment == null) {
-            System.out.println("Appointment not found.");
+            System.out.println("Error: Appointment with ID " + originalAppointmentId + " not found.");
             return;
         }
-        String originalDoctorId = originalAppointment.getDoctorId();
-        String originalPatientId = originalAppointment.getPatientId();
 
-        // Cancel the original appointment
-        if (!cancelAppointment(originalAppointmentId)) {
-            System.out.println("Failed to cancel the original appointment.");
+        String doctorId = originalAppointment.getDoctorId();
+        String patientId = originalAppointment.getPatientId();
+
+        // Attempt to schedule the new appointment first
+        boolean isNewAppointmentScheduled = scheduleAppointment(patientId, doctorId, newDate, newSlotIndex);
+        if (!isNewAppointmentScheduled) {
+            System.out.println("Error: Failed to schedule the new appointment. Rescheduling aborted.");
+            return;
         }
 
-        if (scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex)) {
-
-            System.out.println(
-                    "Appointment rescheduled successfully ");
-
+        // If new appointment is successfully scheduled, cancel the old appointment
+        boolean isOldAppointmentCancelled = cancelAppointment(originalAppointmentId);
+        if (isOldAppointmentCancelled) {
+            System.out.println("Success: Appointment rescheduled successfully.");
         } else {
-            System.out.println("Failed to reschedule the appointment.");
+            System.out.println("Warning: Failed to cancel the original appointment. Please check manually.");
         }
     }
 
