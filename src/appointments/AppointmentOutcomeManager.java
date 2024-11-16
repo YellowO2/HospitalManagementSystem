@@ -71,27 +71,8 @@ public class AppointmentOutcomeManager {
 
     // Update an existing appointment outcome record
     public boolean updateOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
+        // TODO: implement
         return appointmentOutcomeRecordDB.update(updatedRecord);
-    }
-
-    // Approve the outcome record (mark prescribedStatus as "Approved")
-    public boolean approveOutcomeRecord(String appointmentId) {
-        AppointmentOutcomeRecord record = appointmentOutcomeRecordDB.getById(appointmentId);
-        if (record != null) {
-            record.setPrescribedStatus("Approved");
-            return appointmentOutcomeRecordDB.update(record);
-        }
-        return false;
-    }
-
-    // Reject the outcome record (mark prescribedStatus as "Rejected")
-    public boolean rejectOutcomeRecord(String appointmentId) {
-        AppointmentOutcomeRecord record = appointmentOutcomeRecordDB.getById(appointmentId);
-        if (record != null) {
-            record.setPrescribedStatus("Rejected");
-            return appointmentOutcomeRecordDB.update(record);
-        }
-        return false;
     }
 
     // Method to update the status of prescriptions (e.g., Pending -> Fulfilled)
