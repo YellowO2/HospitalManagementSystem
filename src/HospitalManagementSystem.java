@@ -26,7 +26,8 @@ public class HospitalManagementSystem {
             databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
     private static AppointmentOutcomeManager appointmentOutcomeManager = new AppointmentOutcomeManager(
             databaseManager.getAppointmentOutcomeRecordDB());
-    private static Inventory inventory = new Inventory(databaseManager.getMedicineDB(), databaseManager.getReplenishmentDB());
+    private static Inventory inventory = new Inventory(databaseManager.getMedicineDB(),
+            databaseManager.getReplenishmentDB());
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -42,7 +43,7 @@ public class HospitalManagementSystem {
             }
 
         } catch (Exception e) {
-            System.out.println("Error loading the database: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         } finally {
             scanner.close();

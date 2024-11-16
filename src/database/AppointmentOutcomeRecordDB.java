@@ -90,7 +90,6 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
     // Load outcome records from CSV
     @Override
     public boolean load() throws IOException {
-        System.out.println("DEBUG this load");
         List<String> lines = readFile(filename);
         for (String line : lines) {
             String[] tokens = splitLine(line);
@@ -106,7 +105,8 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                         tokens[5], // prescribed
                         tokens[6] // consultation notes
                 );
-                System.out.println("DEBUG record: " + record.getAppointmentId() + " " + record.getPatientId());
+                // System.out.println("DEBUG record: " + record.getAppointmentId() + " " +
+                // record.getPatientId());
                 outcomeRecords.add(record);
             } else {
                 System.out.println("Invalid line in " + filename + ": " + line);
