@@ -2,6 +2,7 @@ package database;
 
 import appointments.AppointmentOutcomeRecord;
 import java.io.IOException;
+import java.security.Provider.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecord> {
     private List<AppointmentOutcomeRecord> outcomeRecords;
     private static final String filename = "csv_data/Appointment_Outcome_Record.csv";
-    private static final String header = "AppointmentID,Date,Service Type,Medications,Prescribed,Consultation Notes";
+    private static final String header = "AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes";
 
     public AppointmentOutcomeRecordDB() {
         super(filename);
