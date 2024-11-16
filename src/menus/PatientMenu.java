@@ -67,7 +67,7 @@ public class PatientMenu {
                     viewScheduledAppointments();
                     break;
                 case 8:
-                    viewPastAppointmentOutcomeRecords();
+                    appointmentOutcomeManager.viewPatientOutcomeRecords(patient.getId());
                     break;
                 case 9:
                     changePassword();
@@ -291,13 +291,6 @@ public class PatientMenu {
                 System.out.println("------------------------");
             }
         }
-    }
-
-    private void viewPastAppointmentOutcomeRecords() {
-        // display past appointment outcomes
-        System.out.println("Viewing past appointment outcome records...");
-        appointmentOutcomeManager.viewPatientOutcomeRecords(patient.getId());
-
     }
 
     private void changePassword() {
