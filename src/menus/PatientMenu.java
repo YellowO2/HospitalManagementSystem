@@ -229,12 +229,7 @@ public class PatientMenu {
 
         int selectedTimeSlotIndex = selectTimeSlot(appointmentManager.getAvailableSlotsForDoctor(newDoctorID, newDate));
 
-        boolean success = appointmentManager.rescheduleAppointment(appointmentId, newDate, selectedTimeSlotIndex);
-        if (success) {
-            System.out.println("Appointment rescheduled successfully.");
-        } else {
-            System.out.println("Failed to reschedule the appointment.");
-        }
+        appointmentManager.rescheduleAppointment(appointmentId, newDate, selectedTimeSlotIndex);
     }
 
     private void cancelAppointment() {

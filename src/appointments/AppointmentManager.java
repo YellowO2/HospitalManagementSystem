@@ -151,7 +151,13 @@ public class AppointmentManager {
         String appointmentId = UUID.randomUUID().toString();
         Appointment appointment = new Appointment(appointmentId, doctorId, patientId, date, appointmentTime,
                 "Pending");
-        return appointmentDB.create(appointment);
+        if (appointmentDB.create(appointment)) {
+            System.out.println(
+                    "Appointment scheduled to " + date + " at " + appointmentTime + ".");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Helper method to validate slot selection
@@ -164,14 +170,14 @@ public class AppointmentManager {
     }
 
     // Reschedule an appointment
-    public boolean rescheduleAppointment(String originalAppointmentId,
+    public void rescheduleAppointment(String originalAppointmentId,
             LocalDate newDate, int newSlotIndex) {
 
         // Find the existing appointment to cancel it first
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
         if (originalAppointment == null) {
             System.out.println("Appointment not found.");
-            return false;
+            return;
         }
         String originalDoctorId = originalAppointment.getDoctorId();
         String originalPatientId = originalAppointment.getPatientId();
@@ -179,10 +185,16 @@ public class AppointmentManager {
         // Cancel the original appointment
         if (!cancelAppointment(originalAppointmentId)) {
             System.out.println("Failed to cancel the original appointment.");
-            return false;
         }
 
-        return scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex);
+        if (scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex)) {
+
+            System.out.println(
+                    "Appointment rescheduled successfully ");
+
+        } else {
+            System.out.println("Failed to reschedule the appointment.");
+        }
     }
 
     public boolean cancelAppointment(String appointmentId) {
