@@ -40,11 +40,33 @@ public class AppointmentOutcomeManager {
         if (records.isEmpty()) {
             System.out.println("No appointment outcome records found for patient " + patientId);
         } else {
+            System.out.println("Viewing past appointment outcome records...");
+            System.out.println("========================================");
             System.out.println("Appointment outcome records for patient " + patientId + ":");
             for (AppointmentOutcomeRecord record : records) {
-                System.out.println(record);
+                System.out.println("----------------------------------------");
+                System.out.println("Appointment ID: " + record.getAppointmentId());
+                System.out.println("Date: " + record.getAppointmentDate());
+                System.out.println("Service Provided: " + record.getServiceProvided());
+                System.out.println("Prescribed Medications: " + formatMedications(record.getMedications()));
+                System.out.println("Prescription Status: " + record.getPrescribedStatus());
+                System.out.println("Consultation Notes: " + record.getConsultationNotes());
             }
+            System.out.println("========================================");
         }
+    }
+
+    // Helper method to format prescribed medications nicely
+    private String formatMedications(String prescribedMedications) {
+        if (prescribedMedications == null || prescribedMedications.isEmpty()) {
+            return "None";
+        }
+        StringBuilder formatted = new StringBuilder();
+        String[] medications = prescribedMedications.split("\\|");
+        for (String med : medications) {
+            formatted.append("- ").append(med).append("\n");
+        }
+        return formatted.toString().trim();
     }
 
     // Update an existing appointment outcome record
