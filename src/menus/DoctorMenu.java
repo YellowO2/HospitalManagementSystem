@@ -232,6 +232,10 @@ public class DoctorMenu {
                 System.out.printf("%d. %s (%s)%n", day.getValue(), day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase(), date.format(formatter));
             }
             System.out.print("Enter the day (e.g., 1 for Monday, 2 for Tuesday): ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
             choice = scanner.nextInt();
 
             if (choice >= 1 || choice <= 7){
@@ -404,12 +408,18 @@ public class DoctorMenu {
             while (true){
                 switch (choice) {
                     case "1":
-                        appointmentManager.updateAppointmentStatus(input, "Accepted");
-                        System.out.println("You have accepted the appointment.");
+                        if (appointmentManager.updateAppointmentStatus(input, "Accepted")){
+                            System.out.println("You have accepted the appointment.");
+                        } else {
+                            System.out.println("There was an error accepting the appointment.");
+                        }
                         return;
                     case "2":
-                        appointmentManager.updateAppointmentStatus(input, "Declined");
-                        System.out.println("You have declined the appointment.");
+                        if (appointmentManager.updateAppointmentStatus(input, "Declined")){
+                            System.out.println("You have declined the appointment.");
+                        } else {
+                            System.out.println("There was an error declining the appointment.");
+                        }
                         return;
                     case "3":
                         System.out.println("Returning to the list...");

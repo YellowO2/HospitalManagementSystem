@@ -189,6 +189,12 @@ public class AppointmentManager {
         return true;
     }
 
+    public boolean isValidDoctorId(String doctorId){
+        List<Doctor> doctorList = userDB.getAllDoctors();
+
+        return doctorList.stream().anyMatch(doctor -> doctor.getId().equals(doctorId));
+    }
+
     public boolean isValidAppointmentId(String appointmentId){
         Appointment appointment = appointmentDB.getById(appointmentId);
         if (appointment != null){

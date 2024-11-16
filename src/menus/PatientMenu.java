@@ -189,14 +189,25 @@ public class PatientMenu {
     // Method to schedule an appointment (asks for doctor ID and slot)
     private void scheduleAppointment() {
         String input = "";
+        String doctorId = "";
 
         System.out.println("\nScheduling an appointment...");
 
-        // Ask the user to select a doctor ID (prompt for doctor selection if needed)
-        System.out.print("Please enter the doctor ID: ");
-        input = scanner.nextLine().trim();
-        String doctorId = input; // You could also validate the doctorId here based on available doctors
+        while(true){
+            // Ask the user to select a doctor ID (prompt for doctor selection if needed)
+            System.out.print("Please enter the doctor ID: ");
+            input = scanner.nextLine().trim();
 
+            if (appointmentManager.isValidDoctorId(input)){
+                doctorId = input;
+                break;
+            }
+
+            else {
+                System.out.println("Invalid input. Please enter a valid doctor ID.");
+            }
+        }
+        
         // TODO: Maybe replace current date to by dynamic
         int selectedSlotIndex = selectDoctorSlot(doctorId, LocalDate.now());
         System.out.println("DEBUG newSlot: " + selectedSlotIndex);
