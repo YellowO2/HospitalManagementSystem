@@ -264,6 +264,7 @@ public class PatientMenu {
                 String status = details[5].trim();
 
                 System.out.println("\nAppointment ID: " + appointmentId);
+                System.out.println("Doctor: " + appointmentManager.getDoctorById(doctorId).getName());
                 System.out.println("Patient ID: " + patientId);
                 System.out.println("Date: " + date);
                 System.out.println("Time: " + time);
