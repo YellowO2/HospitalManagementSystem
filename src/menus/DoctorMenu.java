@@ -47,13 +47,17 @@ public class DoctorMenu {
             System.out.println("5. Accept or Decline Appointment Requests");
             System.out.println("6. View Upcoming Appointments");
             System.out.println("7. Record Appointment Outcome");
-            System.out.println("8. Logout");
-            System.out.print("Enter your choice: ");
+            System.out.println("8. Change Password");
+            System.out.println("9. Logout");
+            System.out.print("Enter the number corresponding to your choice: ");
 
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            System.out.println(); // Add a line break for spacing
+            scanner.nextLine();     // Consume newline
+            System.out.println();   // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -78,15 +82,15 @@ public class DoctorMenu {
                     recordAppointmentOutcome();
                     break;
                 case 8:
+                    changePassword();
+                    break;
+                case 9:
                     System.out.println("Logging out...");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-
-            System.out.println(); // Add a line break after the action is completed
-
-        } while (choice != 8);
+        } while (choice != 9);
     }
 
     // TODO: Doctor can only update his own list of patients. To be implemented with database
@@ -209,6 +213,8 @@ public class DoctorMenu {
         }
     }
 
+    // Helper Method (To be organised at a later date)
+    // Used by viewPersonalSchedule and setAvailabilityForAppointments
     private LocalDate getDayOfChoice() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         int choice = -1;
@@ -226,6 +232,10 @@ public class DoctorMenu {
                 System.out.printf("%d. %s (%s)%n", day.getValue(), day.name().substring(0, 1).toUpperCase() + day.name().substring(1).toLowerCase(), date.format(formatter));
             }
             System.out.print("Enter the day (e.g., 1 for Monday, 2 for Tuesday): ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
             choice = scanner.nextInt();
 
             if (choice >= 1 || choice <= 7){
@@ -242,7 +252,6 @@ public class DoctorMenu {
         }
     }
 
-    // TODO: Doctor's schedule only show the day itself (for now...)
     private void viewPersonalSchedule(LocalDate selectedDate) {
         List<String> scheduleList;
         String currentTime, previousTime;
@@ -344,16 +353,112 @@ public class DoctorMenu {
         System.out.println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
     }
 
-    private void acceptOrDeclineAppointmentRequests() {
-
-        System.out.println("Accepting or declining appointment requests...");
+    // Helper used by acceptOrDeclineAppointmentRequests & viewUpcomingAppointments
+    private void displayAppointments(List<String> appointments) {
+        for (String appointment : appointments) {
+            String[] details = appointment.split(",");
+            String appointmentId = details[0].trim();
+            String doctorId = details[1].trim();
+            String patientId = details[2].trim();
+            String appointmentDate = details[3].trim();
+            String appointmentTime = details[4].trim();
+            String status = details[5].trim();
+    
+            // Print the appointment details in a nicer format
+            System.out.println("\nAppointment ID: " + appointmentId);
+            System.out.println("Doctor ID: " + doctorId);
+            System.out.println("Patient ID: " + patientId);
+            System.out.println("Date: " + appointmentDate);
+            System.out.println("Time: " + appointmentTime);
+            System.out.println("Status: " + status);
+            System.out.println("------------------------");
+        }
     }
 
+    private void acceptOrDeclineAppointmentRequests() {
+        System.out.println("Accepting or declining appointment requests...");
+
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Pending");
+
+        if (appointments.isEmpty()) {
+            System.out.println("No scheduled appointments found.");
+        } else {
+            displayAppointments(appointments);
+        } 
+
+        while(true) {
+            System.out.print("Choose an appointment to accept or decline (enter the appointment number or type 'exit' to return to the menu): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("exit")){
+                System.out.println("\nReturning to the Doctor Menu...");
+                break;
+            }
+
+            if (!appointmentManager.isValidAppointmentId(input)){
+                System.out.println("Invalid Appointment ID. Please enter a valid Appointment ID.");
+                continue;
+            }
+
+            System.out.println("\nAppointment ID: " + input + " selected.");
+            System.out.println("\nDo you wish to:\n1.Accept this appointment\n2.Decline this appointment.\n3.Return to list of Pending appointment");
+            System.out.print("\nEnter your choice (1,2 or 3):");
+            String choice = scanner.nextLine().trim();
+
+            while (true){
+                switch (choice) {
+                    case "1":
+                        if (appointmentManager.updateAppointmentStatus(input, "Accepted")){
+                            System.out.println("You have accepted the appointment.");
+                        } else {
+                            System.out.println("There was an error accepting the appointment.");
+                        }
+                        return;
+                    case "2":
+                        if (appointmentManager.updateAppointmentStatus(input, "Declined")){
+                            System.out.println("You have declined the appointment.");
+                        } else {
+                            System.out.println("There was an error declining the appointment.");
+                        }
+                        return;
+                    case "3":
+                        System.out.println("Returning to the list...");
+                        return;
+                    default:
+                        System.out.println("Invalid input. Please choose 1, 2 or 3.");
+                        break;
+                }
+            }
+        }
+    }
+
+    //TODO: Make use of the implemented getDoctorAppointment in Appointment Manager
     private void viewUpcomingAppointments() {
         System.out.println("Viewing upcoming appointments...");
+
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "All");
+
+        if (appointments.isEmpty()) {
+            System.out.println("No scheduled appointments found.");
+        } else {
+            displayAppointments(appointments);
+        }
     }
 
     private void recordAppointmentOutcome() {
         System.out.println("Recording appointment outcome...");
+        // In doctorMenu, simply access the Medical Record Manager and use 
+    }
+
+    private void changePassword() {
+        System.out.println("Changing password...");
+        System.out.print("Enter new password: ");
+        String newPassword = scanner.nextLine().trim();
+        boolean success = doctor.changePassword(newPassword);
+        if (success) {
+            System.out.println("Password changed successfully.");
+        } else {
+            System.out.println("Error: Failed to change password.");
+        }
     }
 }

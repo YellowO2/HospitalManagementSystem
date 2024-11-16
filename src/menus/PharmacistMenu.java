@@ -67,6 +67,10 @@ public class PharmacistMenu {
         System.out.print("Enter the Appointment ID: ");
         String appointmentId = scanner.nextLine();
         System.out.print("Enter the new status (0 for Pending, 1 for Fulfilled): ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next();
+        }
         int statusInput = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
@@ -85,6 +89,10 @@ public class PharmacistMenu {
         System.out.print("Enter the medication ID: ");
         String medicationId = scanner.nextLine();
         System.out.print("Enter the quantity to replenish: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next();
+        }
         int quantity = scanner.nextInt();
         pharmacist.submitReplenishmentRequest(medicationId, quantity);
     }

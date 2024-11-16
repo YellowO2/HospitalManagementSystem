@@ -6,9 +6,10 @@ class to perform actions.
  */
 package menus;
 
-import inventory.Medicine;
-import java.io.IOException;
 import java.util.Scanner;
+import java.io.IOException;
+
+import inventory.Medicine;
 import users.Administrator;
 
 public class AdministratorMenu {
@@ -31,16 +32,17 @@ public class AdministratorMenu {
             System.out.println("2. View Appointments Details");
             System.out.println("3. View and Manage Medication Inventory");
             System.out.println("4. Approve Replenishment Requests");
-            System.out.println("5. Logout");
-            System.out.print("Enter your choice: ");
+            System.out.println("5. Change Password");
+            System.out.println("6. Logout");
+            System.out.print("Enter the number corresponding to your choice: ");
 
             while (!scanner.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 scanner.next();
             }
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            System.out.println(); // Add a line break for spacinggggg
+            scanner.nextLine();     // Consume newline
+            System.out.println();   // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -56,16 +58,15 @@ public class AdministratorMenu {
                     approveReplenishmentRequests();
                     break;
                 case 5:
+                    changePassword();
+                    break;
+                case 6:
                     System.out.println("Logging out...");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-
-            System.out.println(); // Add a line break after the action is completed
-
-        } while (choice != 5);
-        scanner.close();
+        } while (choice != 6);
     }
 
     // Methods for each menu option
@@ -236,5 +237,17 @@ public class AdministratorMenu {
             }
         }
         return input;
+    }
+
+    private void changePassword() {
+        System.out.println("Changing password...");
+        System.out.print("Enter new password: ");
+        String newPassword = scanner.nextLine().trim();
+        boolean success = administrator.changePassword(newPassword);
+        if (success) {
+            System.out.println("Password changed successfully.");
+        } else {
+            System.out.println("Error: Failed to change password.");
+        }
     }
 }

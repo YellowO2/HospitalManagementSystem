@@ -73,6 +73,19 @@ public class AppointmentManager {
         return patientAppointmentsFormatted;
     }
 
+    public List<String> getDoctorAppointments(String doctorId, String statusFilter) {
+        List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
+        List<String> doctorAppointmentsFormatted = new ArrayList<>();
+
+        for (Appointment appointment : doctorAppointments) {
+            if (statusFilter.equalsIgnoreCase("All") || 
+                (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending"))){
+                doctorAppointmentsFormatted.add(appointment.toString());
+            }
+        }
+        return doctorAppointmentsFormatted;
+    }
+
     // Helper method to retrieve unavailable times
     private Set<LocalTime> getUnavailableTimes(String doctorId, LocalDate date) {
         List<DoctorUnavailableSlots> unavailableSlots = availabilityDB.getDoctorUnavailability(doctorId, date);
@@ -153,7 +166,6 @@ public class AppointmentManager {
         return scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex);
     }
 
-    // Cancel the existing appointment
     public boolean cancelAppointment(String appointmentId) {
         Appointment appointment = appointmentDB.getById(appointmentId);
         if (appointment == null) {
@@ -163,5 +175,31 @@ public class AppointmentManager {
 
         // Remove the appointment from the database
         return appointmentDB.delete(appointment.getAppointmentId());
+    }
+
+    // TODO: Change boolean to void upon validation of method
+    public boolean updateAppointmentStatus(String appointmentId, String status){
+        Appointment appointment = appointmentDB.getById(appointmentId);
+        if (appointment == null) {
+            System.out.println("Appointment not found.");
+            return false;
+        }
+
+        appointment.setStatus(status);
+        return true;
+    }
+
+    public boolean isValidDoctorId(String doctorId){
+        List<Doctor> doctorList = userDB.getAllDoctors();
+
+        return doctorList.stream().anyMatch(doctor -> doctor.getId().equals(doctorId));
+    }
+
+    public boolean isValidAppointmentId(String appointmentId){
+        Appointment appointment = appointmentDB.getById(appointmentId);
+        if (appointment != null){
+            return true;
+        }
+        return false;
     }
 }
