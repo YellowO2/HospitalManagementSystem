@@ -1,5 +1,84 @@
 package appointments;
 
-public class AppointmentOutcomeManager {
+import appointments.AppointmentOutcomeRecord;
+import database.AppointmentOutcomeRecordDB;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
+public class AppointmentOutcomeManager {
+    private AppointmentOutcomeRecordDB appointmentOutcomeRecordDB;
+
+    public AppointmentOutcomeManager(AppointmentOutcomeRecordDB appointmentOutcomeRecordDB) {
+        this.appointmentOutcomeRecordDB = appointmentOutcomeRecordDB;
+    }
+
+    // Create a new appointment outcome record, including patient ID
+    public boolean createOutcomeRecord(String patientId, LocalDate appointmentDate,
+            String serviceProvided, String prescribedStatus, String consultationNotes) {
+        // generate appointment ID
+        String appointmentId = UUID.randomUUID().toString();
+        AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(
+                appointmentId, patientId, appointmentDate, serviceProvided, "", prescribedStatus, consultationNotes);
+        return appointmentOutcomeRecordDB.create(newRecord);
+    }
+
+    // Retrieve an appointment outcome record by ID
+    public AppointmentOutcomeRecord getOutcomeRecord(String appointmentId) {
+        return appointmentOutcomeRecordDB.getById(appointmentId);
+    }
+
+    // Retrieve all appointment outcome records
+    public List<AppointmentOutcomeRecord> getAllOutcomeRecords() {
+        return appointmentOutcomeRecordDB.getAll();
+    }
+
+    // Retrieve appointment outcome records by patient ID
+    public void viewPatientOutcomeRecords(String patientId) {
+        List<AppointmentOutcomeRecord> records = appointmentOutcomeRecordDB.getByPatientId(patientId);
+        if (records.isEmpty()) {
+            System.out.println("No appointment outcome records found for patient " + patientId);
+        } else {
+            System.out.println("Appointment outcome records for patient " + patientId + ":");
+            for (AppointmentOutcomeRecord record : records) {
+                System.out.println(record);
+            }
+        }
+    }
+
+    // Update an existing appointment outcome record
+    public boolean updateOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
+        return appointmentOutcomeRecordDB.update(updatedRecord);
+    }
+
+    // Approve the outcome record (mark prescribedStatus as "Approved")
+    public boolean approveOutcomeRecord(String appointmentId) {
+        AppointmentOutcomeRecord record = appointmentOutcomeRecordDB.getById(appointmentId);
+        if (record != null) {
+            record.setPrescribedStatus("Approved");
+            return appointmentOutcomeRecordDB.update(record);
+        }
+        return false;
+    }
+
+    // Reject the outcome record (mark prescribedStatus as "Rejected")
+    public boolean rejectOutcomeRecord(String appointmentId) {
+        AppointmentOutcomeRecord record = appointmentOutcomeRecordDB.getById(appointmentId);
+        if (record != null) {
+            record.setPrescribedStatus("Rejected");
+            return appointmentOutcomeRecordDB.update(record);
+        }
+        return false;
+    }
+
+    // Method to update the status of prescriptions (e.g., Pending -> Fulfilled)
+    public boolean updatePrescriptionStatus(String appointmentId, String newStatus) {
+        AppointmentOutcomeRecord record = appointmentOutcomeRecordDB.getById(appointmentId);
+        if (record != null) {
+            record.setPrescribedStatus(newStatus);
+            return appointmentOutcomeRecordDB.update(record);
+        }
+        return false;
+    }
 }

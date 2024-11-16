@@ -16,7 +16,7 @@ public class Pharmacist extends User {
     private ReplenishmentDB replenishmentDB;
 
     public Pharmacist(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-                      String emailAddress, String password) {
+            String emailAddress, String password) {
         super(id, name, "Pharmacist", password, phoneNumber, emailAddress, dateOfBirth, gender);
         this.appointmentOutcomeRecordDB = new AppointmentOutcomeRecordDB();
         this.inventory = new Inventory();
@@ -59,12 +59,15 @@ public class Pharmacist extends User {
             }
 
             if (recordToUpdate != null) {
-                if ("Pending".equalsIgnoreCase(recordToUpdate.getPrescribedStatus()) && "Fulfilled".equalsIgnoreCase(newStatus)) {
+                if ("Pending".equalsIgnoreCase(recordToUpdate.getPrescribedStatus())
+                        && "Fulfilled".equalsIgnoreCase(newStatus)) {
                     recordToUpdate.setPrescribedStatus("Fulfilled");
-                    System.out.println("Updated status for prescriptions in Appointment ID " + appointmentId + " to 'Fulfilled'.");
+                    System.out.println(
+                            "Updated status for prescriptions in Appointment ID " + appointmentId + " to 'Fulfilled'.");
                     appointmentOutcomeRecordDB.save();
                 } else {
-                    System.out.println("The current prescription status is already '" + newStatus + "'. No changes made.");
+                    System.out.println(
+                            "The current prescription status is already '" + newStatus + "'. No changes made.");
                 }
             } else {
                 System.out.println("Appointment ID not found.");
@@ -91,7 +94,8 @@ public class Pharmacist extends User {
                     existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
                     if (replenishmentDB.update(existingRequest)) {
                         replenishmentDB.save();
-                        System.out.println("Replenishment request updated for " + quantity + " additional units of " + medicine.getName());
+                        System.out.println("Replenishment request updated for " + quantity + " additional units of "
+                                + medicine.getName());
                     } else {
                         System.out.println("Failed to update the replenishment request.");
                     }
@@ -100,13 +104,15 @@ public class Pharmacist extends User {
                     ReplenishmentRequest newRequest = new ReplenishmentRequest(medicationId, quantity);
                     if (replenishmentDB.create(newRequest)) {
                         replenishmentDB.save();
-                        System.out.println("Replenishment request submitted for " + quantity + " units of " + medicine.getName());
+                        System.out.println(
+                                "Replenishment request submitted for " + quantity + " units of " + medicine.getName());
                     } else {
                         System.out.println("Failed to create replenishment request.");
                     }
                 }
             } else {
-                System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine") + " are sufficient.");
+                System.out.println("Stock levels for " + (medicine != null ? medicine.getName() : "specified medicine")
+                        + " are sufficient.");
             }
         } catch (IOException e) {
             System.out.println("Error handling replenishment request: " + e.getMessage());

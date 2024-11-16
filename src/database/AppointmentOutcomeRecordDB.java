@@ -79,11 +79,12 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                 // Assuming the format matches the CSV structure
                 AppointmentOutcomeRecord record = new AppointmentOutcomeRecord(
                         tokens[0], // appointmentId
-                        LocalDate.parse(tokens[1]), // date
-                        tokens[2], // type of service
-                        tokens[3], // prescriptions (convert from string)
-                        tokens[4], // medication status
-                        tokens[5] // consultation notes
+                        tokens[1], // patientId
+                        LocalDate.parse(tokens[2]), // date
+                        tokens[3], // type of service
+                        tokens[4], // prescriptions (convert from string)
+                        tokens[5], // Status
+                        tokens[6] // consultation notes
                 );
                 outcomeRecords.add(record);
             } else {
@@ -91,5 +92,15 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
             }
         }
         return true;
+    }
+
+    public List<AppointmentOutcomeRecord> getByPatientId(String patientId) {
+        List<AppointmentOutcomeRecord> records = new ArrayList<>();
+        for (AppointmentOutcomeRecord record : outcomeRecords) {
+            if (record.getPatientId().equals(patientId)) {
+                records.add(record);
+            }
+        }
+        return records;
     }
 }

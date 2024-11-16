@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import authentication.AuthenticationManager;
 import appointments.AppointmentManager;
+import appointments.AppointmentOutcomeManager;
 import medicalrecords.MedicalRecordManager;
 import menus.AdministratorMenu;
 import menus.PatientMenu;
@@ -27,6 +28,9 @@ public class HospitalManagementSystem {
     private static AppointmentManager appointmentManager = new AppointmentManager(
             databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
 
+    private static AppointmentOutcomeManager appointmentOutcomeManager = new AppointmentOutcomeManager(
+            databaseManager.getAppointmentOutcomeRecordDB());
+
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -40,7 +44,7 @@ public class HospitalManagementSystem {
             if (currentUser != null) {
                 handleUserRole(scanner, currentUser);
             }
-            
+
             // Save any changes to the database before exiting
             // hmsDatabase.savePatients();
             // hmsDatabase.saveMedicalRecords();
@@ -67,7 +71,8 @@ public class HospitalManagementSystem {
 
         if (role.equals("Patient")) {
             Patient patient = (Patient) currentUser;
-            PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager, appointmentManager);
+            PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager, appointmentManager,
+                    appointmentOutcomeManager);
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
             Doctor doctor = (Doctor) currentUser;

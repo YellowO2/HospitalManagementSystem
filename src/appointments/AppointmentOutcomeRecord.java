@@ -8,20 +8,22 @@ import medicalrecords.Prescription;
 public class AppointmentOutcomeRecord {
     private String appointmentId; // Links to the appointment
     private LocalDate appointmentDate;
+    private String patientId;
     private String serviceProvided; // Type of service (e.g., consultation, X-ray)
     private List<Prescription> prescriptions; // Parsed prescriptions list
     private String prescribedStatus; // Status of the prescription (e.g., "Pending", "Fulfilled")
     private String consultationNotes; // Doctor's notes
 
-    // Constructor
     public AppointmentOutcomeRecord(
             String appointmentId,
+            String patientId,
             LocalDate appointmentDate,
             String serviceProvided,
             String prescriptionString,
             String prescribedStatus,
             String consultationNotes) {
         this.appointmentId = appointmentId;
+        this.patientId = patientId;
         this.appointmentDate = appointmentDate;
         this.serviceProvided = serviceProvided;
         this.prescriptions = parsePrescriptions(prescriptionString);
@@ -48,6 +50,10 @@ public class AppointmentOutcomeRecord {
     // Getters and setters
     public String getAppointmentId() {
         return appointmentId;
+    }
+
+    public String getPatientId() {
+        return patientId;
     }
 
     public void setAppointmentId(String appointmentId) {
