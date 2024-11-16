@@ -129,9 +129,9 @@ public class AppointmentManager {
         Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
         Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
 
-        System.out.println("DEBUG DAY: " + date);
-        System.out.println("DEBUG unavailable times: " + unavailableTimes);
-        System.out.println("DEBUG booked times: " + bookedTimes);
+        // System.out.println("DEBUG DAY: " + date);
+        // System.out.println("DEBUG unavailable times: " + unavailableTimes);
+        // System.out.println("DEBUG booked times: " + bookedTimes);
 
         // Filter out unavailable and booked times
         List<LocalTime> availableSlots = new ArrayList<>();
@@ -149,9 +149,8 @@ public class AppointmentManager {
 
         // Use the helper function to get available slots
         List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, date);
-        System.out.println("DEBUG available slots: " + availableSlots);
-
-        System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
+        // System.out.println("DEBUG available slots: " + availableSlots);
+        // System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
         if (!validateSlotSelection(slotIndex, availableSlots)) {
             return false;
         }

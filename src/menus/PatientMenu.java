@@ -175,16 +175,16 @@ public class PatientMenu {
     private void selectAndScheduleDoctorSlot(String doctorId, LocalDate date) {
         appointmentManager.showAvailableSlots(doctorId, date);
 
-        System.out.println("\nSelect an available time slot for doctor " + doctorId + " on " + date + "...");
-        List<LocalTime> availableSlots = appointmentManager.getAvailableSlotsForDoctor(doctorId, date);
+        System.out.println("\nSelect an available slot ... ");
+
+        int selectedDayIndex = selectDaySlot();
+        LocalDate selectedDay = date.plusDays(selectedDayIndex);
+        List<LocalTime> availableSlots = appointmentManager.getAvailableSlotsForDoctor(doctorId, selectedDay);
 
         if (availableSlots.isEmpty()) {
             System.out.println("No available slots for the selected doctor on this date.");
             return;
         }
-
-        int selectedDayIndex = selectDaySlot();
-        LocalDate selectedDay = date.plusDays(selectedDayIndex);
 
         int selectedTimeSlotIndex = selectTimeSlot(availableSlots);
 
@@ -226,7 +226,7 @@ public class PatientMenu {
 
         int selectedDayIndex = selectDaySlot();
         LocalDate newDate = LocalDate.now().plusDays(selectedDayIndex);
-
+        // System.out.println("DEBUG: THIS PRINTED");
         int selectedTimeSlotIndex = selectTimeSlot(appointmentManager.getAvailableSlotsForDoctor(newDoctorID, newDate));
 
         appointmentManager.rescheduleAppointment(appointmentId, newDate, selectedTimeSlotIndex);
