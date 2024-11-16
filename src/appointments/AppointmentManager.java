@@ -90,31 +90,6 @@ public class AppointmentManager {
         return availableSlots;
     }
 
-    // Get personal schedule for a doctor on a given date
-    public List<String> getPersonalSchedule(String doctorId, LocalDate date) {
-        // Define working hours
-        LocalTime startOfWork = LocalTime.of(9, 0);
-        LocalTime endOfWork = LocalTime.of(17, 0);
-
-        // Create a list of all potential time slots
-        List<LocalTime> allPossibleSlots = new ArrayList<>();
-        for (LocalTime time = startOfWork; !time.isAfter(endOfWork); time = time.plusHours(1)) {
-            allPossibleSlots.add(time);
-        }
-
-        // Retrieve unavailable slots and existing appointments
-        Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
-
-        // Filter out unavailable and booked times
-        List<String> availableSlots = new ArrayList<>();
-        for (LocalTime slot : allPossibleSlots) {
-            if (!unavailableTimes.contains(slot)) {
-                availableSlots.add(slot.toString());
-            }
-        }
-        return availableSlots;
-    }
-
     public List<String> getPatientAppointments(String patientId) {
         List<Appointment> patientAppointments = appointmentDB.getPatientAppointments(patientId);
         List<String> patientAppointmentsFormatted = new ArrayList<>();
