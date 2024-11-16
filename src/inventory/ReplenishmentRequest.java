@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ReplenishmentRequest {
+
     private String medicineId;
     private int quantity;
     private ReplenishmentDB replenishmentDB; // Instance variable for dependency injection
@@ -25,6 +26,7 @@ public class ReplenishmentRequest {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
     public void setMedicineId(String medicineId) {
         this.medicineId = medicineId;
     }
@@ -42,24 +44,35 @@ public class ReplenishmentRequest {
     // Method to submit a replenishment request
     public boolean submitRequest(String medicationId, int quantity, Medicine medicine) {
         try {
-            if (medicine != null && medicine.isStockLow()) {
-                ReplenishmentRequest existingRequest = replenishmentDB.getById(medicationId);
-                if (existingRequest != null) {
-                    // Update the existing request's quantity
-                    existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
-                    if (replenishmentDB.update(existingRequest)) {
-                        replenishmentDB.save();
-                        return true;
+            if (medicine != null) {
+                System.out.println("Stock check for medicine ID " + medicationId + ": " + medicine.isStockLow());
+                if (medicine.isStockLow()) {
+                    ReplenishmentRequest existingRequest = replenishmentDB.getById(medicationId);
+                    System.out.println("Existing request found: " + existingRequest);
+
+                    if (existingRequest != null) {
+                        existingRequest.setQuantity(existingRequest.getQuantity() + quantity);
+                        if (replenishmentDB.update(existingRequest)) {
+                            replenishmentDB.save();
+                            System.out.println("Updated existing request and saved.");
+                            return true;
+                        } else {
+                            System.out.println("Failed to update existing request.");
+                        }
+                    } else {
+                        ReplenishmentRequest newRequest = new ReplenishmentRequest(replenishmentDB);
+                        newRequest.medicineId = medicationId;
+                        newRequest.quantity = quantity;
+                        if (replenishmentDB.create(newRequest)) {
+                            replenishmentDB.save();
+                            System.out.println("Created new request and saved.");
+                            return true;
+                        } else {
+                            System.out.println("Failed to create new request.");
+                        }
                     }
                 } else {
-                    // Create a new replenishment request
-                    ReplenishmentRequest newRequest = new ReplenishmentRequest(replenishmentDB);
-                    newRequest.medicineId = medicationId;
-                    newRequest.quantity = quantity;
-                    if (replenishmentDB.create(newRequest)) {
-                        replenishmentDB.save();
-                        return true;
-                    }
+                    System.out.println("Stock level is not low; no request submitted.");
                 }
             }
         } catch (IOException e) {
