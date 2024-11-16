@@ -75,7 +75,7 @@ public class PatientMenu {
                     System.out.println("Invalid choice. Please try again.");
             }
 
-        } while (choice != 9);
+        } while (choice != 10);
     }
 
     private int getValidMenuChoice(int min, int max) {

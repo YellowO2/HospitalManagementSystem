@@ -1,2 +1,4 @@
 AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlot,Status
 b70c8561-503d-44fd-bda2-5c387ed6221c,D001,P1005,2024-11-15,09:00,Pending
+64eef4db-8852-4f64-87dd-cc0241723d6d,D001,P1001,2024-11-16,09:00,Pending
+8d566440-34b4-493f-b58f-3551f996a74f,D001,P1002,2024-11-16,11:00,Accepted

@@ -101,7 +101,7 @@ public class AppointmentDB extends Database<Appointment> {
         }
         return true;
     }
-
+    
     public List<Appointment> getDoctorAppointments(String doctorId) {
         List<Appointment> doctorAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
