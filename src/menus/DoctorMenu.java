@@ -464,59 +464,64 @@ public class DoctorMenu {
     }
 
     private void recordAppointmentOutcome() {
-        LocalDate appointmentDate = LocalDate.now();
+        // LocalDate appointmentDate = LocalDate.now();
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
-        List<String> todaysAppointment = appointments.stream()
-                .filter(appointment -> LocalDate.parse(appointment.split(",")[2]).equals(today))
-                .collect(Collectors.toList());
+        // List<String> appointments =
+        // appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+        // List<String> todaysAppointment = appointments.stream()
+        // .filter(appointment ->
+        // LocalDate.parse(appointment.split(",")[2]).equals(today))
+        // .collect(Collectors.toList());
 
-        for (String appointment : todaysAppointment) {
-            System.out.println(appointment);
-        }
+        // for (String appointment : todaysAppointment) {
+        // System.out.println(appointment);
+        // }
 
-        System.out.println("Recording appointment outcome...");
+        // System.out.println("Recording appointment outcome...");
 
-        // Prompt the doctor for the appointment ID
-        System.out.print("Enter the Appointment ID: ");
-        String appointmentId = scanner.nextLine().trim();
+        // // Prompt the doctor for the appointment ID
+        // System.out.print("Enter the Appointment ID: ");
+        // String appointmentId = scanner.nextLine().trim();
 
-        // Prompt for patient ID
-        System.out.print("Enter the Patient ID: ");
-        String patientId = scanner.nextLine().trim();
+        // // Prompt for patient ID
+        // System.out.print("Enter the Patient ID: ");
+        // String patientId = scanner.nextLine().trim();
 
-        // Prompt for the appointment date
-        // System.out.print("Enter the appointment date (YYYY-MM-DD): ");
-        // String dateString = scanner.nextLine().trim();
-        // LocalDate appointmentDate = LocalDate.parse(dateString); // assuming the
-        // input is in correct format
+        // // Prompt for the appointment date
+        // // System.out.print("Enter the appointment date (YYYY-MM-DD): ");
+        // // String dateString = scanner.nextLine().trim();
+        // // LocalDate appointmentDate = LocalDate.parse(dateString); // assuming the
+        // // input is in correct format
 
-        // Prompt for the service provided
-        System.out.print("Enter the service provided: ");
-        String serviceProvided = scanner.nextLine().trim();
+        // // Prompt for the service provided
+        // System.out.print("Enter the service provided: ");
+        // String serviceProvided = scanner.nextLine().trim();
 
-        // Prompt for the prescription
-        System.out.print("Enter the prescription details (comma-separated): ");
-        String prescription = scanner.nextLine().trim();
+        // // Prompt for the prescription
+        // System.out.print("Enter the prescription details (comma-separated): ");
+        // String prescription = scanner.nextLine().trim();
 
-        // Prompt for the prescription status
-        System.out.print("Enter the prescribed status (e.g., completed, pending): ");
-        String prescriptionStatus = scanner.nextLine().trim();
+        // // Prompt for the prescription status
+        // System.out.print("Enter the prescribed status (e.g., completed, pending): ");
+        // String prescriptionStatus = scanner.nextLine().trim();
 
-        // Prompt for consultation notes
-        System.out.print("Enter the consultation notes: ");
-        String consultationNotes = scanner.nextLine().trim();
+        // // Prompt for consultation notes
+        // System.out.print("Enter the consultation notes: ");
+        // String consultationNotes = scanner.nextLine().trim();
 
-        // Call the recordOutcomeRecord method to store the outcome
-        boolean success = appointmentOutcomeManager.recordAppointmentOutcome(appointmentId, patientId, appointmentDate,
-                serviceProvided, prescription, prescriptionStatus, consultationNotes);
+        // // Call the recordOutcomeRecord method to store the outcome
+        // boolean success =
+        // appointmentOutcomeManager.recordAppointmentOutcome(appointmentId, patientId,
+        // appointmentDate,
+        // serviceProvided, prescription, prescriptionStatus, consultationNotes);
 
-        // Provide feedback to the doctor
-        if (success) {
-            System.out.println("Appointment outcome recorded successfully.");
-        } else {
-            System.out.println("Failed to record appointment outcome. Please try again.");
-        }
+        // // Provide feedback to the doctor
+        // if (success) {
+        // System.out.println("Appointment outcome recorded successfully.");
+        // } else {
+        // System.out.println("Failed to record appointment outcome. Please try
+        // again.");
+        // }
     }
 
     private void changePassword() {

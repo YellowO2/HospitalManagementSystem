@@ -16,17 +16,22 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
         this.outcomeRecords = new ArrayList<>();
     }
 
-    // Implement the CRUD methods
-
+    // Create a new outcome record
     @Override
     public boolean create(AppointmentOutcomeRecord record) {
         if (record != null) {
             outcomeRecords.add(record);
+            try {
+                save(); // Automatically save after creation
+            } catch (IOException e) {
+                System.err.println("Error saving data after creating appointment outcome record: " + e.getMessage());
+            }
             return true;
         }
         return false;
     }
 
+    // Get a record by appointment ID
     @Override
     public AppointmentOutcomeRecord getById(String appointmentId) {
         for (AppointmentOutcomeRecord record : outcomeRecords) {
@@ -42,34 +47,47 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
         return outcomeRecords;
     }
 
+    // Update an existing outcome record
     @Override
     public boolean update(AppointmentOutcomeRecord updatedRecord) {
         AppointmentOutcomeRecord existingRecord = getById(updatedRecord.getAppointmentId());
         if (existingRecord != null) {
             outcomeRecords.remove(existingRecord);
             outcomeRecords.add(updatedRecord);
+            try {
+                save(); // Automatically save after update
+            } catch (IOException e) {
+                System.err.println("Error saving data after updating appointment outcome record: " + e.getMessage());
+            }
             return true;
         }
         return false;
-
     }
 
+    // Delete an outcome record by appointment ID
     @Override
     public boolean delete(String appointmentId) {
         AppointmentOutcomeRecord record = getById(appointmentId);
         if (record != null) {
             outcomeRecords.remove(record);
+            try {
+                save(); // Automatically save after deletion
+            } catch (IOException e) {
+                System.err.println("Error saving data after deleting appointment outcome record: " + e.getMessage());
+            }
             return true;
         }
         return false;
     }
 
+    // Save outcome records to CSV
     @Override
     public boolean save() throws IOException {
         saveData(filename, outcomeRecords, header);
         return true;
     }
 
+    // Load outcome records from CSV
     @Override
     public boolean load() throws IOException {
         System.out.println("DEBUG this load");
@@ -85,7 +103,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                         LocalDate.parse(tokens[2]), // date
                         tokens[3], // type of service
                         tokens[4], // prescriptions (convert from string)
-                        tokens[5], // Status
+                        tokens[5], // prescribed
                         tokens[6] // consultation notes
                 );
                 System.out.println("DEBUG record: " + record.getAppointmentId() + " " + record.getPatientId());
@@ -97,6 +115,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
         return true;
     }
 
+    // Get records by patient ID
     public List<AppointmentOutcomeRecord> getByPatientId(String patientId) {
         List<AppointmentOutcomeRecord> records = new ArrayList<>();
         for (AppointmentOutcomeRecord record : outcomeRecords) {

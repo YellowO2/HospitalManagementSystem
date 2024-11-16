@@ -21,6 +21,11 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
     public boolean create(ReplenishmentRequest request) {
         if (request != null) {
             replenishmentRequests.add(request);
+            try {
+                save(); // Automatically save after creation
+            } catch (IOException e) {
+                System.err.println("Error saving data after creating replenishment request: " + e.getMessage());
+            }
             return true;
         }
         return false; // Invalid request
@@ -34,13 +39,13 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
                 return request; // Return the matching request
             }
         }
-        return null; // Return null if not found
+        return null; // Request not found
     }
 
     // Get all replenishment requests
     @Override
     public List<ReplenishmentRequest> getAll() {
-        return new ArrayList<>(replenishmentRequests);
+        return new ArrayList<>(replenishmentRequests); // Return a copy for safety
     }
 
     // Update an existing replenishment request
@@ -50,6 +55,11 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         if (existingRequest != null) {
             replenishmentRequests.remove(existingRequest);
             replenishmentRequests.add(updatedRequest);
+            try {
+                save(); // Automatically save after update
+            } catch (IOException e) {
+                System.err.println("Error saving data after updating replenishment request: " + e.getMessage());
+            }
             return true;
         }
         return false; // Request not found
@@ -61,6 +71,11 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         ReplenishmentRequest existingRequest = getById(medicineId);
         if (existingRequest != null) {
             replenishmentRequests.remove(existingRequest);
+            try {
+                save(); // Automatically save after deletion
+            } catch (IOException e) {
+                System.err.println("Error saving data after deleting replenishment request: " + e.getMessage());
+            }
             return true;
         }
         return false; // Request not found
@@ -92,10 +107,10 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
 
                     replenishmentRequests.add(request);
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid number format in line: " + line);
+                    System.err.println("Invalid number format in line: " + line);
                 }
             } else {
-                System.out.println("Invalid line in " + filename + ": " + line);
+                System.err.println("Invalid line in " + filename + ": " + line);
             }
         }
         return true;
