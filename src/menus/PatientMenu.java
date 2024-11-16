@@ -38,7 +38,13 @@ public class PatientMenu {
             System.out.println("10. Logout");
             System.out.print("Enter the number corresponding to your choice: ");
 
-            choice = getValidMenuChoice(1, 10);
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+            choice = scanner.nextInt();
+            scanner.nextLine();     // Consume newline
+            System.out.println();   // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -74,8 +80,7 @@ public class PatientMenu {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-
-        } while (choice != 9);
+        } while (choice != 10);
     }
 
     private int getValidMenuChoice(int min, int max) {

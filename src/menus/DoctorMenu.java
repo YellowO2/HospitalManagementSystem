@@ -47,13 +47,17 @@ public class DoctorMenu {
             System.out.println("5. Accept or Decline Appointment Requests");
             System.out.println("6. View Upcoming Appointments");
             System.out.println("7. Record Appointment Outcome");
-            System.out.println("8. Logout");
-            System.out.print("Enter your choice: ");
+            System.out.println("8. Change Password");
+            System.out.println("9. Logout");
+            System.out.print("Enter the number corresponding to your choice: ");
 
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            System.out.println(); // Add a line break for spacing
+            scanner.nextLine();     // Consume newline
+            System.out.println();   // Add a line break for spacing
 
             switch (choice) {
                 case 1:
@@ -78,15 +82,15 @@ public class DoctorMenu {
                     recordAppointmentOutcome();
                     break;
                 case 8:
+                    changePassword();
+                    break;
+                case 9:
                     System.out.println("Logging out...");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-
-            System.out.println(); // Add a line break after the action is completed
-
-        } while (choice != 8);
+        } while (choice != 9);
     }
 
     // TODO: Doctor can only update his own list of patients. To be implemented with database
@@ -355,5 +359,17 @@ public class DoctorMenu {
 
     private void recordAppointmentOutcome() {
         System.out.println("Recording appointment outcome...");
+    }
+
+    private void changePassword() {
+        System.out.println("Changing password...");
+        System.out.print("Enter new password: ");
+        String newPassword = scanner.nextLine().trim();
+        boolean success = doctor.changePassword(newPassword);
+        if (success) {
+            System.out.println("Password changed successfully.");
+        } else {
+            System.out.println("Error: Failed to change password.");
+        }
     }
 }
