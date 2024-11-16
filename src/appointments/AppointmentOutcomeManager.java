@@ -21,6 +21,7 @@ public class AppointmentOutcomeManager {
         String appointmentId = UUID.randomUUID().toString();
         AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(
                 appointmentId, patientId, appointmentDate, serviceProvided, "", prescribedStatus, consultationNotes);
+
         return appointmentOutcomeRecordDB.create(newRecord);
     }
 
