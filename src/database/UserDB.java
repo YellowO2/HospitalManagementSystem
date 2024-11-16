@@ -20,78 +20,88 @@ public class UserDB extends Database<User> {
         users = new ArrayList<>();
     }
 
+    // Create a new user entry
     @Override
     public boolean create(User user) {
-        if (exists(user.getId())) {
-            System.out.println("A user with ID " + user.getId() + " already exists. No new entry created.");
-            return false; // Prevent adding a duplicate
+        if (user == null || exists(user.getId())) {
+            System.out.println("Invalid user data or user with ID " + user.getId() + " already exists.");
+            return false; // Prevent adding duplicates or null objects
         }
         users.add(user);
-        return true;
-    }
-
-    public boolean exists(String id) {
-        for (User user : users) {
-            if (user.getId().equals(id)) {
-                return true;
-            }
+        try {
+            save(); // Automatically save after addition
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error saving data after adding user: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
+    // Check if a user with a given ID already exists
+    public boolean exists(String id) {
+        return users.stream().anyMatch(user -> user.getId().equals(id));
+    }
+
+    // Get a user by their ID
     @Override
     public User getById(String id) {
-        for (User user : users) {
-            if (user.getId().equals(id)) {
-                return user; // Return the matching user
-            }
-        }
-        return null; // Return null if not found
+        return users.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElse(null); // Return null if no match
     }
 
+    // Get all users
     @Override
     public List<User> getAll() {
-        return users;
+        return new ArrayList<>(users); // Return a copy for safety
     }
 
+    // Update a user's details
     @Override
     public boolean update(User updatedUser) {
+        if (updatedUser == null)
+            return false; // Prevent null input
         User existingUser = getById(updatedUser.getId());
         if (existingUser != null) {
             users.remove(existingUser);
             users.add(updatedUser);
             try {
-                save(); // Save changes
+                save(); // Automatically save after update
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error saving data after updating user: " + e.getMessage());
                 return false;
             }
         }
         return false; // User not found
     }
 
+    // Delete a user by ID
     @Override
     public boolean delete(String id) {
         User user = getById(id);
         if (user != null) {
             users.remove(user);
             try {
-                save();
+                save(); // Automatically save after deletion
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error saving data after deleting user: " + e.getMessage());
+                return false;
             }
         }
-        return false;
+        return false; // User not found
     }
 
+    // Save all users to the file
     @Override
     public boolean save() throws IOException {
         saveData(USER_FILE, users, USER_HEADER);
         return true;
     }
 
+    // Load users from the file
     @Override
     public boolean load() throws IOException {
         List<String> lines = readFile(USER_FILE);
@@ -100,95 +110,66 @@ public class UserDB extends Database<User> {
             String[] tokens = splitLine(line);
 
             if (tokens.length == 8) { // Ensure all necessary fields are present
-                String id = tokens[0];
-                String name = tokens[1];
-                String dob = tokens[2];
-                String gender = tokens[3];
-                String phoneNumber = tokens[4];
-                String emailAddress = tokens[5];
-                String password = tokens[6];
-                String role = tokens[7];
+                try {
+                    String id = tokens[0].trim();
+                    String name = tokens[1].trim();
+                    String dob = tokens[2].trim();
+                    String gender = tokens[3].trim();
+                    String phoneNumber = tokens[4].trim();
+                    String emailAddress = tokens[5].trim();
+                    String password = tokens[6].trim();
+                    String role = tokens[7].trim();
 
-                // Create specific User objects based on the role
-                switch (role) {
-                    case "Patient":
-                        users.add(new Patient(id, name, dob, gender, phoneNumber, emailAddress, password));
-                        break;
-                    case "Doctor":
-                        users.add(new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password));
-                        break;
-                    case "Pharmacist":
-                        users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
-                        break;
-                    case "Administrator":
-                        try {
-                            users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
-                        } catch (IOException e) {
-                            System.out.println("Error initializing new Administrator: " + e.getMessage());
-                        }
-                        break;
-                    default:
-                        System.out.println("Unknown user role for ID: " + id);
-                        break;
+                    // Create specific User objects based on the role
+                    User user = createUserByRole(id, name, dob, gender, phoneNumber, emailAddress, password, role);
+                    if (user != null) {
+                        users.add(user);
+                    } else {
+                        System.err.println("Invalid role: " + role + " for user ID: " + id);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error processing line: " + line + " - " + e.getMessage());
                 }
             } else {
-                System.out.println("Invalid line in " + USER_FILE + ": " + line);
+                System.err.println("Invalid line format in " + USER_FILE + ": " + line);
             }
         }
         return true;
     }
 
-    // Method to add a CSV entry directly
-    public void addCsvEntry(String csvLine) {
-        String[] tokens = splitLine(csvLine);
-        if (tokens.length == 8) { // Ensure all fields are present
-            String id = tokens[0];
-            String name = tokens[1];
-            String dob = tokens[2];
-            String gender = tokens[3];
-            String phoneNumber = tokens[4];
-            String emailAddress = tokens[5];
-            String password = tokens[6];
-            String role = tokens[7];
-
-            switch (role) {
-                case "Doctor":
-                    users.add(new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password));
-                    break;
-                case "Pharmacist":
-                    users.add(new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password));
-                    break;
-                case "Administrator":
-                    try {
-                        users.add(new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password));
-                    } catch (IOException e) {
-                        System.out.println("Error initializing new Administrator: " + e.getMessage());
-                    }
-                    break;
-                default:
-                    System.out.println("Unknown role. Entry not added.");
-                    break;
-            }
-        } else {
-            System.out.println("Invalid CSV entry. Not added to the list.");
+    // Helper method to create a user object based on role
+    private User createUserByRole(String id, String name, String dob, String gender, String phoneNumber,
+            String emailAddress, String password, String role) {
+        switch (role) {
+            case "Patient":
+                return new Patient(id, name, dob, gender, phoneNumber, emailAddress, password);
+            case "Doctor":
+                return new Doctor(id, name, dob, gender, phoneNumber, emailAddress, password);
+            case "Pharmacist":
+                return new Pharmacist(id, name, dob, gender, phoneNumber, emailAddress, password);
+            case "Administrator":
+                return new Administrator(id, name, dob, gender, phoneNumber, emailAddress, password);
+            default:
+                return null; // Invalid role
         }
     }
-        public List<Doctor> getAllDoctors() {
+
+    // Get all doctors
+    public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
             if (user instanceof Doctor) {
-                // downcast to Doctor
                 doctors.add((Doctor) user);
             }
         }
         return doctors;
     }
 
+    // Get all patients
     public List<Patient> getAllPatients() {
         List<Patient> patients = new ArrayList<>();
         for (User user : users) {
             if (user instanceof Patient) {
-                // downcast to Patient
                 patients.add((Patient) user);
             }
         }
