@@ -22,10 +22,8 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
     // Create a new availability slot
     @Override
     public boolean create(DoctorUnavailableSlots availability) {
-        System.out.println("debugging unavailability " + availability);
         if (availability != null) {
             availabilities.add(availability);
-            System.out.println("debugging unavailability " + availabilities.size());
             return true;
         }
         return false;
