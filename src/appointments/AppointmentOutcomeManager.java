@@ -19,6 +19,7 @@ public class AppointmentOutcomeManager {
         String appointmentId = UUID.randomUUID().toString();
         AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(
                 appointmentId, patientId, appointmentDate, serviceProvided, "", prescribedStatus, consultationNotes);
+
         return appointmentOutcomeRecordDB.create(newRecord);
     }
 
@@ -67,10 +68,25 @@ public class AppointmentOutcomeManager {
         return formatted.toString().trim();
     }
 
+
+
     // Update an existing appointment outcome record
     public boolean updateOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
         // TODO: implement
         return appointmentOutcomeRecordDB.update(updatedRecord);
+    }
+
+    // Create a new appointment outcome record per session
+    public boolean recordAppointmentOutcome(String appointmentId, String patientId, LocalDate appointmentDate, String serviceProvided, String prescription, String prescribedStatus, String consultationNotes){
+        AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(
+            appointmentId,
+            patientId,
+            appointmentDate,
+            serviceProvided,
+            prescription,
+            prescribedStatus,
+            consultationNotes);
+        return appointmentOutcomeRecordDB.create(newRecord);
     }
 
     // Method to update the status of prescriptions (e.g., Pending -> Fulfilled)

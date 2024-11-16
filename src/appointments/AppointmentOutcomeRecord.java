@@ -107,10 +107,17 @@ public class AppointmentOutcomeRecord {
 
     @Override
     public String toString() {
+        String prescriptionsString = "";
+        for (Prescription prescription : prescriptions) {
+            prescriptionsString += prescription.toString() + ";";
+        }
+        prescriptionsString = prescriptionsString.substring(0, prescriptionsString.length() - 1);
+
         return appointmentId + "," +
+                patientId + "," +
                 appointmentDate + "," +
                 serviceProvided + "," +
-                prescriptions.toString() + "," +
+                prescriptionsString + "," +
                 prescribedStatus + "," +
                 consultationNotes;
     }

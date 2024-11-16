@@ -2,7 +2,6 @@ package database;
 
 import appointments.AppointmentOutcomeRecord;
 import java.io.IOException;
-import java.security.Provider.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +51,7 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
             return true;
         }
         return false;
+
     }
 
     @Override

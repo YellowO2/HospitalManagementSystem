@@ -69,7 +69,7 @@ public class HospitalManagementSystem {
         } else if (role.equals("Doctor")) {
             Doctor doctor = (Doctor) currentUser;
             DoctorMenu doctorMenu = new menus.DoctorMenu(doctor, medicalRecordManager, appointmentManager,
-                    databaseManager.getdoctorAvailabilityDB());
+                    databaseManager.getdoctorAvailabilityDB(), appointmentOutcomeManager);
             doctorMenu.displayMenu();
         } else if (role.equals("Pharmacist")) {
             Pharmacist pharmacist = (Pharmacist) currentUser;
