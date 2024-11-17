@@ -1,16 +1,11 @@
 package users;
 
-import database.UserDB;
-import managers.InventoryManager;
-
 /**
  * The Administrator class extends the User class and represents an
  * administrator
- * with additional access to manage the inventory and user database.
+ * 
  */
 public class Administrator extends User {
-    private InventoryManager inventory;
-    private UserDB userDB;
 
     /**
      * Constructs an Administrator object with the specified details.
@@ -26,24 +21,6 @@ public class Administrator extends User {
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
-    }
-
-    /**
-     * Gets the inventory associated with the administrator.
-     *
-     * @return the inventory
-     */
-    public InventoryManager getInventory() {
-        return inventory;
-    }
-
-    /**
-     * Gets the user database associated with the administrator.
-     *
-     * @return the user database
-     */
-    public UserDB getUserDB() {
-        return userDB;
     }
 
 }
