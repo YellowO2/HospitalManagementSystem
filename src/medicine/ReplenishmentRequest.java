@@ -1,4 +1,4 @@
-package inventory;
+package medicine;
 
 import database.ReplenishmentDB;
 import java.io.IOException;
@@ -81,7 +81,8 @@ public class ReplenishmentRequest {
 
     /**
      * Submits a replenishment request if the stock is low. If a request for the
-     * medicine already exists, the quantity is updated; otherwise, a new request is created.
+     * medicine already exists, the quantity is updated; otherwise, a new request is
+     * created.
      *
      * @param medicationId the ID of the medicine to request replenishment for
      * @param quantity     the quantity to request

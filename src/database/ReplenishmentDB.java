@@ -1,9 +1,10 @@
 package database;
 
-import inventory.ReplenishmentRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import medicine.ReplenishmentRequest;
 
 public class ReplenishmentDB extends Database<ReplenishmentRequest> {
     private List<ReplenishmentRequest> replenishmentRequests;

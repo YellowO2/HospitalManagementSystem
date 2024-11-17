@@ -1,10 +1,10 @@
 package menus;
 
 import appointments.AppointmentOutcomeRecord;
-import inventory.Inventory;
-import inventory.Medicine;
-import inventory.ReplenishmentRequest;
 import managers.AppointmentOutcomeManager;
+import managers.InventoryManager;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +21,7 @@ public class PharmacistMenu {
 
     private Pharmacist pharmacist;
     private AppointmentOutcomeManager appointmentOutcomeManager;
-    private Inventory inventory;
+    private InventoryManager inventory;
     private Scanner scanner;
 
     /**
@@ -33,7 +33,7 @@ public class PharmacistMenu {
      * @param inventory                 the inventory of medicines
      */
     public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager,
-            Inventory inventory) {
+            InventoryManager inventory) {
         this.pharmacist = pharmacist;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
         this.inventory = inventory;

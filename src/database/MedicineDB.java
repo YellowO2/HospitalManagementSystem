@@ -1,9 +1,10 @@
 package database;
 
-import inventory.Medicine;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import medicine.Medicine;
 
 public class MedicineDB extends Database<Medicine> {
     private List<Medicine> medicines;
@@ -87,8 +88,11 @@ public class MedicineDB extends Database<Medicine> {
                 String id = tokens[0].split(": ")[1].trim(); // Extract and trim the value after "ID:"
                 String name = tokens[1].split(": ")[1].trim(); // Extract and trim the value after "Name:"
                 String dosage = tokens[2].split(": ")[1].trim(); // Extract and trim the value after "Dosage:"
-                int stockLevel = Integer.parseInt(tokens[3].split(": ")[1].trim()); // Parse and trim the value after "Stock Level:"
-                int lowStockLevelAlert = Integer.parseInt(tokens[4].split(": ")[1].trim()); // Parse and trim the value after "Low Stock Alert Level:"
+                int stockLevel = Integer.parseInt(tokens[3].split(": ")[1].trim()); // Parse and trim the value after
+                                                                                    // "Stock Level:"
+                int lowStockLevelAlert = Integer.parseInt(tokens[4].split(": ")[1].trim()); // Parse and trim the value
+                                                                                            // after "Low Stock Alert
+                                                                                            // Level:"
 
                 Medicine medicine = new Medicine(id, name, dosage, stockLevel, lowStockLevelAlert);
                 medicines.add(medicine);

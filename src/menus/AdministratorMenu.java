@@ -6,10 +6,10 @@
 package menus;
 
 import database.UserDB;
-import inventory.Inventory;
-import inventory.Medicine;
-import inventory.ReplenishmentRequest;
 import managers.AppointmentManager;
+import managers.InventoryManager;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +27,7 @@ public class AdministratorMenu {
 
     private Administrator administrator;
     private UserDB userDB;
-    private Inventory inventory;
+    private InventoryManager inventory;
     private Scanner scanner;
     private AppointmentManager appointmentManager;
 
@@ -41,7 +41,7 @@ public class AdministratorMenu {
      * @param inventory          the inventory of medicines
      * @param appointmentManager the manager handling appointments
      */
-    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory,
+    public AdministratorMenu(Administrator administrator, UserDB userDB, InventoryManager inventory,
             AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;

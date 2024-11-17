@@ -1,14 +1,15 @@
 package users;
 
 import database.UserDB;
-import inventory.Inventory;
+import managers.InventoryManager;
 
 /**
- * The Administrator class extends the User class and represents an administrator
+ * The Administrator class extends the User class and represents an
+ * administrator
  * with additional access to manage the inventory and user database.
  */
 public class Administrator extends User {
-    private Inventory inventory;
+    private InventoryManager inventory;
     private UserDB userDB;
 
     /**
@@ -23,7 +24,7 @@ public class Administrator extends User {
      * @param password     the password for the administrator's account
      */
     public Administrator(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-                         String emailAddress, String password) {
+            String emailAddress, String password) {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
     }
 
@@ -32,7 +33,7 @@ public class Administrator extends User {
      *
      * @return the inventory
      */
-    public Inventory getInventory() {
+    public InventoryManager getInventory() {
         return inventory;
     }
 

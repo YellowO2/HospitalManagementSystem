@@ -1,8 +1,8 @@
-import inventory.Inventory;
 import managers.AppointmentManager;
 import managers.AppointmentOutcomeManager;
 import managers.AuthenticationManager;
 import managers.DatabaseManager;
+import managers.InventoryManager;
 import managers.MedicalRecordManager;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class HospitalManagementSystem {
             databaseManager.getdoctorAvailabilityDB(), databaseManager.getAppointmentDB(), databaseManager.getUserDB());
     private static AppointmentOutcomeManager appointmentOutcomeManager = new AppointmentOutcomeManager(
             databaseManager.getAppointmentOutcomeRecordDB());
-    private static Inventory inventory = new Inventory(databaseManager.getMedicineDB(),
+    private static InventoryManager inventory = new InventoryManager(databaseManager.getMedicineDB(),
             databaseManager.getReplenishmentDB());
     private static Scanner scanner = new Scanner(System.in);
 

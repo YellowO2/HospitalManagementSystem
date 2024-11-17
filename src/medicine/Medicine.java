@@ -1,10 +1,11 @@
 /**
  * This package contains classes related to inventory management.
  */
-package inventory;
+package medicine;
 
 /**
- * The Medicine class represents a medical item with an ID, name, dosage, stock level,
+ * The Medicine class represents a medical item with an ID, name, dosage, stock
+ * level,
  * and a low stock alert threshold.
  */
 public class Medicine {
@@ -17,10 +18,10 @@ public class Medicine {
     /**
      * Constructs a Medicine object with the given details.
      *
-     * @param id                the unique identifier for the medicine
-     * @param name              the name of the medicine
-     * @param dosage            the dosage information of the medicine
-     * @param stockLevel        the current stock level of the medicine
+     * @param id                 the unique identifier for the medicine
+     * @param name               the name of the medicine
+     * @param dosage             the dosage information of the medicine
+     * @param stockLevel         the current stock level of the medicine
      * @param lowStockLevelAlert the threshold level to trigger a low stock alert
      */
     public Medicine(String id, String name, String dosage, int stockLevel, int lowStockLevelAlert) {
@@ -34,7 +35,8 @@ public class Medicine {
     /**
      * Factory method to create a Medicine object from a CSV line.
      *
-     * @param csvString a string containing the details of a medicine, separated by commas
+     * @param csvString a string containing the details of a medicine, separated by
+     *                  commas
      * @return a new Medicine object created from the CSV line
      * @throws IllegalArgumentException if the CSV format is invalid
      */
@@ -120,7 +122,8 @@ public class Medicine {
     /**
      * Checks if the stock level is below the low stock alert threshold.
      *
-     * @return true if the stock level is at or below the alert level, false otherwise
+     * @return true if the stock level is at or below the alert level, false
+     *         otherwise
      */
     public boolean isStockLow() {
         return stockLevel <= lowStockLevelAlert;
@@ -134,6 +137,6 @@ public class Medicine {
     @Override
     public String toString() {
         return "Medicine ID: " + id + ", Name: " + name + ", Dosage: " + dosage +
-               ", Stock Level: " + stockLevel + ", Low Stock Alert Level: " + lowStockLevelAlert;
+                ", Stock Level: " + stockLevel + ", Low Stock Alert Level: " + lowStockLevelAlert;
     }
 }

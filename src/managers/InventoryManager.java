@@ -1,27 +1,34 @@
-package inventory;
+package managers;
 
 import database.MedicineDB;
 import database.ReplenishmentDB;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
+
 import java.io.IOException;
 import java.util.List;
 
 /**
- * The Inventory class provides methods for managing the inventory of medicines,
- * including adding, updating, removing, and displaying medicines. It also handles
- * replenishment requests and related operations.
+ * The InventoryManager class provides methods for managing the inventory of
+ * medicines,
+ * including adding, updating, removing, and displaying medicines. It also
+ * handles
+ * replenishment requests and related operations, interacting with the
+ * underlying databases
+ * for medicines and replenishment requests.
  */
-public class Inventory {
+public class InventoryManager {
 
     private MedicineDB medicineDB; // Reference to MedicineDB
     private ReplenishmentDB replenishmentDB; // Reference to ReplenishmentDB
 
     /**
-     * Constructs an Inventory object with the given database references.
+     * Constructs an InventoryManager object with the given database references.
      *
      * @param medicineDB      the database handling medicine data
      * @param replenishmentDB the database handling replenishment requests
      */
-    public Inventory(MedicineDB medicineDB, ReplenishmentDB replenishmentDB) {
+    public InventoryManager(MedicineDB medicineDB, ReplenishmentDB replenishmentDB) {
         this.medicineDB = medicineDB;
         this.replenishmentDB = replenishmentDB;
     }
@@ -90,11 +97,13 @@ public class Inventory {
     }
 
     /**
-     * Checks if a specific medicine's stock is low and creates a replenishment request if needed.
+     * Checks if a specific medicine's stock is low and creates a replenishment
+     * request if needed.
      *
      * @param id       the ID of the medicine to check
      * @param quantity the quantity to request for replenishment
-     * @return true if a replenishment request was successfully submitted, false otherwise
+     * @return true if a replenishment request was successfully submitted, false
+     *         otherwise
      */
     public boolean replenishStock(String id, int quantity) {
         Medicine medicine = medicineDB.getById(id);
@@ -224,7 +233,8 @@ public class Inventory {
     /**
      * Removes a replenishment request by its associated medicine ID.
      *
-     * @param medicineId the ID of the medicine associated with the replenishment request
+     * @param medicineId the ID of the medicine associated with the replenishment
+     *                   request
      * @return true if the request was successfully removed, false otherwise
      */
     public boolean removeReplenishmentRequest(String medicineId) {
