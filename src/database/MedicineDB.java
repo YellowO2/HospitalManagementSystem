@@ -2,8 +2,9 @@ package database;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
 import medicine.Medicine;
 
 public class MedicineDB extends Database<Medicine> {
@@ -75,7 +76,9 @@ public class MedicineDB extends Database<Medicine> {
 
     @Override
     public boolean save() throws IOException {
-        saveData(MEDICINE_FILE, medicines, MEDICINE_HEADER);
+
+        List<Medicine> sortedMedicines = getAllSortedById();
+        saveData(MEDICINE_FILE, sortedMedicines, MEDICINE_HEADER);
         return true;
     }
 
@@ -89,10 +92,10 @@ public class MedicineDB extends Database<Medicine> {
                 String name = tokens[1].split(": ")[1].trim(); // Extract and trim the value after "Name:"
                 String dosage = tokens[2].split(": ")[1].trim(); // Extract and trim the value after "Dosage:"
                 int stockLevel = Integer.parseInt(tokens[3].split(": ")[1].trim()); // Parse and trim the value after
-                                                                                    // "Stock Level:"
+                // "Stock Level:"
                 int lowStockLevelAlert = Integer.parseInt(tokens[4].split(": ")[1].trim()); // Parse and trim the value
-                                                                                            // after "Low Stock Alert
-                                                                                            // Level:"
+                // after "Low Stock Alert
+                // Level:"
 
                 Medicine medicine = new Medicine(id, name, dosage, stockLevel, lowStockLevelAlert);
                 medicines.add(medicine);
@@ -107,4 +110,16 @@ public class MedicineDB extends Database<Medicine> {
     public List<Medicine> getAll() {
         return medicines;
     }
+
+        /**
+     * Returns a sorted list of all medicines by their ID.
+     *
+     * @return a sorted list of medicines
+     */
+    public List<Medicine> getAllSortedById() {
+        List<Medicine> sortedMedicines = new ArrayList<>(medicines);
+        Collections.sort(sortedMedicines, Comparator.comparing(Medicine::getId));
+        return sortedMedicines;
+    }
+
 }

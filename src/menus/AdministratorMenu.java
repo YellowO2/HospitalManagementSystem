@@ -285,17 +285,21 @@ public class AdministratorMenu {
             int currentStock = inventory.getMedicineById(request.getMedicineId()).getStockLevel();
             int lowStockLevel = inventory.getMedicineById(request.getMedicineId()).getLowStockLevelAlert(); // Assuming this method exists
 
+            // Only update the stock if current stock is below the low stock level
             if (currentStock < lowStockLevel) {
                 inventory.increaseStock(request.getMedicineId(), request.getQuantity());
-                boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
-                if (removed) {
-                    inventory.saveReplenishmentRequests();
-                    System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
-                } else {
-                    System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
-                }
+                System.out.println("Stock for " + request.getMedicineId() + " increased by " + request.getQuantity() + " units.");
             } else {
-                System.out.println("Stock level for " + request.getMedicineId() + " is sufficient. No replenishment needed.");
+                System.out.println("Stock level for " + request.getMedicineId() + " is sufficient. No stock update needed.");
+            }
+
+            // Remove the request in all cases
+            boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
+            if (removed) {
+                inventory.saveReplenishmentRequests();
+                System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
+            } else {
+                System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
             }
         }
     }
