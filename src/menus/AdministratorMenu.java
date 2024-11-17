@@ -6,14 +6,13 @@
 package menus;
 
 import database.UserDB;
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
 import managers.AppointmentManager;
 import managers.InventoryManager;
 import medicine.Medicine;
 import medicine.ReplenishmentRequest;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
 import users.Administrator;
 import users.Doctor;
 import users.Pharmacist;
@@ -33,8 +32,7 @@ public class AdministratorMenu {
 
     /**
      * Constructs an AdministratorMenu with the specified administrator, user
-     * database,
-     * inventory, and appointment manager.
+     * database, inventory, and appointment manager.
      *
      * @param administrator      the administrator using the menu
      * @param userDB             the database of users
@@ -42,7 +40,7 @@ public class AdministratorMenu {
      * @param appointmentManager the manager handling appointments
      */
     public AdministratorMenu(Administrator administrator, UserDB userDB, InventoryManager inventory,
-            AppointmentManager appointmentManager) {
+                             AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;
         this.inventory = inventory;
@@ -289,11 +287,9 @@ public class AdministratorMenu {
                 boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
                 if (removed) {
                     inventory.saveReplenishmentRequests();
-                    System.out.println(
-                            "Replenishment request for " + request.getMedicineId() + " processed and removed.");
+                    System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
                 } else {
-                    System.out
-                            .println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
+                    System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
                 }
             }
         }

@@ -1,19 +1,22 @@
 package menus;
 
 import java.util.Scanner;
-
-import database.UserDB;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import database.UserDB;
 import managers.AppointmentManager;
 import managers.AppointmentOutcomeManager;
 import managers.MedicalRecordManager;
 import menus.utils.ValidationUtils;
 import users.Patient;
 
+/**
+ * The PatientMenu class provides an interface for a patient to manage
+ * various tasks such as viewing medical records, updating personal information,
+ * scheduling and rescheduling appointments, and viewing appointment outcomes.
+ */
 public class PatientMenu {
     private Patient patient;
     private Scanner scanner;
@@ -22,9 +25,19 @@ public class PatientMenu {
     private AppointmentOutcomeManager appointmentOutcomeManager;
     private UserDB userDB;
 
+    /**
+     * Constructs a PatientMenu with the specified patient, medical record manager,
+     * appointment manager, and appointment outcome manager.
+     *
+     * @param patient                   the patient using the menu
+     * @param medicalRecordManager      the manager handling medical records
+     * @param appointmentManager        the manager handling appointments
+     * @param appointmentOutcomeManager the manager handling appointment outcomes
+     */
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
             AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
             UserDB userDB) {
+
         this.patient = patient;
         this.userDB = userDB;
         this.scanner = new Scanner(System.in);
@@ -33,6 +46,9 @@ public class PatientMenu {
         this.appointmentOutcomeManager = appointmentOutcomeManager;
     }
 
+    /**
+     * Displays the patient menu and handles user input for different actions.
+     */
     public void displayMenu() {
         int choice;
         do {
@@ -94,6 +110,13 @@ public class PatientMenu {
         } while (choice != 10);
     }
 
+    /**
+     * Gets a valid menu choice from the user within a given range.
+     *
+     * @param min the minimum valid value
+     * @param max the maximum valid value
+     * @return the valid menu choice
+     */
     private int getValidMenuChoice(int min, int max) {
         int choice;
         while (true) {
@@ -110,11 +133,22 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Prompts the user to select a day slot.
+     *
+     * @return the index of the selected day slot
+     */
     private int selectDaySlot() {
         System.out.print("Please select a day (1 to 7): ");
         return getValidMenuChoice(1, 7) - 1;
     }
 
+    /**
+     * Prompts the user to select a time slot from the available slots.
+     *
+     * @param availableSlots the list of available time slots
+     * @return the index of the selected time slot
+     */
     private int selectTimeSlot(List<LocalTime> availableSlots) {
         System.out.println("Available Time Slots:");
         for (int i = 0; i < availableSlots.size(); i++) {
@@ -124,11 +158,17 @@ public class PatientMenu {
         return getValidMenuChoice(1, availableSlots.size()) - 1;
     }
 
+    /**
+     * Displays the patient's medical record.
+     */
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
         System.out.println(medicalRecordManager.getMedicalHistory(patient.getId()));
     }
 
+    /**
+     * Displays the available appointment slots.
+     */
     private void viewAvailableAppointmentSlots() {
         boolean returnToMenu = false;
 
@@ -144,6 +184,11 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Prompts the user to select a doctor for an appointment.
+     *
+     * @return the selected doctor's ID
+     */
     private String selectDoctor() {
         System.out.println("\nSelect a doctor...");
 
@@ -157,6 +202,12 @@ public class PatientMenu {
         return doctors.get(selectedDoctorIndex).split(" - ")[1].trim();
     }
 
+    /**
+     * Selects a doctor slot and schedules an appointment.
+     *
+     * @param doctorId the ID of the selected doctor
+     * @param date     the date for the appointment
+     */
     private void selectAndScheduleDoctorSlot(String doctorId, LocalDate date) {
         appointmentManager.showAvailableSlots(doctorId, date);
 
@@ -173,9 +224,6 @@ public class PatientMenu {
 
         int selectedTimeSlotIndex = selectTimeSlot(availableSlots);
 
-        System.out.println("Selected Day Index: " + selectedDayIndex);
-        System.out.println("Selected Time Slot Index: " + selectedTimeSlotIndex);
-
         boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, selectedDay,
                 selectedTimeSlotIndex);
         if (success) {
@@ -185,6 +233,9 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Schedules a new appointment for the patient.
+     */
     private void scheduleAppointment() {
         System.out.println("\nScheduling an appointment...");
 
@@ -193,6 +244,9 @@ public class PatientMenu {
         selectAndScheduleDoctorSlot(doctorId, LocalDate.now());
     }
 
+    /**
+     * Displays the patient's scheduled appointments.
+     */
     private void viewScheduledAppointments() {
         System.out.println("Viewing scheduled appointments...");
 
@@ -221,6 +275,9 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Changes the patient's personal information.
+     */
     private void updatePersonalInformation() {
         System.out.println("Do you want to update your email or phone number?");
         System.out.println("1. Email");
