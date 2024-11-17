@@ -2,6 +2,8 @@ package database;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import medicine.Medicine;
 
@@ -120,7 +122,9 @@ public class MedicineDB extends Database<Medicine> {
      */
     @Override
     public boolean save() throws IOException {
-        saveData(MEDICINE_FILE, medicines, MEDICINE_HEADER);
+
+        List<Medicine> sortedMedicines = getAllSortedById();
+        saveData(MEDICINE_FILE, sortedMedicines, MEDICINE_HEADER);
         return true;
     }
 
@@ -162,4 +166,16 @@ public class MedicineDB extends Database<Medicine> {
     public List<Medicine> getAll() {
         return medicines;
     }
+
+    /**
+     * Returns a sorted list of all medicines by their ID.
+     *
+     * @return a sorted list of medicines
+     */
+    public List<Medicine> getAllSortedById() {
+        List<Medicine> sortedMedicines = new ArrayList<>(medicines);
+        Collections.sort(sortedMedicines, Comparator.comparing(Medicine::getId));
+        return sortedMedicines;
+    }
+
 }
