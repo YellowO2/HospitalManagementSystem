@@ -277,13 +277,16 @@ public class AdministratorMenu {
      * database.
      */
     private void approveReplenishmentRequests() {
-        List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
-        if (requests.isEmpty()) {
-            System.out.println("No replenishment requests to approve.");
-        } else {
-            for (ReplenishmentRequest request : requests) {
-                inventory.increaseStock(request.getMedicineId(), request.getQuantity());
+    List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
+    if (requests.isEmpty()) {
+        System.out.println("No replenishment requests to approve.");
+    } else {
+        for (ReplenishmentRequest request : requests) {
+            int currentStock = inventory.getMedicineById(request.getMedicineId()).getStockLevel();
+            int lowStockLevel = inventory.getMedicineById(request.getMedicineId()).getLowStockLevelAlert(); // Assuming this method exists
 
+            if (currentStock < lowStockLevel) {
+                inventory.increaseStock(request.getMedicineId(), request.getQuantity());
                 boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
                 if (removed) {
                     inventory.saveReplenishmentRequests();
@@ -291,9 +294,12 @@ public class AdministratorMenu {
                 } else {
                     System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
                 }
+            } else {
+                System.out.println("Stock level for " + request.getMedicineId() + " is sufficient. No replenishment needed.");
             }
         }
     }
+}
 
     /**
      * Changes the administrator's password.
