@@ -231,7 +231,8 @@ public class AppointmentManager {
         }
 
         appointment.setStatus(status);
-        return true;
+        return appointmentDB.update(appointment); // Test and make sure that this is working
+        // return true;
     }
 
     public boolean isValidDoctorId(String doctorId) {
