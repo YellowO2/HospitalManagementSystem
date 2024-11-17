@@ -1,3 +1,7 @@
+/**
+ * Manages the operations related to medical records, including creation, 
+ * updating, deletion, and retrieval of medical history.
+ */
 package managers;
 
 import database.MedicalRecordDB;
@@ -10,25 +14,42 @@ public class MedicalRecordManager {
     // Reference to the MedicalRecordDB
     private MedicalRecordDB database;
 
-    // Constructor
+    /**
+     * Constructor to initialize the MedicalRecordManager with a database instance.
+     *
+     * @param database the MedicalRecordDB instance.
+     */
     public MedicalRecordManager(MedicalRecordDB database) {
-        this.database = database; // Create an instance directly with the filename
+        this.database = database;
     }
 
-    // Add a new medical record for a patient
+    /**
+     * Adds a new medical record for a patient.
+     *
+     * @param patientId     the ID of the patient.
+     * @param medicalRecord the medical record to be added.
+     * @return true if the record was successfully added, false otherwise.
+     */
     public boolean addMedicalRecord(String patientId, MedicalRecord medicalRecord) {
         if (medicalRecord != null && patientId != null && !patientId.isEmpty()) {
-            // Add to database
-            return database.create(medicalRecord); // Use the create method from MedicalRecordDB
-        } else {
-            return false; // Invalid input
+            return database.create(medicalRecord);
         }
+        return false;
     }
 
-    // Update an existing medical record (for use by doctors)
+    /**
+     * Updates an existing medical record with new diagnosis, prescription,
+     * or treatment details.
+     *
+     * @param patientId    the ID of the patient.
+     * @param diagnosis    the new diagnosis to be added.
+     * @param prescription the new prescription to be added.
+     * @param treatment    the new treatment to be added.
+     * @return true if the record was successfully updated, false otherwise.
+     */
     public boolean updateMedicalRecord(String patientId, Diagnosis diagnosis, Prescription prescription,
             Treatment treatment) {
-        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
+        MedicalRecord record = database.getById(patientId);
         if (record != null) {
             if (diagnosis != null) {
                 record.addDiagnosis(diagnosis);
@@ -39,30 +60,48 @@ public class MedicalRecordManager {
             if (treatment != null) {
                 record.addTreatment(treatment);
             }
-            // Update in database
-            return database.update(record); // Update the record in the database
+            return database.update(record);
         }
-        return false; // Record not found
+        return false;
     }
 
-    // Delete a medical record (for potential administrative actions)
+    /**
+     * Deletes a medical record of a patient.
+     *
+     * @param patientId the ID of the patient whose record is to be deleted.
+     * @return true if the record was successfully deleted, false otherwise.
+     */
     public boolean deleteMedicalRecord(String patientId) {
-        return database.delete(patientId); // Use the delete method to remove the record
+        return database.delete(patientId);
     }
 
-    // View past diagnoses and treatments (for patients)
+    /**
+     * Retrieves the medical history of a patient as a formatted string.
+     *
+     * @param patientId the ID of the patient.
+     * @return a string describing the medical history, or null if no record is
+     *         found.
+     */
     public String getMedicalHistory(String patientId) {
-        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
-        return (record != null) ? record.getMedicalRecordDescription() : null; // Return the description if found
+        MedicalRecord record = database.getById(patientId);
+        return (record != null) ? record.getMedicalRecordDescription() : null;
     }
 
-    // Update non-medical information such as contact info (for patients)
+    /**
+     * Updates the contact information for a patient in their medical record.
+     *
+     * @param patientId       the ID of the patient.
+     * @param newPhoneNumber  the new phone number to update.
+     * @param newEmailAddress the new email address to update.
+     * @return true if the contact information was successfully updated, false
+     *         otherwise.
+     */
     public boolean updateContactInfo(String patientId, String newPhoneNumber, String newEmailAddress) {
-        MedicalRecord record = database.getById(patientId); // Retrieve the medical record using patient ID
+        MedicalRecord record = database.getById(patientId);
         if (record != null) {
             record.updateContactInfo(newPhoneNumber, newEmailAddress);
-            return database.update(record); // Update the medical record in the database
+            return database.update(record);
         }
-        return false; // Record not found
+        return false;
     }
 }
