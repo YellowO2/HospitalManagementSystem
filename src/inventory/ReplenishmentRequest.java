@@ -4,44 +4,90 @@ import database.ReplenishmentDB;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * The ReplenishmentRequest class handles the creation, updating, and display of
+ * replenishment requests for medicines. It interacts with the ReplenishmentDB
+ * to manage these operations.
+ */
 public class ReplenishmentRequest {
 
     private String medicineId;
     private int quantity;
     private ReplenishmentDB replenishmentDB; // Instance variable for dependency injection
 
-    // Constructor to create a ReplenishmentRequest with a given database
+    /**
+     * Constructs a ReplenishmentRequest with a given database reference.
+     *
+     * @param replenishmentDB the database handling replenishment request data
+     */
     public ReplenishmentRequest(ReplenishmentDB replenishmentDB) {
         this.replenishmentDB = replenishmentDB;
     }
 
+    /**
+     * Gets the ID of the medicine associated with the request.
+     *
+     * @return the ID of the medicine
+     */
     public String getMedicineId() {
         return medicineId;
     }
 
+    /**
+     * Gets the quantity requested for replenishment.
+     *
+     * @return the quantity requested
+     */
     public int getQuantity() {
         return quantity;
     }
 
+    /**
+     * Sets the quantity requested for replenishment.
+     *
+     * @param quantity the new quantity to set
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    /**
+     * Sets the ID of the medicine associated with the request.
+     *
+     * @param medicineId the ID of the medicine to set
+     */
     public void setMedicineId(String medicineId) {
         this.medicineId = medicineId;
     }
 
+    /**
+     * Returns a string representation of the replenishment request.
+     *
+     * @return a string containing the medicine ID and quantity
+     */
     @Override
     public String toString() {
         return medicineId + "," + quantity;
     }
 
-    // Method to load the database
+    /**
+     * Loads the database for replenishment requests.
+     *
+     * @throws IOException if an error occurs while loading the database
+     */
     public void loadDB() throws IOException {
         replenishmentDB.load();
     }
 
-    // Method to submit a replenishment request
+    /**
+     * Submits a replenishment request if the stock is low. If a request for the
+     * medicine already exists, the quantity is updated; otherwise, a new request is created.
+     *
+     * @param medicationId the ID of the medicine to request replenishment for
+     * @param quantity     the quantity to request
+     * @param medicine     the Medicine object to check for stock status
+     * @return true if the request was successfully submitted, false otherwise
+     */
     public boolean submitRequest(String medicationId, int quantity, Medicine medicine) {
         try {
             if (medicine != null) {
@@ -81,7 +127,9 @@ public class ReplenishmentRequest {
         return false;
     }
 
-    // Method to display all replenishment requests
+    /**
+     * Displays all replenishment requests stored in the database.
+     */
     public void displayAllRequests() {
         List<ReplenishmentRequest> requests = replenishmentDB.getAll();
         if (requests.isEmpty()) {
