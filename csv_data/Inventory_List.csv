@@ -1,6 +1,6 @@
 ID,Name,Dosage,StockLevel,LowStockLevelAlert
 Medicine ID: M1004, Name: Aderall, Dosage: 10ml, Stock Level: 10, Low Stock Alert Level: 30
 Medicine ID: M1005, Name: Ligma, Dosage: Ballz, Stock Level: 10, Low Stock Alert Level: 30
-Medicine ID: M1001, Name: Paracetamol, Dosage: "50 ml", Stock Level: 20, Low Stock Alert Level: 20
-Medicine ID: M1003, Name: Amoxicillin, Dosage: "35 ml", Stock Level: 20, Low Stock Alert Level: 20
-Medicine ID: M1002, Name: Ibuprofen, Dosage: "25 ml", Stock Level: 70, Low Stock Alert Level: 100
+Medicine ID: M1001, Name: Paracetamol, Dosage: 50 ml, Stock Level: 10, Low Stock Alert Level: 20
+Medicine ID: M1002, Name: Ibuprofen, Dosage: 25 ml, Stock Level: 10, Low Stock Alert Level: 20
+Medicine ID: M1003, Name: Amoxicillin, Dosage: 35 ml, Stock Level: 50, Low Stock Alert Level: 20

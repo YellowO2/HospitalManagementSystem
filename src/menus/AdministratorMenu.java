@@ -1,34 +1,46 @@
 /*
-* The AdministratorMenu class is responsible for displaying options for the
-administrator
-* and handling user input. This class calls methods from the Administrator
-class to perform actions.
+ * The AdministratorMenu class is responsible for displaying options for the
+ * administrator and handling user input. This class calls methods from the 
+ * Administrator class and other related classes to perform various actions.
  */
 package menus;
 
-import appointments.AppointmentManager;
 import database.UserDB;
-import inventory.Inventory;
-import inventory.Medicine;
-import inventory.ReplenishmentRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+import managers.AppointmentManager;
+import managers.InventoryManager;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
 import users.Administrator;
 import users.Doctor;
 import users.Pharmacist;
 import users.User;
 
+/**
+ * The AdministratorMenu class provides the interface and functionality for an
+ * administrator to manage hospital staff, inventory, appointments, and more.
+ */
 public class AdministratorMenu {
 
     private Administrator administrator;
     private UserDB userDB;
-    private Inventory inventory;
+    private InventoryManager inventory;
     private Scanner scanner;
     private AppointmentManager appointmentManager;
 
-    // Constructor
-    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory, AppointmentManager appointmentManager) {
+    /**
+     * Constructs an AdministratorMenu with the specified administrator, user
+     * database, inventory, and appointment manager.
+     *
+     * @param administrator the administrator using the menu
+     * @param userDB the database of users
+     * @param inventory the inventory of medicines
+     * @param appointmentManager the manager handling appointments
+     */
+    public AdministratorMenu(Administrator administrator, UserDB userDB, InventoryManager inventory,
+            AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;
         this.inventory = inventory;
@@ -36,16 +48,20 @@ public class AdministratorMenu {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Displays the administrator menu and handles user input for different
+     * actions.
+     */
     public void displayMenu() {
         int choice;
         do {
             System.out.println("\n=== Administrator Menu ===");
             System.out.println("1. View, Add, or Remove Hospital Staff");
             System.out.println("2. View Appointment Details");
-            System.out.println("2. View, Add, or Remove Medication Inventory");
-            System.out.println("3. Approve Replenishment Requests");
-            System.out.println("4. Change Password");
-            System.out.println("5. Logout");
+            System.out.println("3. View, Add, or Remove Medication Inventory");
+            System.out.println("4. Approve Replenishment Requests");
+            System.out.println("5. Change Password");
+            System.out.println("6. Logout");
             System.out.print("Enter your choice: ");
 
             while (!scanner.hasNextInt()) {
@@ -80,6 +96,10 @@ public class AdministratorMenu {
         } while (choice != 6);
     }
 
+    /**
+     * Manages hospital staff by displaying them and allowing the addition or
+     * removal of staff.
+     */
     private void manageStaff() {
         System.out.println("\n=== Hospital Staff ===");
         userDB.getAll().forEach(user -> {
@@ -113,6 +133,9 @@ public class AdministratorMenu {
         }
     }
 
+    /**
+     * Adds a new staff member to the user database.
+     */
     private void addNewStaffMember() {
         System.out.println("\nEnter details for new staff member:");
         System.out.print("ID: ");
@@ -142,7 +165,6 @@ public class AdministratorMenu {
         } else if (role.equalsIgnoreCase("Administrator")) {
             Administrator newAdministrator = new Administrator(id, name, dob, gender, phoneNumber, email, password);
             userDB.create(newAdministrator);
-            System.out.println("New staff member added successfully.");
         } else {
             System.out.println("Invalid role. Please use Doctor, Pharmacist, or Administrator.");
             return; // Exit the method early if the role is invalid
@@ -151,11 +173,15 @@ public class AdministratorMenu {
         // Save the new user to the database
         try {
             userDB.save();
+            System.out.println("New staff member added successfully.");
         } catch (IOException e) {
             System.out.println("Error saving new staff member: " + e.getMessage());
         }
     }
 
+    /**
+     * Removes a staff member from the user database by their ID.
+     */
     private void removeStaffMember() {
         System.out.print("\nEnter the ID of the staff member to remove: ");
         String id = scanner.nextLine().trim();
@@ -175,7 +201,9 @@ public class AdministratorMenu {
         }
     }
 
-    // Method to view all appointments
+    /**
+     * Displays all appointment details from the appointment manager.
+     */
     public void viewAppointmentsDetails() {
         System.out.println("=== Viewing All Appointments ===");
         List<String> allAppointments = appointmentManager.viewAllAppointments();
@@ -183,10 +211,15 @@ public class AdministratorMenu {
             System.out.println("No appointments found.");
         } else {
             for (String appointment : allAppointments) {
-                System.out.println(appointment); // Assumes `toString()` method in `Appointment` prints the details in a readable format
+                System.out.println(appointment);
             }
         }
     }
+
+    /**
+     * Manages the medication inventory by displaying it and allowing the
+     * addition or removal of medications.
+     */
     private void manageInventory() {
         System.out.println("=== Inventory ===");
         inventory.displayInventory();
@@ -213,6 +246,9 @@ public class AdministratorMenu {
         }
     }
 
+    /**
+     * Adds new medication to the inventory.
+     */
     private void addNewMedication() {
         System.out.println("\nEnter details for new medication:");
         System.out.print("ID: ");
@@ -228,34 +264,58 @@ public class AdministratorMenu {
         inventory.addMedicine(newMedicine);
     }
 
+    /**
+     * Removes medication from the inventory by its ID.
+     */
     private void removeMedication() {
         System.out.print("\nEnter the ID of the medication to remove: ");
         String id = scanner.nextLine().trim();
         inventory.removeMedicine(id);
     }
 
+    /**
+     * Approves replenishment requests by processing and removing them from the
+     * database.
+     */
     private void approveReplenishmentRequests() {
         List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
         if (requests.isEmpty()) {
             System.out.println("No replenishment requests to approve.");
         } else {
             for (ReplenishmentRequest request : requests) {
-                // Attempt to increase stock
-                inventory.increaseStock(request.getMedicineId(), request.getQuantity());
+                String medicineId = request.getMedicineId();
+                Medicine medicine = inventory.getMedicineById(medicineId);
 
-                // Remove the replenishment request from the database
-                boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
+                if (medicine == null) {
+                    System.out.println("Medicine with ID " + medicineId + " not found.");
+                    continue;
+                }
 
+                int currentStock = medicine.getStockLevel();
+                int lowStockLevel = medicine.getLowStockLevelAlert();
+
+                // Only update the stock if current stock is below the low stock level
+                if (currentStock < lowStockLevel) {
+                    inventory.increaseStock(medicineId, request.getQuantity());
+                    System.out.println("Stock for " + medicineId + ": " + medicine.getName() + " increased by " + request.getQuantity() + " units.");
+                } else {
+                    System.out.println("Stock for " + medicineId + ": " + medicine.getName() + " sufficient. No replenishment needed.");
+                }
+
+                // Remove the request in all cases
+                boolean removed = inventory.removeReplenishmentRequest(medicineId);
                 if (removed) {
                     inventory.saveReplenishmentRequests();
-                    System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
                 } else {
-                    System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
+                    System.out.println("Failed to remove the replenishment request for " + medicineId + ".");
                 }
             }
         }
     }
 
+    /**
+     * Changes the administrator's password.
+     */
     private void changePassword() {
         System.out.println("Changing password...");
         System.out.print("Enter new password: ");
@@ -268,6 +328,12 @@ public class AdministratorMenu {
         }
     }
 
+    /**
+     * Gets a valid integer input from the user.
+     *
+     * @param prompt the prompt to display to the user
+     * @return the valid integer input
+     */
     private int getIntInput(String prompt) {
         int input;
         while (true) {

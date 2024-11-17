@@ -5,27 +5,50 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import appointments.AppointmentManager;
-import appointments.AppointmentOutcomeManager;
-import medicalrecords.MedicalRecordManager;
+import database.UserDB;
+import managers.AppointmentManager;
+import managers.AppointmentOutcomeManager;
+import managers.MedicalRecordManager;
+import menus.utils.ValidationUtils;
 import users.Patient;
 
+/**
+ * The PatientMenu class provides an interface for a patient to manage
+ * various tasks such as viewing medical records, updating personal information,
+ * scheduling and rescheduling appointments, and viewing appointment outcomes.
+ */
 public class PatientMenu {
     private Patient patient;
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
     private AppointmentOutcomeManager appointmentOutcomeManager;
+    private UserDB userDB;
 
+    /**
+     * Constructs a PatientMenu with the specified patient, medical record manager,
+     * appointment manager, and appointment outcome manager.
+     *
+     * @param patient                   the patient using the menu
+     * @param medicalRecordManager      the manager handling medical records
+     * @param appointmentManager        the manager handling appointments
+     * @param appointmentOutcomeManager the manager handling appointment outcomes
+     */
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
-            AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager) {
+            AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
+            UserDB userDB) {
+
         this.patient = patient;
+        this.userDB = userDB;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
         this.appointmentManager = appointmentManager;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
     }
 
+    /**
+     * Displays the patient menu and handles user input for different actions.
+     */
     public void displayMenu() {
         int choice;
         do {
@@ -87,6 +110,13 @@ public class PatientMenu {
         } while (choice != 10);
     }
 
+    /**
+     * Gets a valid menu choice from the user within a given range.
+     *
+     * @param min the minimum valid value
+     * @param max the maximum valid value
+     * @return the valid menu choice
+     */
     private int getValidMenuChoice(int min, int max) {
         int choice;
         while (true) {
@@ -103,11 +133,22 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Prompts the user to select a day slot.
+     *
+     * @return the index of the selected day slot
+     */
     private int selectDaySlot() {
         System.out.print("Please select a day (1 to 7): ");
         return getValidMenuChoice(1, 7) - 1;
     }
 
+    /**
+     * Prompts the user to select a time slot from the available slots.
+     *
+     * @param availableSlots the list of available time slots
+     * @return the index of the selected time slot
+     */
     private int selectTimeSlot(List<LocalTime> availableSlots) {
         System.out.println("Available Time Slots:");
         for (int i = 0; i < availableSlots.size(); i++) {
@@ -117,33 +158,17 @@ public class PatientMenu {
         return getValidMenuChoice(1, availableSlots.size()) - 1;
     }
 
+    /**
+     * Displays the patient's medical record.
+     */
     private void viewMedicalRecord() {
         System.out.println("Viewing medical record for " + patient.getName());
         System.out.println(medicalRecordManager.getMedicalHistory(patient.getId()));
     }
 
-    private void updatePersonalInformation() {
-        System.out.println("Do you want to update your email or phone number?");
-        System.out.println("1. Email");
-        System.out.println("2. Phone Number");
-
-        int choice = getValidMenuChoice(1, 2);
-
-        if (choice == 1) {
-            System.out.print("Enter new email: ");
-            String newEmail = scanner.nextLine().trim();
-            medicalRecordManager.updateContactInfo(patient.getId(), patient.getPhoneNumber(), newEmail);
-            patient.setEmailAddress(newEmail);
-        } else if (choice == 2) {
-            System.out.print("Enter new phone number: ");
-            String newPhoneNo = scanner.nextLine().trim();
-            medicalRecordManager.updateContactInfo(patient.getId(), newPhoneNo, patient.getEmailAddress());
-            patient.setPhoneNumber(newPhoneNo);
-        }
-
-        System.out.println("Personal information updated successfully.");
-    }
-
+    /**
+     * Displays the available appointment slots.
+     */
     private void viewAvailableAppointmentSlots() {
         boolean returnToMenu = false;
 
@@ -159,6 +184,11 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Prompts the user to select a doctor for an appointment.
+     *
+     * @return the selected doctor's ID
+     */
     private String selectDoctor() {
         System.out.println("\nSelect a doctor...");
 
@@ -172,6 +202,12 @@ public class PatientMenu {
         return doctors.get(selectedDoctorIndex).split(" - ")[1].trim();
     }
 
+    /**
+     * Selects a doctor slot and schedules an appointment.
+     *
+     * @param doctorId the ID of the selected doctor
+     * @param date     the date for the appointment
+     */
     private void selectAndScheduleDoctorSlot(String doctorId, LocalDate date) {
         appointmentManager.showAvailableSlots(doctorId, date);
 
@@ -188,9 +224,6 @@ public class PatientMenu {
 
         int selectedTimeSlotIndex = selectTimeSlot(availableSlots);
 
-        System.out.println("Selected Day Index: " + selectedDayIndex);
-        System.out.println("Selected Time Slot Index: " + selectedTimeSlotIndex);
-
         boolean success = appointmentManager.scheduleAppointment(patient.getId(), doctorId, selectedDay,
                 selectedTimeSlotIndex);
         if (success) {
@@ -200,52 +233,20 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Schedules a new appointment for the patient.
+     */
     private void scheduleAppointment() {
         System.out.println("\nScheduling an appointment...");
 
         String doctorId = selectDoctor();
-        // System.out.print("Please enter a date (YYYY-MM-DD): ");
-        // String dateInput = scanner.nextLine().trim();
-        // LocalDate date = LocalDate.parse(dateInput);
 
         selectAndScheduleDoctorSlot(doctorId, LocalDate.now());
     }
 
-    private void rescheduleAppointment() {
-        System.out.println("Rescheduling an appointment...");
-        System.out.print("Enter old Appointment ID: ");
-        String appointmentId = scanner.nextLine().trim();
-
-        String newDoctorID = selectDoctor();
-        // System.out.print("Enter new date to reschedule to (YYYY-MM-DD): ");
-        // LocalDate newDate = LocalDate.parse(scanner.nextLine().trim());
-
-        // selectAndScheduleDoctorSlot(newDoctorID, newDate);
-        appointmentManager.showAvailableSlots(newDoctorID, LocalDate.now());
-        System.out.println("==== Select a new appointment ====");
-
-        int selectedDayIndex = selectDaySlot();
-        LocalDate newDate = LocalDate.now().plusDays(selectedDayIndex);
-        // System.out.println("DEBUG: THIS PRINTED");
-        int selectedTimeSlotIndex = selectTimeSlot(appointmentManager.getAvailableSlotsForDoctor(newDoctorID, newDate));
-
-        appointmentManager.rescheduleAppointment(newDoctorID, appointmentId, newDate, selectedTimeSlotIndex);
-    }
-
-    private void cancelAppointment() {
-        System.out.println("Canceling an appointment...");
-        System.out.print("Enter Appointment ID: ");
-        String appointmentId = scanner.nextLine().trim();
-
-        boolean success = appointmentManager.cancelAppointment(appointmentId);
-
-        if (success) {
-            System.out.println("Appointment canceled successfully.");
-        } else {
-            System.out.println("Failed to cancel the appointment. Please try again.");
-        }
-    }
-
+    /**
+     * Displays the patient's scheduled appointments.
+     */
     private void viewScheduledAppointments() {
         System.out.println("Viewing scheduled appointments...");
 
@@ -264,7 +265,7 @@ public class PatientMenu {
                 String status = details[5].trim();
 
                 System.out.println("\nAppointment ID: " + appointmentId);
-                System.out.println("Doctor: " + appointmentManager.getDoctorById(doctorId).getName());
+                System.out.println("Doctor: " + userDB.getById(doctorId).getName());
                 System.out.println("Patient ID: " + patientId);
                 System.out.println("Date: " + date);
                 System.out.println("Time: " + time);
@@ -274,15 +275,82 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Changes the patient's personal information.
+     */
+    private void updatePersonalInformation() {
+        System.out.println("Do you want to update your email or phone number?");
+        System.out.println("1. Email");
+        System.out.println("2. Phone Number");
+
+        int choice = getValidMenuChoice(1, 2);
+
+        if (choice == 1) {
+            String newEmail = ValidationUtils.getValidEmail(scanner);
+            medicalRecordManager.updateContactInfo(patient.getId(), patient.getPhoneNumber(), newEmail);
+            patient.setEmailAddress(newEmail);
+            System.out.println("Email updated successfully.");
+        } else if (choice == 2) {
+            String newPhoneNo = ValidationUtils.getValidPhoneNumber(scanner);
+            medicalRecordManager.updateContactInfo(patient.getId(), newPhoneNo, patient.getEmailAddress());
+            patient.setPhoneNumber(newPhoneNo);
+            System.out.println("Phone number updated successfully.");
+        }
+        userDB.update(patient);
+    }
+
     private void changePassword() {
         System.out.println("Changing password...");
-        System.out.print("Enter new password: ");
-        String newPassword = scanner.nextLine().trim();
-        boolean success = patient.changePassword(newPassword);
+        String newPassword = ValidationUtils.getValidPassword(scanner);
+
+        patient.changePassword(newPassword);
+        boolean success = userDB.update(patient);
         if (success) {
             System.out.println("Password changed successfully.");
         } else {
             System.out.println("Error: Failed to change password.");
         }
+    }
+
+    // Update the methods that use appointment IDs
+    private void cancelAppointment() {
+        System.out.println("Canceling an appointment...");
+
+        System.out.print("Enter Appointment ID: ");
+        String appointmentId = scanner.nextLine().trim();
+        if (!appointmentManager.isValidAppointmentId(appointmentId)) {
+            System.out.println("Invalid appointment ID");
+            return;
+        }
+
+        boolean success = appointmentManager.cancelAppointment(appointmentId);
+        if (success) {
+            System.out.println("Appointment canceled successfully.");
+        } else {
+            System.out.println("Failed to cancel the appointment. Please try again.");
+        }
+    }
+
+    private void rescheduleAppointment() {
+        System.out.println("Rescheduling an appointment...");
+
+        System.out.print("Enter Appointment ID: ");
+        String appointmentId = scanner.nextLine().trim();
+        if (!appointmentManager.isValidAppointmentId(appointmentId)) {
+            System.out.println("Invalid appointment ID");
+            return;
+        }
+
+        String newDoctorID = selectDoctor();
+
+        appointmentManager.showAvailableSlots(newDoctorID, LocalDate.now());
+        System.out.println("==== Select a new appointment ====");
+
+        int selectedDayIndex = selectDaySlot();
+        LocalDate newDate = LocalDate.now().plusDays(selectedDayIndex);
+        int selectedTimeSlotIndex = selectTimeSlot(
+                appointmentManager.getAvailableSlotsForDoctor(newDoctorID, newDate));
+
+        appointmentManager.rescheduleAppointment(newDoctorID, appointmentId, newDate, selectedTimeSlotIndex);
     }
 }

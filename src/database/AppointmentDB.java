@@ -8,18 +8,33 @@ import java.util.List;
 
 import appointments.Appointment;
 
+/**
+ * A database class to manage Appointment objects.
+ * Handles CRUD operations and provides methods to interact with appointment
+ * data,
+ * including loading and saving to a CSV file.
+ */
 public class AppointmentDB extends Database<Appointment> {
-    private List<Appointment> appointments;
-    private static final String filename = "csv_data/Appointment_List.csv";
-    private static final String header = "AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlot,Status";
+    private List<Appointment> appointments; // List of appointments
+    private static final String filename = "csv_data/Appointment_List.csv"; // Filepath for CSV file
+    private static final String header = "AppointmentID,DoctorID,PatientID,AppointmentDate,TimeSlot,Status"; // CSV file
+                                                                                                             // header
 
-    // Constructor
+    /**
+     * Constructs an AppointmentDB instance and initializes the list of
+     * appointments.
+     */
     public AppointmentDB() {
         super(filename); // Pass the filename to the parent class
         this.appointments = new ArrayList<>();
     }
 
-    // Create an appointment
+    /**
+     * Creates a new appointment and saves the changes to the file.
+     *
+     * @param appointment the Appointment object to be created
+     * @return true if the appointment was successfully added, false otherwise
+     */
     @Override
     public boolean create(Appointment appointment) {
         if (appointment != null) {
@@ -34,7 +49,12 @@ public class AppointmentDB extends Database<Appointment> {
         return false;
     }
 
-    // Get an appointment by its ID
+    /**
+     * Retrieves an appointment by its unique ID.
+     *
+     * @param appointmentId the unique ID of the appointment
+     * @return the Appointment object if found, or null otherwise
+     */
     @Override
     public Appointment getById(String appointmentId) {
         for (Appointment appointment : appointments) {
@@ -45,12 +65,22 @@ public class AppointmentDB extends Database<Appointment> {
         return null; // Appointment not found
     }
 
+    /**
+     * Retrieves all appointments stored in the database.
+     *
+     * @return a list of all Appointment objects
+     */
     @Override
     public List<Appointment> getAll() {
         return appointments;
     }
 
-    // Update an existing appointment
+    /**
+     * Updates an existing appointment and saves the changes to the file.
+     *
+     * @param appointment the updated Appointment object
+     * @return true if the appointment was successfully updated, false otherwise
+     */
     @Override
     public boolean update(Appointment appointment) {
         Appointment existingAppointment = getById(appointment.getAppointmentId());
@@ -67,7 +97,12 @@ public class AppointmentDB extends Database<Appointment> {
         return false; // Appointment not found
     }
 
-    // Delete an appointment by ID
+    /**
+     * Deletes an appointment by its unique ID and saves the changes to the file.
+     *
+     * @param appointmentId the unique ID of the appointment to delete
+     * @return true if the appointment was successfully deleted, false otherwise
+     */
     @Override
     public boolean delete(String appointmentId) {
         Appointment existingAppointment = getById(appointmentId);
@@ -83,14 +118,24 @@ public class AppointmentDB extends Database<Appointment> {
         return false; // Appointment not found
     }
 
-    // Save appointments to CSV
+    /**
+     * Saves all appointments to the CSV file.
+     *
+     * @return true if the data was successfully saved
+     * @throws IOException if there is an error saving the data
+     */
     @Override
     public boolean save() throws IOException {
         saveData(filename, appointments, header);
         return true;
     }
 
-    // Load appointments from CSV
+    /**
+     * Loads appointments from the CSV file into the database.
+     *
+     * @return true if the data was successfully loaded
+     * @throws IOException if there is an error reading the file
+     */
     @Override
     public boolean load() throws IOException {
         List<String> lines = readFile(filename); // Read the CSV file
@@ -114,6 +159,12 @@ public class AppointmentDB extends Database<Appointment> {
         return true;
     }
 
+    /**
+     * Retrieves all appointments for a specific doctor.
+     *
+     * @param doctorId the unique ID of the doctor
+     * @return a list of Appointment objects for the specified doctor
+     */
     public List<Appointment> getDoctorAppointments(String doctorId) {
         List<Appointment> doctorAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
@@ -124,6 +175,12 @@ public class AppointmentDB extends Database<Appointment> {
         return doctorAppointments;
     }
 
+    /**
+     * Retrieves all appointments for a specific patient.
+     *
+     * @param patientId the unique ID of the patient
+     * @return a list of Appointment objects for the specified patient
+     */
     public List<Appointment> getPatientAppointments(String patientId) {
         List<Appointment> patientAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {

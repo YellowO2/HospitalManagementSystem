@@ -1,4 +1,4 @@
-package authentication;
+package managers;
 
 import users.User;
 import java.util.Scanner;
@@ -23,7 +23,6 @@ public class AuthenticationManager {
             System.out.println("Login successful for user: " + userId);
             return user; // Return the authenticated user
         }
-        System.out.println("user:" + user);
 
         System.out.println("Login failed for user: " + userId);
         return null; // Return null if no match found

@@ -3,8 +3,6 @@ package medicalrecords;
 import java.util.ArrayList;
 import java.util.List;
 
-//Very ANGRY that they want us to have non medical information like FUCKING email-address etc in the fucking MEDICAL record, 
-//can we ask if we can do it our own way?
 public class MedicalRecord {
     private String patientId;
     private String name;

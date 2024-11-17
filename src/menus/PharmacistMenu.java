@@ -1,31 +1,47 @@
 package menus;
 
-import appointments.AppointmentOutcomeManager;
 import appointments.AppointmentOutcomeRecord;
-import database.UserDB;
-import inventory.Inventory;
-import inventory.Medicine;
-import inventory.ReplenishmentRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+import managers.AppointmentOutcomeManager;
+import managers.InventoryManager;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
 import users.Pharmacist;
 
+/**
+ * The PharmacistMenu class provides an interface for a pharmacist to manage
+ * various tasks such as viewing appointment outcomes, updating prescription
+ * statuses, managing medication inventory, and submitting replenishment
+ * requests.
+ */
 public class PharmacistMenu {
 
     private Pharmacist pharmacist;
-    private UserDB userDB;
     private AppointmentOutcomeManager appointmentOutcomeManager;
-    private Inventory inventory;
+    private InventoryManager inventory;
     private Scanner scanner;
 
-    public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager, Inventory inventory) {
+    /**
+     * Constructs a PharmacistMenu with the specified pharmacist, appointment
+     * outcome manager, and inventory.
+     *
+     * @param pharmacist                the pharmacist using the menu
+     * @param appointmentOutcomeManager the manager for appointment outcomes
+     * @param inventory                 the inventory of medicines
+     */
+    public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager,
+                          InventoryManager inventory) {
         this.pharmacist = pharmacist;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
         this.inventory = inventory;
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Displays the pharmacist menu and handles user input for different actions.
+     */
     public void displayMenu() {
         int choice;
         do {
@@ -74,6 +90,10 @@ public class PharmacistMenu {
         } while (choice != 7);
     }
 
+    /**
+     * Displays all appointment outcome records managed by the appointment outcome
+     * manager.
+     */
     private void viewAppointmentOutcomeRecords() {
         List<AppointmentOutcomeRecord> records = appointmentOutcomeManager.getAllOutcomeRecords();
         if (records.isEmpty()) {
@@ -85,6 +105,10 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Allows the pharmacist to update the prescription status for a specific
+     * appointment.
+     */
     private void inputPrescriptionStatus() {
         System.out.print("Enter the Appointment ID: ");
         String appointmentId = scanner.nextLine();
@@ -101,18 +125,20 @@ public class PharmacistMenu {
 
         if (updated) {
             try {
-                // Save the updated data to persist changes
                 appointmentOutcomeManager.getAppointmentOutcomeRecordDB().save();
                 System.out.println("Prescription status updated and saved successfully.");
             } catch (IOException e) {
                 System.out.println("Error saving updated status: " + e.getMessage());
             }
         } else {
-            // This 'else' is connected to the 'if' outside the 'try-catch' block
             System.out.println("Failed to update prescription status. Check the Appointment ID or status.");
         }
     }
 
+    /**
+     * Submits a replenishment request for a specific medication if its stock is
+     * low.
+     */
     private void submitReplenishmentRequest() {
         System.out.print("Enter the medication ID: ");
         String medicationId = scanner.nextLine();
@@ -134,13 +160,18 @@ public class PharmacistMenu {
                     System.out.println("Failed to submit replenishment request for " + medicine.getName() + ".");
                 }
             } else {
-                System.out.println("Stock level for " + medicine.getName() + " is sufficient. No need for a replenishment request.");
+                System.out.println("Stock level for " + medicine.getName()
+                        + " is sufficient. No need for a replenishment request.");
             }
         } else {
-            System.out.println("Medicine with ID " + medicationId + " not found.");
+            System.out.println("List of Medicine:");
+            inventory.displayInventory();
         }
     }
 
+    /**
+     * Displays all replenishment requests from the inventory.
+     */
     private void displayReplenishmentRequests() {
         List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
         if (requests.isEmpty()) {
@@ -153,6 +184,9 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Changes the pharmacist's password.
+     */
     private void changePassword() {
         System.out.println("Changing password...");
         System.out.print("Enter new password: ");
@@ -165,4 +199,3 @@ public class PharmacistMenu {
         }
     }
 }
-

@@ -9,18 +9,30 @@ import users.Patient;
 import users.Pharmacist;
 import users.User;
 
+/**
+ * Manages a collection of users, providing methods for creating, retrieving,
+ * updating, deleting, and saving user data to a CSV file.
+ */
 public class UserDB extends Database<User> {
 
     private List<User> users;
     private static final String USER_FILE = "csv_data/User_List.csv";
     private static final String USER_HEADER = "ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role";
 
+    /**
+     * Constructs a new UserDB instance and initializes the list of users.
+     */
     public UserDB() {
         super(USER_FILE);
         users = new ArrayList<>();
     }
 
-    // Create a new user entry
+    /**
+     * Creates a new user entry and saves it to the CSV file.
+     *
+     * @param user The user to be added.
+     * @return true if the user is successfully added, false otherwise.
+     */
     @Override
     public boolean create(User user) {
         if (user == null || exists(user.getId())) {
@@ -37,12 +49,22 @@ public class UserDB extends Database<User> {
         }
     }
 
-    // Check if a user with a given ID already exists
+    /**
+     * Checks if a user with the given ID already exists in the database.
+     *
+     * @param id The ID of the user to check.
+     * @return true if the user exists, false otherwise.
+     */
     public boolean exists(String id) {
         return users.stream().anyMatch(user -> user.getId().equals(id));
     }
 
-    // Get a user by their ID
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return The user if found, null otherwise.
+     */
     @Override
     public User getById(String id) {
         return users.stream()
@@ -51,13 +73,22 @@ public class UserDB extends Database<User> {
                 .orElse(null); // Return null if no match
     }
 
-    // Get all users
+    /**
+     * Retrieves all users in the database.
+     *
+     * @return A list of all users.
+     */
     @Override
     public List<User> getAll() {
         return new ArrayList<>(users); // Return a copy for safety
     }
 
-    // Update a user's details
+    /**
+     * Updates an existing user's details in the database.
+     *
+     * @param updatedUser The user with updated details.
+     * @return true if the update is successful, false otherwise.
+     */
     @Override
     public boolean update(User updatedUser) {
         if (updatedUser == null)
@@ -77,7 +108,12 @@ public class UserDB extends Database<User> {
         return false; // User not found
     }
 
-    // Delete a user by ID
+    /**
+     * Deletes a user by their ID from the database.
+     *
+     * @param id The ID of the user to delete.
+     * @return true if the user is successfully deleted, false otherwise.
+     */
     @Override
     public boolean delete(String id) {
         User user = getById(id);
@@ -94,14 +130,24 @@ public class UserDB extends Database<User> {
         return false; // User not found
     }
 
-    // Save all users to the file
+    /**
+     * Saves all the users to the CSV file.
+     *
+     * @return true if the data is successfully saved, false otherwise.
+     * @throws IOException If an error occurs while saving data.
+     */
     @Override
     public boolean save() throws IOException {
         saveData(USER_FILE, users, USER_HEADER);
         return true;
     }
 
-    // Load users from the file
+    /**
+     * Loads users from the CSV file into the database.
+     *
+     * @return true if the data is successfully loaded, false otherwise.
+     * @throws IOException If an error occurs while reading the file.
+     */
     @Override
     public boolean load() throws IOException {
         List<String> lines = readFile(USER_FILE);
@@ -137,7 +183,19 @@ public class UserDB extends Database<User> {
         return true;
     }
 
-    // Helper method to create a user object based on role
+    /**
+     * Creates a user object based on the role specified.
+     *
+     * @param id           The user's ID.
+     * @param name         The user's name.
+     * @param dob          The user's date of birth.
+     * @param gender       The user's gender.
+     * @param phoneNumber  The user's phone number.
+     * @param emailAddress The user's email address.
+     * @param password     The user's password.
+     * @param role         The user's role.
+     * @return A User object, or null if the role is invalid.
+     */
     private User createUserByRole(String id, String name, String dob, String gender, String phoneNumber,
             String emailAddress, String password, String role) {
         switch (role) {
@@ -154,7 +212,11 @@ public class UserDB extends Database<User> {
         }
     }
 
-    // Get all doctors
+    /**
+     * Retrieves all doctors from the database.
+     *
+     * @return A list of all doctors.
+     */
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
@@ -165,7 +227,11 @@ public class UserDB extends Database<User> {
         return doctors;
     }
 
-    // Get all patients
+    /**
+     * Retrieves all patients from the database.
+     *
+     * @return A list of all patients.
+     */
     public List<Patient> getAllPatients() {
         List<Patient> patients = new ArrayList<>();
         for (User user : users) {

@@ -1,9 +1,11 @@
-package appointments;
+package managers;
 
 import database.AppointmentOutcomeRecordDB;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import appointments.AppointmentOutcomeRecord;
 
 public class AppointmentOutcomeManager {
     private AppointmentOutcomeRecordDB appointmentOutcomeRecordDB;
@@ -68,8 +70,6 @@ public class AppointmentOutcomeManager {
         return formatted.toString().trim();
     }
 
-
-
     // Update an existing appointment outcome record
     public boolean updateOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
         // TODO: implement
@@ -77,15 +77,16 @@ public class AppointmentOutcomeManager {
     }
 
     // Create a new appointment outcome record per session
-    public boolean recordAppointmentOutcome(String appointmentId, String patientId, LocalDate appointmentDate, String serviceProvided, String prescription, String prescribedStatus, String consultationNotes){
+    public boolean recordAppointmentOutcome(String appointmentId, String patientId, LocalDate appointmentDate,
+            String serviceProvided, String prescription, String prescribedStatus, String consultationNotes) {
         AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(
-            appointmentId,
-            patientId,
-            appointmentDate,
-            serviceProvided,
-            prescription,
-            prescribedStatus,
-            consultationNotes);
+                appointmentId,
+                patientId,
+                appointmentDate,
+                serviceProvided,
+                prescription,
+                prescribedStatus,
+                consultationNotes);
         return appointmentOutcomeRecordDB.create(newRecord);
     }
 
@@ -98,6 +99,7 @@ public class AppointmentOutcomeManager {
         }
         return false;
     }
+
     public AppointmentOutcomeRecordDB getAppointmentOutcomeRecordDB() {
         return this.appointmentOutcomeRecordDB;
     }

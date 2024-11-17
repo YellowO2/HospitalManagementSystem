@@ -7,13 +7,21 @@ package users;
 
 public class Patient extends User {
 
-    private String bloodType;
-
-    // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
+    /**
+     * Constructs a Patient object with the specified details.
+     *
+     * @param id           the unique hospital ID for the patient
+     * @param name         the full name of the patient
+     * @param dateOfBirth  the date of birth of the patient in the format yyyy-MM-dd
+     * @param gender       the gender of the patient
+     * @param phoneNumber  the contact number of the patient
+     * @param emailAddress the email address of the patient
+     * @param password     the password for the patient's account
+     */
     public Patient(String id, String name, String dateOfBirth, String gender, String phoneNumber,
-            String emailAddress,String password) {
+                   String emailAddress, String password) {
         super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.bloodType = bloodType;
     }
 
+    // Additional patient-specific methods can be added here as needed
 }
