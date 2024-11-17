@@ -129,7 +129,7 @@ public class DoctorMenu {
         String[] patienttDetails;
 
         System.out.println("Patients under your care:");
-        patientList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+        patientList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirmed");
 
         if (patientList.isEmpty() || patientList == null){
             System.out.println("You have no patients under your care.\nExiting to Doctor Menu...");
@@ -351,7 +351,7 @@ public class DoctorMenu {
         System.out.println("Viewing personal schedule for: " + selectedDate.format(formatter));
 
         scheduleList = appointmentManager.getPersonalSchedule(doctor.getId(), selectedDate);
-        appointmentList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+        appointmentList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirmed");
 
         for (String appointment : appointmentList) {
             String[] parts = appointment.split(",");
@@ -422,7 +422,7 @@ public class DoctorMenu {
         viewPersonalSchedule(selectedDate);
         scanner.nextLine();// Consume newline
 
-        appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+        appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirmed");
 
         selectedDayOfAppointment = appointments.stream().filter(appointment -> LocalDate.parse(appointment.split(",")[3]).equals(selectedDate))
                                                         .collect(Collectors.toList());
@@ -580,7 +580,7 @@ public class DoctorMenu {
 
                 switch (choice) {
                     case "1":
-                        if (appointmentManager.updateAppointmentStatus(input, "Confirm")) {
+                        if (appointmentManager.updateAppointmentStatus(input, "Confirmed")) {
                             System.out.println("You have confirmed the appointment.");
                         } else {
                             System.out.println("There was an error confirming the appointment.");
@@ -615,7 +615,7 @@ public class DoctorMenu {
     private void viewUpcomingAppointments() {
         System.out.println("Viewing upcoming appointments...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirmed");
 
         if (appointments.isEmpty()) {
             System.out.println("No scheduled appointments found.");
@@ -635,7 +635,7 @@ public class DoctorMenu {
 
         System.out.println("Recording the outcome of today's appointments...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirmed");
 
         List<String> todaysAppointment = appointments.stream()
                 .filter(appointment -> LocalDate.parse(appointment.split(",")[3]).equals(todaysDate))
