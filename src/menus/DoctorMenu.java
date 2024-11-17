@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import appointments.AppointmentManager;
-import appointments.AppointmentOutcomeManager;
 import appointments.DoctorUnavailableSlots;
 import database.DoctorUnavailabilityDB;
+import managers.AppointmentManager;
+import managers.AppointmentOutcomeManager;
+import managers.MedicalRecordManager;
 import medicalrecords.Diagnosis;
-import medicalrecords.MedicalRecordManager;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
 import users.Doctor;

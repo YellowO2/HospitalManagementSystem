@@ -1,6 +1,10 @@
-package medicalrecords;
+package managers;
 
 import database.MedicalRecordDB;
+import medicalrecords.Diagnosis;
+import medicalrecords.MedicalRecord;
+import medicalrecords.Prescription;
+import medicalrecords.Treatment;
 
 public class MedicalRecordManager {
     // Reference to the MedicalRecordDB

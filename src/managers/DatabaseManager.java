@@ -1,6 +1,14 @@
-package database;
+package managers;
 
 import java.io.IOException;
+
+import database.AppointmentDB;
+import database.AppointmentOutcomeRecordDB;
+import database.DoctorUnavailabilityDB;
+import database.MedicalRecordDB;
+import database.MedicineDB;
+import database.ReplenishmentDB;
+import database.UserDB;
 
 public class DatabaseManager {
     private UserDB userDB;

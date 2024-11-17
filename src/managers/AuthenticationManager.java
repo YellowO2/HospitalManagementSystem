@@ -1,4 +1,4 @@
-package authentication;
+package managers;
 
 import users.User;
 import java.util.Scanner;

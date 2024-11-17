@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import appointments.AppointmentManager;
-import appointments.AppointmentOutcomeManager;
-import medicalrecords.MedicalRecordManager;
+import managers.AppointmentManager;
+import managers.AppointmentOutcomeManager;
+import managers.MedicalRecordManager;
 import users.Patient;
 
 public class PatientMenu {

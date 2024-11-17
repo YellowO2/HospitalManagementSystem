@@ -1,4 +1,4 @@
-package appointments;
+package managers;
 
 import database.AppointmentDB;
 import database.DoctorUnavailabilityDB;
@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import appointments.Appointment;
+import appointments.DoctorUnavailableSlots;
 import users.Doctor;
 
 public class AppointmentManager {

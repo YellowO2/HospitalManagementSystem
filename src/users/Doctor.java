@@ -3,9 +3,10 @@
 package users;
 
 import appointments.Appointment;
+import managers.MedicalRecordManager;
+
 import java.util.ArrayList;
 import java.util.List;
-import medicalrecords.MedicalRecordManager;
 
 public class Doctor extends User {
     private List<Appointment> appointmentSchedule;

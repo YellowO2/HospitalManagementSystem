@@ -1,11 +1,13 @@
-import appointments.AppointmentManager;
-import appointments.AppointmentOutcomeManager;
-import authentication.AuthenticationManager;
-import database.DatabaseManager;
 import inventory.Inventory;
+import managers.AppointmentManager;
+import managers.AppointmentOutcomeManager;
+import managers.AuthenticationManager;
+import managers.DatabaseManager;
+import managers.MedicalRecordManager;
+
 import java.io.IOException;
 import java.util.Scanner;
-import medicalrecords.MedicalRecordManager;
+
 import menus.AdministratorMenu;
 import menus.DoctorMenu;
 import menus.PatientMenu;
@@ -78,7 +80,8 @@ public class HospitalManagementSystem {
             pharmacistMenu.displayMenu();
         } else if (role.equals("Administrator")) {
             Administrator administrator = (Administrator) currentUser;
-            AdministratorMenu administratorMenu = new AdministratorMenu(administrator, databaseManager.getUserDB(), inventory, appointmentManager);
+            AdministratorMenu administratorMenu = new AdministratorMenu(administrator, databaseManager.getUserDB(),
+                    inventory, appointmentManager);
             administratorMenu.displayMenu();
         } else {
             System.out.println("Invalid role. Logging out.");

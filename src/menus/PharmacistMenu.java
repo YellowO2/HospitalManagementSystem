@@ -1,10 +1,11 @@
 package menus;
 
-import appointments.AppointmentOutcomeManager;
 import appointments.AppointmentOutcomeRecord;
 import inventory.Inventory;
 import inventory.Medicine;
 import inventory.ReplenishmentRequest;
+import managers.AppointmentOutcomeManager;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +14,8 @@ import users.Pharmacist;
 /**
  * The PharmacistMenu class provides an interface for a pharmacist to manage
  * various tasks such as viewing appointment outcomes, updating prescription
- * statuses, managing medication inventory, and submitting replenishment requests.
+ * statuses, managing medication inventory, and submitting replenishment
+ * requests.
  */
 public class PharmacistMenu {
 
@@ -23,13 +25,15 @@ public class PharmacistMenu {
     private Scanner scanner;
 
     /**
-     * Constructs a PharmacistMenu with the specified pharmacist, appointment outcome manager, and inventory.
+     * Constructs a PharmacistMenu with the specified pharmacist, appointment
+     * outcome manager, and inventory.
      *
-     * @param pharmacist the pharmacist using the menu
+     * @param pharmacist                the pharmacist using the menu
      * @param appointmentOutcomeManager the manager for appointment outcomes
-     * @param inventory the inventory of medicines
+     * @param inventory                 the inventory of medicines
      */
-    public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager, Inventory inventory) {
+    public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager,
+            Inventory inventory) {
         this.pharmacist = pharmacist;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
         this.inventory = inventory;
@@ -88,7 +92,8 @@ public class PharmacistMenu {
     }
 
     /**
-     * Displays all appointment outcome records managed by the appointment outcome manager.
+     * Displays all appointment outcome records managed by the appointment outcome
+     * manager.
      */
     private void viewAppointmentOutcomeRecords() {
         List<AppointmentOutcomeRecord> records = appointmentOutcomeManager.getAllOutcomeRecords();
@@ -102,7 +107,8 @@ public class PharmacistMenu {
     }
 
     /**
-     * Allows the pharmacist to update the prescription status for a specific appointment.
+     * Allows the pharmacist to update the prescription status for a specific
+     * appointment.
      */
     private void inputPrescriptionStatus() {
         System.out.print("Enter the Appointment ID: ");
@@ -131,7 +137,8 @@ public class PharmacistMenu {
     }
 
     /**
-     * Submits a replenishment request for a specific medication if its stock is low.
+     * Submits a replenishment request for a specific medication if its stock is
+     * low.
      */
     private void submitReplenishmentRequest() {
         System.out.print("Enter the medication ID: ");
@@ -154,7 +161,8 @@ public class PharmacistMenu {
                     System.out.println("Failed to submit replenishment request for " + medicine.getName() + ".");
                 }
             } else {
-                System.out.println("Stock level for " + medicine.getName() + " is sufficient. No need for a replenishment request.");
+                System.out.println("Stock level for " + medicine.getName()
+                        + " is sufficient. No need for a replenishment request.");
             }
         } else {
             System.out.println("Medicine with ID " + medicationId + " not found.");
@@ -191,4 +199,3 @@ public class PharmacistMenu {
         }
     }
 }
-

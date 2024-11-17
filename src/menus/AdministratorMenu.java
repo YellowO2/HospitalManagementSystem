@@ -5,11 +5,12 @@
  */
 package menus;
 
-import appointments.AppointmentManager;
 import database.UserDB;
 import inventory.Inventory;
 import inventory.Medicine;
 import inventory.ReplenishmentRequest;
+import managers.AppointmentManager;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -31,15 +32,17 @@ public class AdministratorMenu {
     private AppointmentManager appointmentManager;
 
     /**
-     * Constructs an AdministratorMenu with the specified administrator, user database,
+     * Constructs an AdministratorMenu with the specified administrator, user
+     * database,
      * inventory, and appointment manager.
      *
-     * @param administrator    the administrator using the menu
-     * @param userDB           the database of users
-     * @param inventory        the inventory of medicines
+     * @param administrator      the administrator using the menu
+     * @param userDB             the database of users
+     * @param inventory          the inventory of medicines
      * @param appointmentManager the manager handling appointments
      */
-    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory, AppointmentManager appointmentManager) {
+    public AdministratorMenu(Administrator administrator, UserDB userDB, Inventory inventory,
+            AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;
         this.inventory = inventory;
@@ -95,7 +98,8 @@ public class AdministratorMenu {
     }
 
     /**
-     * Manages hospital staff by displaying them and allowing the addition or removal of staff.
+     * Manages hospital staff by displaying them and allowing the addition or
+     * removal of staff.
      */
     private void manageStaff() {
         System.out.println("\n=== Hospital Staff ===");
@@ -214,7 +218,8 @@ public class AdministratorMenu {
     }
 
     /**
-     * Manages the medication inventory by displaying it and allowing the addition or removal of medications.
+     * Manages the medication inventory by displaying it and allowing the addition
+     * or removal of medications.
      */
     private void manageInventory() {
         System.out.println("=== Inventory ===");
@@ -270,7 +275,8 @@ public class AdministratorMenu {
     }
 
     /**
-     * Approves replenishment requests by processing and removing them from the database.
+     * Approves replenishment requests by processing and removing them from the
+     * database.
      */
     private void approveReplenishmentRequests() {
         List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
@@ -283,9 +289,11 @@ public class AdministratorMenu {
                 boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
                 if (removed) {
                     inventory.saveReplenishmentRequests();
-                    System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
+                    System.out.println(
+                            "Replenishment request for " + request.getMedicineId() + " processed and removed.");
                 } else {
-                    System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
+                    System.out
+                            .println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
                 }
             }
         }
@@ -327,4 +335,3 @@ public class AdministratorMenu {
         }
     }
 }
-
