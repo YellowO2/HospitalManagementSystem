@@ -482,7 +482,7 @@ public class DoctorMenu {
                         }
                         return;
                     case "2":
-                        if (appointmentManager.updateAppointmentStatus(input, "Declined")) {
+                        if (appointmentManager.updateAppointmentStatus(input, "Cancelled")) {
                             System.out.println("You have declined the appointment.");
                         } else {
                             System.out.println("There was an error declining the appointment.");

@@ -7,4 +7,4 @@ D001,John Smith,1980-05-14,Male,99899998,john@example.com,password,Doctor
 PH1001,Dr Strange,1981-05-15,Female,11111111,yuxuan005@example.com,password,Pharmacist
 A1001,James,1982-06-15,Male,11111111,james001@example.com,password,Administrator
 D002,Alladin,1990-11-11,Male,12345678,example@example.com,password,Doctor
-P1005,Yu Xuan,1980-05-15,Female,11111111,test@gmail,123456,Patient
+P1005,Yu Xuan,1980-05-15,Female,11111111,test@gmail,password,Patient
