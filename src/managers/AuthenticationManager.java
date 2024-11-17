@@ -1,21 +1,34 @@
+/**
+ * Manages user authentication for the Hospital Management System (HMS).
+ * Provides methods to validate user credentials and handle login interactions.
+ */
 package managers;
 
 import users.User;
 import java.util.Scanner;
-
 import database.UserDB;
 
 public class AuthenticationManager {
     private Scanner scanner;
     private UserDB userDB;
 
-    // Constructor, scanner can be passed from the main method
+    /**
+     * Constructor to initialize the AuthenticationManager.
+     *
+     * @param userDB the database instance for storing and retrieving user data.
+     */
     public AuthenticationManager(UserDB userDB) {
         this.scanner = new Scanner(System.in);
         this.userDB = userDB;
     }
 
-    // Method to check if user credentials are valid
+    /**
+     * Validates the user credentials by checking the User ID and password.
+     *
+     * @param userId   the User ID entered by the user.
+     * @param password the password entered by the user.
+     * @return the authenticated user if credentials are valid; null otherwise.
+     */
     public User login(String userId, String password) {
         User user = userDB.getById(userId); // Retrieve the user by ID using UserDB
 
@@ -28,7 +41,12 @@ public class AuthenticationManager {
         return null; // Return null if no match found
     }
 
-    // New method to handle login interaction
+    /**
+     * Handles the login interaction with the user.
+     * Continuously prompts for credentials until successful authentication.
+     *
+     * @return the authenticated user after successful login.
+     */
     public User handleLogin() {
         User currentUser = null;
         while (currentUser == null) {

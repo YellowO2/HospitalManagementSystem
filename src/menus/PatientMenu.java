@@ -1,11 +1,10 @@
 package menus;
 
-import java.util.Scanner;
+import database.UserDB;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
-import database.UserDB;
+import java.util.Scanner;
 import managers.AppointmentManager;
 import managers.AppointmentOutcomeManager;
 import managers.MedicalRecordManager;
@@ -13,11 +12,12 @@ import menus.utils.ValidationUtils;
 import users.Patient;
 
 /**
- * The PatientMenu class provides an interface for a patient to manage
- * various tasks such as viewing medical records, updating personal information,
+ * The PatientMenu class provides an interface for a patient to manage various
+ * tasks such as viewing medical records, updating personal information,
  * scheduling and rescheduling appointments, and viewing appointment outcomes.
  */
 public class PatientMenu {
+
     private Patient patient;
     private Scanner scanner;
     private MedicalRecordManager medicalRecordManager;
@@ -26,13 +26,14 @@ public class PatientMenu {
     private UserDB userDB;
 
     /**
-     * Constructs a PatientMenu with the specified patient, medical record manager,
-     * appointment manager, and appointment outcome manager.
+     * Constructs a PatientMenu with the specified patient, medical record
+     * manager, appointment manager, and appointment outcome manager.
      *
-     * @param patient                   the patient using the menu
-     * @param medicalRecordManager      the manager handling medical records
-     * @param appointmentManager        the manager handling appointments
-     * @param appointmentOutcomeManager the manager handling appointment outcomes
+     * @param patient the patient using the menu
+     * @param medicalRecordManager the manager handling medical records
+     * @param appointmentManager the manager handling appointments
+     * @param appointmentOutcomeManager the manager handling appointment
+     * outcomes
      */
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
             AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
@@ -206,7 +207,7 @@ public class PatientMenu {
      * Selects a doctor slot and schedules an appointment.
      *
      * @param doctorId the ID of the selected doctor
-     * @param date     the date for the appointment
+     * @param date the date for the appointment
      */
     private void selectAndScheduleDoctorSlot(String doctorId, LocalDate date) {
         appointmentManager.showAvailableSlots(doctorId, date);
@@ -299,6 +300,10 @@ public class PatientMenu {
         userDB.update(patient);
     }
 
+    /**
+     * Changes the password for the current patient after validating the new
+     * password.
+     */
     private void changePassword() {
         System.out.println("Changing password...");
         String newPassword = ValidationUtils.getValidPassword(scanner);
@@ -312,7 +317,9 @@ public class PatientMenu {
         }
     }
 
-    // Update the methods that use appointment IDs
+    /**
+     * Cancels an existing appointment after verifying the appointment ID.
+     */
     private void cancelAppointment() {
         System.out.println("Canceling an appointment...");
 
@@ -331,6 +338,10 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Reschedules an existing appointment by selecting a new doctor, date, and
+     * time slot.
+     */
     private void rescheduleAppointment() {
         System.out.println("Rescheduling an appointment...");
 
