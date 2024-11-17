@@ -67,7 +67,7 @@ public class HospitalManagementSystem {
         if (role.equals("Patient")) {
             Patient patient = (Patient) currentUser;
             PatientMenu patientMenu = new PatientMenu(patient, medicalRecordManager, appointmentManager,
-                    appointmentOutcomeManager);
+                    appointmentOutcomeManager, databaseManager.getUserDB());
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
             Doctor doctor = (Doctor) currentUser;

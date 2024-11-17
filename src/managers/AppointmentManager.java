@@ -38,10 +38,6 @@ public class AppointmentManager {
         return doctorListFormatted;
     }
 
-    public Doctor getDoctorById(String doctorId) {
-        return (Doctor) userDB.getById(doctorId);
-    }
-
     public void showAvailableSlots(String doctorId, LocalDate startDate) {
         System.out.println("Viewing available appointment slots for Doctor " + userDB.getById(doctorId).getName());
         System.out.println("===================================================");
