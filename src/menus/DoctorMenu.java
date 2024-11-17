@@ -17,30 +17,33 @@ import appointments.AppointmentManager;
 import appointments.AppointmentOutcomeManager;
 import appointments.DoctorUnavailableSlots;
 import database.DoctorUnavailabilityDB;
+import database.UserDB;
 import medicalrecords.Diagnosis;
 import medicalrecords.MedicalRecordManager;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
 import users.Doctor;
-import users.Patient;
 
+// TODO: Show patient name
 public class DoctorMenu {
     private Doctor doctor;
     private Scanner scanner;
-    private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
-    private DoctorUnavailabilityDB doctorUnavailabilityDB;
     private AppointmentOutcomeManager appointmentOutcomeManager;
+    private DoctorUnavailabilityDB doctorUnavailabilityDB;
+    private MedicalRecordManager medicalRecordManager;
+    private UserDB userDB;
 
     // Constructor
-    public DoctorMenu(Doctor doctor, MedicalRecordManager medicalRecordManager, AppointmentManager appointmentManager,
-            DoctorUnavailabilityDB doctorUnavailabilityDB, AppointmentOutcomeManager appointmentOutcomeManager) {
+    public DoctorMenu(Doctor doctor, AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
+        MedicalRecordManager medicalRecordManager, DoctorUnavailabilityDB doctorUnavailabilityDB, UserDB userDB) {
         this.doctor = doctor;
         this.scanner = new Scanner(System.in);
-        this.medicalRecordManager = medicalRecordManager;
         this.appointmentManager = appointmentManager;
-        this.doctorUnavailabilityDB = doctorUnavailabilityDB;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
+        this.medicalRecordManager = medicalRecordManager;
+        this.doctorUnavailabilityDB = doctorUnavailabilityDB;
+        this.userDB = userDB;
     }
 
     public void displayMenu() {
@@ -51,7 +54,7 @@ public class DoctorMenu {
             System.out.println("2. Update Patient Medical Records");
             System.out.println("3. View Personal Schedule");
             System.out.println("4. Set Availability for Appointments");
-            System.out.println("5. Accept or Decline Appointment Requests");
+            System.out.println("5. Confirm or Cancel Appointment Requests");
             System.out.println("6. View Upcoming Appointments");
             System.out.println("7. Record Appointment Outcome");
             System.out.println("8. Change Password");
@@ -194,8 +197,11 @@ public class DoctorMenu {
         // Obtain treatment information (Optional, skipped if input is No)
         System.out.print("Do you want to add a treatment? (Yes/No): ");
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
-            System.out.print("Enter treatment details: ");
+            System.out.print("Enter treatment name: ");
             String treatmentName = scanner.nextLine();
+
+            System.out.print("Enter treatment details: ");
+            String treatmentDetails = scanner.nextLine();
 
             // Create the Treatment object, surely there will not be any error using
             // diagnosisDate right?
@@ -264,9 +270,7 @@ public class DoctorMenu {
 
     private void viewPersonalSchedule(LocalDate selectedDate) {
         List<String> scheduleList, appointmentList, filteredAppointments = new ArrayList<>();;
-        String currentTime, previousTime, appointmentDetails;
-
-        LocalDate date = selectedDate;
+        String appointmentDetails, currentTime, previousTime, input;
 
         if (selectedDate == null) {
             System.out.println("Viewing personal schedule...");
@@ -278,18 +282,7 @@ public class DoctorMenu {
         System.out.println("Viewing personal schedule for: " + selectedDate.format(formatter));
     
         scheduleList = appointmentManager.getPersonalSchedule(doctor.getId(), selectedDate);
-        appointmentList = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
-
-        // DEBUG
-        // System.out.println("DEBUG: scheduleList");
-        // for (String appointment : scheduleList) {
-        //     System.out.println(appointment);
-        // }
-
-        // System.out.println("DEBUG: appointmentList");
-        // for (String appointment : appointmentList) {
-        //     System.out.println(appointment);
-        // }
+        appointmentList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
 
         for (String appointment : appointmentList) {
             String[] parts = appointment.split(",");
@@ -304,26 +297,14 @@ public class DoctorMenu {
             }
         }
 
-        // DBUG
-        // System.out.println("DEBUG: filteredAppointments");
-        // for (String appointment : filteredAppointments) {
-        //     System.out.println(appointment);
-        // }
-
-
         Map<String, String> appointmentMap = new HashMap<>();
         for (String appointment : filteredAppointments) {
             String[] parts = appointment.split(",");
             String appointmentTime = parts[4];  // Time at index 4
             String patientId = parts[2];        // Patient id at index 2
-            appointmentMap.put(appointmentTime, "Appointment with " + patientId);
+            String patientName = userDB.getById(patientId).getName();
+            appointmentMap.put(appointmentTime, "Appointment with " + patientName);
         }
-
-        // DEBUG
-        // System.out.println("DEBUG: Appointment map:");
-        // for (Map.Entry<String, String> entry : appointmentMap.entrySet()) {
-        //     System.out.printf("%s -> %s%n", entry.getKey(), entry.getValue());
-        // }
 
         if (scheduleList == null){
             System.out.println("Your schedule list has not been created.");
@@ -352,10 +333,15 @@ public class DoctorMenu {
     }
 
     private void setAvailabilityForAppointments() {
+        boolean validTimeRange = false;
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
         LocalDate selectedDate;
-        LocalTime roundedStartTime, roundedEndTime, currenTime, nextTime;
+        LocalTime roundedStartTime, roundedEndTime, currenTime, nextTime, unavailabilityStart, unavailabilityEnd;
         String startTimeStr, endTimeStr;
+        List<String> appointments, selectedDayOfAppointment;
+
+        roundedStartTime = null;
+        roundedEndTime = null;
 
         System.out.println("Select the day to set availability:");
         selectedDate = getDayOfChoice();
@@ -364,11 +350,21 @@ public class DoctorMenu {
         System.out.println("Setting availability for: " + selectedDate.format(formatter));
 
         viewPersonalSchedule(selectedDate);
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();// Consume newline
 
-        while (true) {
-            System.out.println("Enter the time range you are unavailability on this day (e.g., 09:00 - 12:00):");
+        appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
+
+        selectedDayOfAppointment = appointments.stream().filter(appointment -> LocalDate.parse(appointment.split(",")[3]).equals(selectedDate))
+                                                        .collect(Collectors.toList());
+ 
+        while (!validTimeRange) {
+            System.out.println("Enter the time range you are unavailability on this day (e.g., 09:00 - 12:00), or type 'back' to return:");
             String timeRange = scanner.nextLine().trim();
+
+            if (timeRange.equalsIgnoreCase("back")){
+                System.out.println("\nReturning to the Doctor Menu...");
+                return; // Exit the method to go back to the previous menu
+            }
 
             String[] times = timeRange.split(" - ");
             if (times.length != 2) {
@@ -388,17 +384,32 @@ public class DoctorMenu {
                 System.out.println("Start time must be earlier than end time. Please enter a valid range.");
                 continue;
             }
-            break;
-        }
 
-        roundedStartTime = LocalTime.parse(startTimeStr).truncatedTo(ChronoUnit.HOURS);
-        if (LocalTime.parse(startTimeStr).getMinute() >= 1) {
-            roundedStartTime = roundedStartTime.plusHours(1);
-        }
+            roundedStartTime = LocalTime.parse(startTimeStr).truncatedTo(ChronoUnit.HOURS);
+            if (LocalTime.parse(startTimeStr).getMinute() >= 1) {
+                roundedStartTime = roundedStartTime.plusHours(1);
+            }
 
-        roundedEndTime = LocalTime.parse(endTimeStr).truncatedTo(ChronoUnit.HOURS);
-        if (LocalTime.parse(endTimeStr).getMinute() >= 1) {
-            roundedEndTime = roundedEndTime.plusHours(1);
+            roundedEndTime = LocalTime.parse(endTimeStr).truncatedTo(ChronoUnit.HOURS);
+            if (LocalTime.parse(endTimeStr).getMinute() >= 1) {
+                roundedEndTime = roundedEndTime.plusHours(1);
+            }
+
+            validTimeRange = true;
+            for (String appointment : selectedDayOfAppointment){
+                String[] appointmentDetails = appointment.split(",");
+                LocalTime appointmentStartTime = LocalTime.parse(appointmentDetails[4]);
+                LocalTime appointmentEndTime = appointmentStartTime.plusHours(1);
+
+                if (roundedStartTime.equals(appointmentStartTime) && roundedEndTime.equals(appointmentEndTime) ||
+                    roundedStartTime.isBefore(appointmentStartTime) && roundedEndTime.isBefore(appointmentEndTime) ||
+                    roundedStartTime.isAfter(appointmentStartTime) && roundedEndTime.isBefore(appointmentEndTime) || 
+                    roundedStartTime.equals(appointmentStartTime) && roundedEndTime.isAfter(appointmentEndTime)){
+                        System.out.println("Warning: The unavailability period overlaps with an exisiting appointment from " + appointmentStartTime + " to " + appointmentEndTime + ". Please choose another time range.");
+                        validTimeRange = false;
+                        break;
+                }
+            }
         }
 
         currenTime = roundedStartTime;
@@ -411,8 +422,7 @@ public class DoctorMenu {
             currenTime = nextTime;
         }
 
-        System.out
-                .println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
+        System.out.println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
     }
 
     // Helper used by acceptOrDeclineAppointmentRequests & viewUpcomingAppointments
@@ -443,20 +453,19 @@ public class DoctorMenu {
         String[] parts;
         String appointmentId;
 
-
-        System.out.println("Accepting or declining appointment requests...");
-
-        appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Pending");
-
-        if (appointments.isEmpty()) {
-            System.out.println("No scheduled appointments found.");
-        } else {
-            displayAppointments(appointments);
-        }
+        System.out.println("Confirming or cancelling appointment requests...");
 
         while (true) {
-            System.out.print(
-                    "Choose an appointment to accept or decline (enter the appointment number or type 'exit' to return to the menu): ");
+            appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Pending");
+
+            if (appointments.isEmpty()) {
+                System.out.println("No scheduled appointments found.");
+                return;
+            } else {
+                displayAppointments(appointments);
+            }
+
+            System.out.print("Choose an appointment to confirm or cancel (enter the appointment number or type 'exit' to return to the menu): ");
             String input = scanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("exit")) {
@@ -474,53 +483,58 @@ public class DoctorMenu {
                 }
             }
 
-            if(!yourAppointments){
-                System.out.println("This appointment is not associated with your current patient list. Please choose an appointment under your care.");
-                continue;
-            }
-
             if (!appointmentManager.isValidAppointmentId(input)) {
                 System.out.println("Invalid Appointment ID. Please enter a valid Appointment ID.");
                 continue;
             }
 
+            if(!yourAppointments){
+                System.out.println("This appointment is not associated with your current patient list. Please choose a valid appointment under your care.");
+                continue;
+            }
+
             System.out.println("\nAppointment ID: " + input + " selected.");
-            System.out.println("\nDo you wish to:\n1.Accept this appointment\n2.Decline this appointment.\n3.Return to list of Pending appointment");
-            System.out.print("\nEnter your choice (1,2 or 3): ");
-            String choice = scanner.nextLine().trim();
+            System.out.println("\nDo you wish to:\n1.Confirm this appointment\n2.Cancel this appointment.\n3.Return to list of Pending appointment");
 
             while (true) {
+                System.out.print("\nEnter your choice (1, 2 or 3): ");
+                String choice = scanner.nextLine().trim();
+
                 switch (choice) {
                     case "1":
-                        if (appointmentManager.updateAppointmentStatus(input, "Accepted")) {
-                            System.out.println("You have accepted the appointment.");
+                        if (appointmentManager.updateAppointmentStatus(input, "Confirm")) {
+                            System.out.println("You have confirmed the appointment.");
                         } else {
-                            System.out.println("There was an error accepting the appointment.");
+                            System.out.println("There was an error confirming the appointment.");
                         }
-                        return;
+                        // return;
+                        break;
                     case "2":
-                        if (appointmentManager.updateAppointmentStatus(input, "Declined")) {
-                            System.out.println("You have declined the appointment.");
+                        if (appointmentManager.updateAppointmentStatus(input, "Cancelled")) {
+                            System.out.println("You have cancelled the appointment.");
                         } else {
-                            System.out.println("There was an error declining the appointment.");
+                            System.out.println("There was an error cancelling the appointment.");
                         }
-                        return;
+                        // return;
+                        break;
                     case "3":
                         System.out.println("Returning to the list...");
-                        return;
+                        //return;
+                        break;
                     default:
                         System.out.println("Invalid input. Please choose 1, 2 or 3.");
-                        break;
+                        // break;
+                        continue;
                 }
+                break;
             }
         }
     }
 
-    // TODO: Make use of the implemented getDoctorAppointment in Appointment Manager
     private void viewUpcomingAppointments() {
         System.out.println("Viewing upcoming appointments...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
 
         if (appointments.isEmpty()) {
             System.out.println("No scheduled appointments found.");
@@ -535,7 +549,7 @@ public class DoctorMenu {
 
         System.out.println("Recording the outcome of today's appointments...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Accepted");
+        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
         System.out.println("DEBUG:" + appointments);
 
         List<String> todaysAppointment = appointments.stream()

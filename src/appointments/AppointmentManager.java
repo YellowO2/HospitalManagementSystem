@@ -110,8 +110,8 @@ public class AppointmentManager {
         for (Appointment appointment : doctorAppointments) {
             if (statusFilter.equalsIgnoreCase("All") ||
                     (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending")) ||
-                    (statusFilter.equalsIgnoreCase("Accepted")
-                            && appointment.getStatus().equalsIgnoreCase("Accepted"))) {
+                    (statusFilter.equalsIgnoreCase("Confirm")
+                            && appointment.getStatus().equalsIgnoreCase("Confirm"))) {
                 doctorAppointmentsFormatted.add(appointment.toString());
             }
         }
