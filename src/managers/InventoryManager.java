@@ -9,12 +9,9 @@ import medicine.ReplenishmentRequest;
 
 /**
  * The InventoryManager class provides methods for managing the inventory of
- * medicines,
- * including adding, updating, removing, and displaying medicines. It also
- * handles
- * replenishment requests and related operations, interacting with the
- * underlying databases
- * for medicines and replenishment requests.
+ * medicines, including adding, updating, removing, and displaying medicines. It
+ * also handles replenishment requests and related operations, interacting with
+ * the underlying databases for medicines and replenishment requests.
  */
 public class InventoryManager {
 
@@ -24,7 +21,7 @@ public class InventoryManager {
     /**
      * Constructs an InventoryManager object with the given database references.
      *
-     * @param medicineDB      the database handling medicine data
+     * @param medicineDB the database handling medicine data
      * @param replenishmentDB the database handling replenishment requests
      */
     public InventoryManager(MedicineDB medicineDB, ReplenishmentDB replenishmentDB) {
@@ -53,7 +50,7 @@ public class InventoryManager {
     /**
      * Updates the stock level of a medicine in the database.
      *
-     * @param id            the ID of the medicine to update
+     * @param id the ID of the medicine to update
      * @param newStockLevel the new stock level to set
      */
     public void updateMedicine(String id, int newStockLevel) {
@@ -99,10 +96,10 @@ public class InventoryManager {
      * Checks if a specific medicine's stock is low and creates a replenishment
      * request if needed.
      *
-     * @param id       the ID of the medicine to check
+     * @param id the ID of the medicine to check
      * @param quantity the quantity to request for replenishment
      * @return true if a replenishment request was successfully submitted, false
-     *         otherwise
+     * otherwise
      */
     public boolean replenishStock(String id, int quantity) {
         Medicine medicine = medicineDB.getById(id);
@@ -204,7 +201,7 @@ public class InventoryManager {
     /**
      * Increases the stock level of a medicine.
      *
-     * @param id     the ID of the medicine to increase stock for
+     * @param id the ID of the medicine to increase stock for
      * @param amount the amount to increase the stock by
      */
     public void increaseStock(String id, int amount) {
@@ -216,12 +213,11 @@ public class InventoryManager {
             try {
                 if (medicineDB.update(medicine)) {
                     medicineDB.save();
-                    System.out.println("Stock for " + medicine.getName() + " increased by " + amount + " units.");
                 } else {
                     System.out.println("Failed to update stock for " + medicine.getName() + ".");
                 }
             } catch (IOException e) {
-                System.out.println("Error updating stock for " + medicine.getName() + ".");
+                System.out.println("Error updating stock for " + medicine.getName() + ": " + e.getMessage());
             }
         } else {
             System.out.println("Medicine with ID " + id + " not found.");
@@ -231,8 +227,8 @@ public class InventoryManager {
     /**
      * Removes a replenishment request by its associated medicine ID.
      *
-     * @param medicineId the ID of the medicine associated with the replenishment
-     *                   request
+     * @param medicineId the ID of the medicine associated with the
+     * replenishment request
      * @return true if the request was successfully removed, false otherwise
      */
     public boolean removeReplenishmentRequest(String medicineId) {
