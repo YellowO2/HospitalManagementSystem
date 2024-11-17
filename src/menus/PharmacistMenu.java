@@ -164,7 +164,8 @@ public class PharmacistMenu {
                         + " is sufficient. No need for a replenishment request.");
             }
         } else {
-            System.out.println("Medicine with ID " + medicationId + " not found.");
+            System.out.println("List of Medicine:");
+            inventory.displayInventory();
         }
     }
 
