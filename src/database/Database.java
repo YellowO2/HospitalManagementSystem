@@ -18,8 +18,15 @@ import java.util.Scanner;
  * @param <T> the type of entities managed by this database class
  */
 public abstract class Database<T> {
-    protected String filename; // The name of the file where data is stored
-    private static final String SEPARATOR = ","; // The delimiter used in the CSV file
+    /**
+     * The name of the file where data is stored.
+     */
+    protected String filename;
+
+    /**
+     * The separator used in the CSV file.
+     */
+    private static final String SEPARATOR = ",";
 
     /**
      * Constructs a Database object with the specified file name.
