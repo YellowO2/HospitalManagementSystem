@@ -6,17 +6,34 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A database class to manage AppointmentOutcomeRecord objects.
+ * Handles CRUD operations and provides methods to interact with appointment
+ * outcome records,
+ * including loading and saving to a CSV file.
+ */
 public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecord> {
-    private List<AppointmentOutcomeRecord> outcomeRecords;
-    private static final String filename = "csv_data/Appointment_Outcome_Record.csv";
-    private static final String header = "AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes";
+    private List<AppointmentOutcomeRecord> outcomeRecords; // List of outcome records
+    private static final String filename = "csv_data/Appointment_Outcome_Record.csv"; // Filepath for CSV file
+    private static final String header = "AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes"; // CSV
+                                                                                                                                  // file
+                                                                                                                                  // header
 
+    /**
+     * Constructs an AppointmentOutcomeRecordDB instance and initializes the list of
+     * outcome records.
+     */
     public AppointmentOutcomeRecordDB() {
-        super(filename);
+        super(filename); // Pass the filename to the parent class
         this.outcomeRecords = new ArrayList<>();
     }
 
-    // Create a new outcome record
+    /**
+     * Creates a new appointment outcome record and saves the changes to the file.
+     *
+     * @param record the AppointmentOutcomeRecord object to be created
+     * @return true if the record was successfully added, false otherwise
+     */
     @Override
     public boolean create(AppointmentOutcomeRecord record) {
         if (record != null) {
@@ -31,7 +48,12 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
         return false;
     }
 
-    // Get a record by appointment ID
+    /**
+     * Retrieves an appointment outcome record by its appointment ID.
+     *
+     * @param appointmentId the unique ID of the appointment
+     * @return the AppointmentOutcomeRecord object if found, or null otherwise
+     */
     @Override
     public AppointmentOutcomeRecord getById(String appointmentId) {
         for (AppointmentOutcomeRecord record : outcomeRecords) {
@@ -39,15 +61,26 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                 return record;
             }
         }
-        return null;
+        return null; // Record not found
     }
 
+    /**
+     * Retrieves all appointment outcome records stored in the database.
+     *
+     * @return a list of all AppointmentOutcomeRecord objects
+     */
     @Override
     public List<AppointmentOutcomeRecord> getAll() {
         return outcomeRecords;
     }
 
-    // Update an existing outcome record
+    /**
+     * Updates an existing appointment outcome record and saves the changes to the
+     * file.
+     *
+     * @param updatedRecord the updated AppointmentOutcomeRecord object
+     * @return true if the record was successfully updated, false otherwise
+     */
     @Override
     public boolean update(AppointmentOutcomeRecord updatedRecord) {
         AppointmentOutcomeRecord existingRecord = getById(updatedRecord.getAppointmentId());
@@ -61,10 +94,16 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
             }
             return true;
         }
-        return false;
+        return false; // Record not found
     }
 
-    // Delete an outcome record by appointment ID
+    /**
+     * Deletes an appointment outcome record by its appointment ID and saves the
+     * changes to the file.
+     *
+     * @param appointmentId the unique ID of the record to delete
+     * @return true if the record was successfully deleted, false otherwise
+     */
     @Override
     public boolean delete(String appointmentId) {
         AppointmentOutcomeRecord record = getById(appointmentId);
@@ -77,25 +116,34 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
             }
             return true;
         }
-        return false;
+        return false; // Record not found
     }
 
-    // Save outcome records to CSV
+    /**
+     * Saves all appointment outcome records to the CSV file.
+     *
+     * @return true if the data was successfully saved
+     * @throws IOException if there is an error saving the data
+     */
     @Override
     public boolean save() throws IOException {
         saveData(filename, outcomeRecords, header);
         return true;
     }
 
-    // Load outcome records from CSV
+    /**
+     * Loads appointment outcome records from the CSV file into the database.
+     *
+     * @return true if the data was successfully loaded
+     * @throws IOException if there is an error reading the file
+     */
     @Override
     public boolean load() throws IOException {
-        List<String> lines = readFile(filename);
+        List<String> lines = readFile(filename); // Read the CSV file
         for (String line : lines) {
-            String[] tokens = splitLine(line);
+            String[] tokens = splitLine(line); // Split line into tokens
 
-            if (tokens.length >= 6) {
-                // Assuming the format matches the CSV structure
+            if (tokens.length >= 6) { // Ensure there are enough tokens in the line
                 AppointmentOutcomeRecord record = new AppointmentOutcomeRecord(
                         tokens[0], // appointmentId
                         tokens[1], // patientId
@@ -113,7 +161,12 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
         return true;
     }
 
-    // Get records by patient ID
+    /**
+     * Retrieves all appointment outcome records for a specific patient.
+     *
+     * @param patientId the unique ID of the patient
+     * @return a list of AppointmentOutcomeRecord objects for the specified patient
+     */
     public List<AppointmentOutcomeRecord> getByPatientId(String patientId) {
         List<AppointmentOutcomeRecord> records = new ArrayList<>();
         for (AppointmentOutcomeRecord record : outcomeRecords) {
