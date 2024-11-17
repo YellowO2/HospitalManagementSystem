@@ -34,13 +34,13 @@ public class AdministratorMenu {
      * Constructs an AdministratorMenu with the specified administrator, user
      * database, inventory, and appointment manager.
      *
-     * @param administrator      the administrator using the menu
-     * @param userDB             the database of users
-     * @param inventory          the inventory of medicines
+     * @param administrator the administrator using the menu
+     * @param userDB the database of users
+     * @param inventory the inventory of medicines
      * @param appointmentManager the manager handling appointments
      */
     public AdministratorMenu(Administrator administrator, UserDB userDB, InventoryManager inventory,
-                             AppointmentManager appointmentManager) {
+            AppointmentManager appointmentManager) {
         this.administrator = administrator;
         this.userDB = userDB;
         this.inventory = inventory;
@@ -49,7 +49,8 @@ public class AdministratorMenu {
     }
 
     /**
-     * Displays the administrator menu and handles user input for different actions.
+     * Displays the administrator menu and handles user input for different
+     * actions.
      */
     public void displayMenu() {
         int choice;
@@ -216,8 +217,8 @@ public class AdministratorMenu {
     }
 
     /**
-     * Manages the medication inventory by displaying it and allowing the addition
-     * or removal of medications.
+     * Manages the medication inventory by displaying it and allowing the
+     * addition or removal of medications.
      */
     private void manageInventory() {
         System.out.println("=== Inventory ===");
@@ -277,33 +278,40 @@ public class AdministratorMenu {
      * database.
      */
     private void approveReplenishmentRequests() {
-    List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
-    if (requests.isEmpty()) {
-        System.out.println("No replenishment requests to approve.");
-    } else {
-        for (ReplenishmentRequest request : requests) {
-            int currentStock = inventory.getMedicineById(request.getMedicineId()).getStockLevel();
-            int lowStockLevel = inventory.getMedicineById(request.getMedicineId()).getLowStockLevelAlert(); // Assuming this method exists
+        List<ReplenishmentRequest> requests = inventory.getReplenishmentRequests();
+        if (requests.isEmpty()) {
+            System.out.println("No replenishment requests to approve.");
+        } else {
+            for (ReplenishmentRequest request : requests) {
+                String medicineId = request.getMedicineId();
+                Medicine medicine = inventory.getMedicineById(medicineId);
 
-            // Only update the stock if current stock is below the low stock level
-            if (currentStock < lowStockLevel) {
-                inventory.increaseStock(request.getMedicineId(), request.getQuantity());
-                System.out.println("Stock for " + request.getMedicineId() + " increased by " + request.getQuantity() + " units.");
-            } else {
-                System.out.println("Stock level for " + request.getMedicineId() + " is sufficient. No stock update needed.");
-            }
+                if (medicine == null) {
+                    System.out.println("Medicine with ID " + medicineId + " not found.");
+                    continue;
+                }
 
-            // Remove the request in all cases
-            boolean removed = inventory.removeReplenishmentRequest(request.getMedicineId());
-            if (removed) {
-                inventory.saveReplenishmentRequests();
-                System.out.println("Replenishment request for " + request.getMedicineId() + " processed and removed.");
-            } else {
-                System.out.println("Failed to remove the replenishment request for " + request.getMedicineId() + ".");
+                int currentStock = medicine.getStockLevel();
+                int lowStockLevel = medicine.getLowStockLevelAlert();
+
+                // Only update the stock if current stock is below the low stock level
+                if (currentStock < lowStockLevel) {
+                    inventory.increaseStock(medicineId, request.getQuantity());
+                    System.out.println("Stock for " + medicineId + ": " + medicine.getName() + " increased by " + request.getQuantity() + " units.");
+                } else {
+                    System.out.println("Stock for " + medicineId + ": " + medicine.getName() + " sufficient. No replenishment needed.");
+                }
+
+                // Remove the request in all cases
+                boolean removed = inventory.removeReplenishmentRequest(medicineId);
+                if (removed) {
+                    inventory.saveReplenishmentRequests();
+                } else {
+                    System.out.println("Failed to remove the replenishment request for " + medicineId + ".");
+                }
             }
         }
     }
-}
 
     /**
      * Changes the administrator's password.
