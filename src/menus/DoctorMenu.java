@@ -124,21 +124,54 @@ public class DoctorMenu {
      * Allows the doctor to view a patient's medical record by entering the patient's ID
      */
     private void viewPatientMedicalRecords() {
-        String patientId;
-        String medicalHistory;
+        String patientId, medicalHistory, patientIdFromAppointment;
+        List<String> patientList, patientIds;
+        String[] patienttDetails;
 
-        System.out.print("Enter the patient ID to view their medical record: ");
-        patientId = scanner.nextLine();
+        System.out.println("Patients under your care:");
+        patientList = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
 
-        medicalHistory = medicalRecordManager.getMedicalHistory(patientId);
-
-        if (medicalHistory == null) {
-            System.out.println("No medical record found for " + patientId + ":");
+        if (patientList.isEmpty() || patientList == null){
+            System.out.println("You have no patients under your care.\nExiting to Doctor Menu...");
+            return;
         }
 
-        else {
-            System.out.println("Viewing medical record for " + patientId + ":");
-            System.out.println(medicalHistory);
+        // Display the list of patients the doctor is seeing based on the appointment list
+        patientIds = new ArrayList<>();
+        for (String patient : patientList) {
+            patienttDetails = patient.split(",");
+            patientIdFromAppointment = patienttDetails[2];
+
+            if (!patientIds.contains(patientIdFromAppointment)) {
+                patientIds.add(patientIdFromAppointment);
+                System.out.println("Patient Name: " + userDB.getById(patientIdFromAppointment).getName() + "\t\t[" + patientIdFromAppointment + "]");
+            }
+        }
+
+        while(true){
+            System.out.print("Enter the patient ID to view their medical record or type 'back' to return to the menu: ");
+            patientId = scanner.nextLine().trim();
+
+            if (patientId.equalsIgnoreCase("back")) {
+                System.out.println("Returning to the Doctor Menu...");
+                return;
+            }
+
+            if (!patientId.contains(patientId)) {
+                System.out.println("Invalid patient ID or the patient is not under your care.");
+                continue;
+            }
+
+            medicalHistory = medicalRecordManager.getMedicalHistory(patientId);
+
+            if (medicalHistory == null) {
+                System.out.println("No medical record found for " + patientId + ":");
+            }
+
+            else {
+                System.out.println("Viewing medical record for " + patientId + ":");
+                System.out.println(medicalHistory);
+            }
         }
     }
 
@@ -510,10 +543,10 @@ public class DoctorMenu {
                 displayAppointments(appointments);
             }
 
-            System.out.print("Choose an appointment to confirm or cancel (enter the appointment number or type 'exit' to return to the menu): ");
+            System.out.print("Choose an appointment to confirm or cancel (enter the appointment number or type 'back' to return to the menu): ");
             String input = scanner.nextLine().trim();
 
-            if (input.equalsIgnoreCase("exit")) {
+            if (input.equalsIgnoreCase("back")) {
                 System.out.println("\nReturning to the Doctor Menu...");
                 break;
             }
@@ -626,10 +659,10 @@ public class DoctorMenu {
 
         while (true) {
             System.out.print(
-                    "\nChoose an appointment to record the outcome (enter the appointment number or type 'exit' to return to the menu): ");
+                    "\nChoose an appointment to record the outcome (enter the appointment number or type 'back' to return to the menu): ");
             input = scanner.nextLine().trim();
 
-            if (input.equalsIgnoreCase("exit")) {
+            if (input.equalsIgnoreCase("back")) {
                 System.out.println("\nReturning to the Doctor Menu...");
                 return;
             }
