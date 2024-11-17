@@ -197,9 +197,6 @@ public class DoctorMenu {
             System.out.print("Enter treatment details: ");
             String treatmentName = scanner.nextLine();
 
-            System.out.print("Enter treatment details: ");
-            String treatmentDetails = scanner.nextLine();
-
             // Create the Treatment object, surely there will not be any error using
             // diagnosisDate right?
             treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
@@ -441,9 +438,15 @@ public class DoctorMenu {
     }
 
     private void acceptOrDeclineAppointmentRequests() {
+        boolean yourAppointments = false;
+        List<String> appointments;
+        String[] parts;
+        String appointmentId;
+
+
         System.out.println("Accepting or declining appointment requests...");
 
-        List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Pending");
+        appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Pending");
 
         if (appointments.isEmpty()) {
             System.out.println("No scheduled appointments found.");
@@ -459,6 +462,21 @@ public class DoctorMenu {
             if (input.equalsIgnoreCase("exit")) {
                 System.out.println("\nReturning to the Doctor Menu...");
                 break;
+            }
+
+            for (String appointment : appointments){
+                parts = appointment.split(",");
+                appointmentId = parts[0];
+
+                if (appointmentId.equals(input)){
+                    yourAppointments = true;
+                    break;
+                }
+            }
+
+            if(!yourAppointments){
+                System.out.println("This appointment is not associated with your current patient list. Please choose an appointment under your care.");
+                continue;
             }
 
             if (!appointmentManager.isValidAppointmentId(input)) {
