@@ -2,9 +2,6 @@ package database;
 
 import java.io.IOException;
 
-// import appointments.AppointmentOutcomeRecord;
-// import appointments.AppointmentOutcomeRecord;
-
 public class DatabaseManager {
     private UserDB userDB;
     private MedicalRecordDB medicalRecordDB;

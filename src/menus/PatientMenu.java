@@ -204,9 +204,6 @@ public class PatientMenu {
         System.out.println("\nScheduling an appointment...");
 
         String doctorId = selectDoctor();
-        // System.out.print("Please enter a date (YYYY-MM-DD): ");
-        // String dateInput = scanner.nextLine().trim();
-        // LocalDate date = LocalDate.parse(dateInput);
 
         selectAndScheduleDoctorSlot(doctorId, LocalDate.now());
     }
@@ -217,10 +214,7 @@ public class PatientMenu {
         String appointmentId = scanner.nextLine().trim();
 
         String newDoctorID = selectDoctor();
-        // System.out.print("Enter new date to reschedule to (YYYY-MM-DD): ");
-        // LocalDate newDate = LocalDate.parse(scanner.nextLine().trim());
 
-        // selectAndScheduleDoctorSlot(newDoctorID, newDate);
         appointmentManager.showAvailableSlots(newDoctorID, LocalDate.now());
         System.out.println("==== Select a new appointment ====");
 
