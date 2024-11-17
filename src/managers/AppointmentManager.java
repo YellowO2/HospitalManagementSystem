@@ -132,7 +132,10 @@ public class AppointmentManager {
         List<Appointment> doctorAppointments = appointmentDB.getDoctorAppointments(doctorId);
         Set<LocalTime> bookedTimes = new HashSet<>();
         for (Appointment appointment : doctorAppointments) {
-            if (appointment.getAppointmentDate().equals(date)) {
+
+            // Only get appointments that are pending or accepted as Booked Times
+            if (appointment.getAppointmentDate().equals(date)
+                    && !appointment.getStatus().equalsIgnoreCase("Cancelled")) {
                 bookedTimes.add(appointment.getAppointmentTime());
             }
         }
