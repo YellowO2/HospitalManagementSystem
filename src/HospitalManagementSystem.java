@@ -1,3 +1,13 @@
+/**
+ * SC2002 Hospital Management System
+ * Class: SCED ; Grp; 06 
+ * @author Rizq Harith Bin Abdul Razak
+ * @author Sim Jian An
+ * @author Joshua Tan (Chen Kaijun)
+ * @author Huang Yuxuan
+ * @author Gong Yuelong
+ */
+
 import java.io.IOException;
 import java.util.Scanner;
 import managers.AppointmentManager;
