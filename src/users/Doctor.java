@@ -1,23 +1,25 @@
-// To Do: Uncomment after merging with git
-
 package users;
 
-import appointments.Appointment;
-import managers.MedicalRecordManager;
-
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Represents a Doctor user in the hospital system, extending the User class.
+ * The Doctor class includes properties for managing appointments and patient
+ * medical records.
+ */
 public class Doctor extends User {
-    private List<Appointment> appointmentSchedule;
-    private MedicalRecordManager medicalRecordManager;
 
-    // ID,Name,Date of Birth,Gender,Phone Number,Email Address,Password,Role
-    // their ownn patients) and appointmentSchedule into constructor
+    /**
+     * Constructs a new Doctor with the specified details.
+     * 
+     * @param id           the unique identifier for the doctor
+     * @param name         the full name of the doctor
+     * @param dateOfBirth  the date of birth of the doctor (yyyy-MM-dd format)
+     * @param gender       the gender of the doctor
+     * @param phoneNumber  the contact phone number of the doctor
+     * @param emailAddress the email address of the doctor
+     * @param password     the password for the doctor
+     */
     public Doctor(String id, String name, String dateOfBirth, String gender, String phoneNumber,
             String emailAddress, String password) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
-        this.appointmentSchedule = new ArrayList<>();
-        this.medicalRecordManager = medicalRecordManager;
     }
 }
