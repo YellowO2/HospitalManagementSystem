@@ -57,7 +57,7 @@ public class AppointmentManager {
      */
     public void showAvailableSlots(String doctorId, LocalDate startDate) {
         System.out.println("Viewing available appointment slots for Doctor " + userDB.getById(doctorId).getName());
-        System.out.println("===================================================");
+        System.out.println("===========================================================================");
 
         for (int i = 0; i < 7; i++) {
             LocalDate currentDate = startDate.plusDays(i);
@@ -74,10 +74,10 @@ public class AppointmentManager {
                 }
             }
             System.out.println();
-            System.out.println("---------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------");
         }
 
-        System.out.println("===================================================");
+        System.out.println("============================================================================");
     }
 
     /**
@@ -138,8 +138,8 @@ public class AppointmentManager {
         for (Appointment appointment : doctorAppointments) {
             if (statusFilter.equalsIgnoreCase("All") ||
                     (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending")) ||
-                    (statusFilter.equalsIgnoreCase("Confirm")
-                            && appointment.getStatus().equalsIgnoreCase("Confirm"))) {
+                    (statusFilter.equalsIgnoreCase("Confirmed")
+                            && appointment.getStatus().equalsIgnoreCase("Confirmed"))) {
                 doctorAppointmentsFormatted.add(appointment.toString());
             }
         }
