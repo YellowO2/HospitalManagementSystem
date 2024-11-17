@@ -1,3 +1,5 @@
+package main;
+
 /**
  * SC2002 Hospital Management System
  * Class: SCED ; Grp; 06 
@@ -48,7 +50,8 @@ public class HospitalManagementSystem {
     private static Scanner scanner = new Scanner(System.in);
 
     /**
-     * The main method initializes the system, handles user login, and navigates the user
+     * The main method initializes the system, handles user login, and navigates the
+     * user
      * to their respective menu based on their role.
      *
      * @param args command-line arguments (not used)
@@ -100,12 +103,14 @@ public class HospitalManagementSystem {
             patientMenu.displayMenu();
         } else if (role.equals("Doctor")) {
             Doctor doctor = (Doctor) currentUser;
-            DoctorMenu doctorMenu = new menus.DoctorMenu(doctor, appointmentManager, appointmentOutcomeManager, medicalRecordManager,
+            DoctorMenu doctorMenu = new menus.DoctorMenu(doctor, appointmentManager, appointmentOutcomeManager,
+                    medicalRecordManager,
                     databaseManager.getdoctorAvailabilityDB(), databaseManager.getUserDB());
             doctorMenu.displayMenu();
         } else if (role.equals("Pharmacist")) {
             Pharmacist pharmacist = (Pharmacist) currentUser;
-            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist, appointmentOutcomeManager, inventory, databaseManager.getUserDB());
+            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist, appointmentOutcomeManager, inventory,
+                    databaseManager.getUserDB());
             pharmacistMenu.displayMenu();
         } else if (role.equals("Administrator")) {
             Administrator administrator = (Administrator) currentUser;
