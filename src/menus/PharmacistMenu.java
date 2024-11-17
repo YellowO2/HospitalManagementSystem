@@ -4,10 +4,13 @@ import appointments.AppointmentOutcomeRecord;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+
+import database.UserDB;
 import managers.AppointmentOutcomeManager;
 import managers.InventoryManager;
 import medicine.Medicine;
 import medicine.ReplenishmentRequest;
+import menus.utils.ValidationUtils;
 import users.Pharmacist;
 
 /**
@@ -22,6 +25,7 @@ public class PharmacistMenu {
     private AppointmentOutcomeManager appointmentOutcomeManager;
     private InventoryManager inventory;
     private Scanner scanner;
+    private UserDB userDB;
 
     /**
      * Constructs a PharmacistMenu with the specified pharmacist, appointment
@@ -32,11 +36,12 @@ public class PharmacistMenu {
      * @param inventory                 the inventory of medicines
      */
     public PharmacistMenu(Pharmacist pharmacist, AppointmentOutcomeManager appointmentOutcomeManager,
-                          InventoryManager inventory) {
+        InventoryManager inventory, UserDB userDB) {
         this.pharmacist = pharmacist;
         this.appointmentOutcomeManager = appointmentOutcomeManager;
         this.inventory = inventory;
         this.scanner = new Scanner(System.in);
+        this.userDB = userDB;
     }
 
     /**
@@ -189,9 +194,10 @@ public class PharmacistMenu {
      */
     private void changePassword() {
         System.out.println("Changing password...");
-        System.out.print("Enter new password: ");
-        String newPassword = scanner.nextLine().trim();
-        boolean success = pharmacist.changePassword(newPassword);
+        String newPassword = ValidationUtils.getValidPassword(scanner);
+
+        pharmacist.changePassword(newPassword);
+        boolean success = userDB.update(pharmacist);
         if (success) {
             System.out.println("Password changed successfully.");
         } else {

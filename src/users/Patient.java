@@ -22,6 +22,4 @@ public class Patient extends User {
                    String emailAddress, String password) {
         super(id, name, "Patient", password, phoneNumber, emailAddress, dateOfBirth, gender);
     }
-
-    // Additional patient-specific methods can be added here as needed
 }

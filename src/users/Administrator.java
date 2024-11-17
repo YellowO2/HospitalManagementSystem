@@ -22,5 +22,4 @@ public class Administrator extends User {
             String emailAddress, String password) {
         super(id, name, "Administrator", password, phoneNumber, emailAddress, dateOfBirth, gender);
     }
-
 }

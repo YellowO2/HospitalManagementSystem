@@ -94,7 +94,7 @@ public class HospitalManagementSystem {
             doctorMenu.displayMenu();
         } else if (role.equals("Pharmacist")) {
             Pharmacist pharmacist = (Pharmacist) currentUser;
-            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist, appointmentOutcomeManager, inventory);
+            PharmacistMenu pharmacistMenu = new PharmacistMenu(pharmacist, appointmentOutcomeManager, inventory, databaseManager.getUserDB());
             pharmacistMenu.displayMenu();
         } else if (role.equals("Administrator")) {
             Administrator administrator = (Administrator) currentUser;

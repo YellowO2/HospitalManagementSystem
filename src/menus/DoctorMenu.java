@@ -22,9 +22,14 @@ import database.UserDB;
 import medicalrecords.Diagnosis;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
+import menus.utils.ValidationUtils;
 import users.Doctor;
 
-// TODO: Show patient name
+/**
+ * The DoctorMenu class represents the menu interface for a doctor, allowing them to
+ * interact with patient medical records, manage their schedule, set availability, and
+ * record appointment outcome record.
+ */
 public class DoctorMenu {
     private Doctor doctor;
     private Scanner scanner;
@@ -34,7 +39,16 @@ public class DoctorMenu {
     private MedicalRecordManager medicalRecordManager;
     private UserDB userDB;
 
-    // Constructor
+    /**
+     * Constructs a new DoctorMenu with the specified dependencies.
+     * 
+     * @param doctor                The doctor associated with this menu.
+     * @param appointmentManager    The AppointmentManager to handle appointments.
+     * @param appointmentOutcomeManager The AppointmentOutcomeManager for handling appointment outcomes.
+     * @param medicalRecordManager The MedicalRecordManager to manage patient medical records.
+     * @param doctorUnavailabilityDB The DoctorUnavailabilityDB to manage doctor unavailability slots.
+     * @param userDB                The UserDB for handling user information.
+     */
     public DoctorMenu(Doctor doctor, AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
         MedicalRecordManager medicalRecordManager, DoctorUnavailabilityDB doctorUnavailabilityDB, UserDB userDB) {
         this.doctor = doctor;
@@ -46,6 +60,9 @@ public class DoctorMenu {
         this.userDB = userDB;
     }
 
+    /**
+     * Displays the doctor menu and handles user input for different actions.
+     */
     public void displayMenu() {
         int choice;
         do {
@@ -103,8 +120,9 @@ public class DoctorMenu {
         } while (choice != 9);
     }
 
-    // TODO: Doctor can only update his own list of patients. To be implemented with
-    // database
+    /**
+     * Allows the doctor to view a patient's medical record by entering the patient's ID
+     */
     private void viewPatientMedicalRecords() {
         String patientId;
         String medicalHistory;
@@ -124,6 +142,10 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Allows the doctor to update a patient's medical record with a diagnosis, prescription,
+     * and treatment. The user will be prompted for relevant information.
+     */
     private void updatePatientMedicalRecords() {
         String patientId;
 
@@ -217,6 +239,12 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Validates the time format entered by the user.
+     * 
+     * @param timeStr The time string to validate.
+     * @return true if the time string is in a valid format, false otherwise.
+     */
     private static boolean isValidTime(String timeStr) {
         try {
             // Parse the time using the standard "HH:mm" format
@@ -227,8 +255,11 @@ public class DoctorMenu {
         }
     }
 
-    // Helper Method (To be organised at a later date)
-    // Used by viewPersonalSchedule and setAvailabilityForAppointments
+    /**
+     * Helper method to get a date from the user based on a chosen day of the week.
+     * 
+     * @return The LocalDate corresponding to the chosen day of the week.
+     */
     private LocalDate getDayOfChoice() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         int choice = -1;
@@ -268,11 +299,14 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Displays the doctor's personal schedule for a selected date.
+     * 
+     * @param selectedDate The date for which to display the schedule. If null, the user will be prompted to choose.
+     */
     private void viewPersonalSchedule(LocalDate selectedDate) {
         List<String> scheduleList, appointmentList, filteredAppointments = new ArrayList<>();;
-        String appointmentDetails, currentTime, previousTime, input;
-
-        LocalDate date = selectedDate;
+        String appointmentDetails, currentTime, previousTime;
 
         if (selectedDate == null) {
             System.out.println("Viewing personal schedule...");
@@ -311,8 +345,7 @@ public class DoctorMenu {
         if (scheduleList == null) {
             System.out.println("Your schedule list has not been created.");
         }
-        // Assume that the Doctor_Unavailability.csv is completely populated for that
-        // day
+
         else if (scheduleList.isEmpty()) {
             System.out.println("It is your day off.");
         } else {
@@ -320,7 +353,6 @@ public class DoctorMenu {
             currentTime = LocalTime.parse(previousTime, DateTimeFormatter.ofPattern("HH:mm")).plusHours(1)
                     .format(DateTimeFormatter.ofPattern("HH:mm"));
             appointmentDetails = appointmentMap.getOrDefault(previousTime, "");
-            // System.out.println(previousTime + " - " + currentTime);
             System.out.printf("%s - %s\t%s%n", previousTime, currentTime, appointmentDetails);
 
             if (scheduleList.size() > 1) {
@@ -328,13 +360,15 @@ public class DoctorMenu {
                     previousTime = scheduleList.get(i);
                     currentTime = scheduleList.get(i + 1);
                     appointmentDetails = appointmentMap.getOrDefault(previousTime, "");
-                    // System.out.println(previousTime + " - " + currentTime);
                     System.out.printf("%s - %s\t%s%n", previousTime, currentTime, appointmentDetails);
                 }
             }
         }
     }
 
+    /**
+     * Allows the doctor to set their availability for appointments by selecting a time range on a specific date.
+     */
     private void setAvailabilityForAppointments() {
         boolean validTimeRange = false;
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
@@ -428,8 +462,11 @@ public class DoctorMenu {
         System.out.println("Unavailability for " + roundedStartTime + " - " + roundedEndTime + " updated successfully.");
     }
 
-    // Helper used by acceptOrDeclineAppointmentRequests & viewUpcomingAppointments
-    private void displayAppointments(List<String> appointments) {
+    /**
+     * Helper method used by other methods to display appointment details in a readable format.
+     * 
+     * @param appointments List of appointment strings to display.
+     */    private void displayAppointments(List<String> appointments) {
         for (String appointment : appointments) {
             String[] details = appointment.split(",");
             String appointmentId = details[0].trim();
@@ -450,6 +487,11 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Allows the doctor to confirm or cancel appointment requests.
+     * Displays a list of pending appointments, prompts the doctor to choose an appointment,
+     * and allows them to either confirm or cancel the appointment.
+     */
     private void acceptOrDeclineAppointmentRequests() {
         boolean yourAppointments = false;
         List<String> appointments;
@@ -534,6 +576,9 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Displays a list of upcoming confirmed appointments for the doctor.
+     */
     private void viewUpcomingAppointments() {
         System.out.println("Viewing upcoming appointments...");
 
@@ -546,14 +591,18 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Allows the doctor to record the outcome of today's appointments.
+     * Displays a list of appointments for the day, and prompts the doctor to record details
+     * including the service provided, prescriptions, and consultation notes.
+     */
     private void recordAppointmentOutcome() {
         LocalDate todaysDate = LocalDate.now();
-        String input, patientId = null;
+        String input, prescription, patientId = null;
 
         System.out.println("Recording the outcome of today's appointments...");
 
         List<String> appointments = appointmentManager.getDoctorAppointments(doctor.getId(), "Confirm");
-        System.out.println("DEBUG:" + appointments);
 
         List<String> todaysAppointment = appointments.stream()
                 .filter(appointment -> LocalDate.parse(appointment.split(",")[3]).equals(todaysDate))
@@ -595,32 +644,27 @@ public class DoctorMenu {
 
         System.out.println("Recording appointment outcome...");
 
-        // Prompt the doctor for the appointment ID
-        // System.out.print("Enter the Appointment ID: ");
-        // String appointmentId = scanner.nextLine().trim();
-
-        // Prompt for patient ID
-        // System.out.print("Enter the Patient ID: ");
-        // String patientId = scanner.nextLine().trim();
-
-        // Prompt for the appointment date
-        // System.out.print("Enter the appointment date (YYYY-MM-DD): ");
-        // String dateString = scanner.nextLine().trim();
-        // LocalDate appointmentDate = LocalDate.parse(dateString); // assuming the
-        // input is in correct format
-
         // Prompt for the service provided
         System.out.print("Enter the Service provided: ");
         String serviceProvided = scanner.nextLine().trim();
 
         // Prompt for the prescription
-        System.out.print(
-                "Enter the Prescription Details (use '|' for more information on a prescription and ';' for multiple prescriptions): ");
-        String prescription = scanner.nextLine().trim();
+        while (true) {
+            System.out.print("Enter prescription details in the following format:\n" +
+                 "<Medication Name>|<Dosage>|<Dosage Frequency>|<Amount>|<Instructions>|<Status>\n" +
+                 "Example: Paracetamol|250mg|1 time per day|15|Take after meals|1\n" +
+                 "Separate each parameter with '|' and multiple prescriptions with ';' if needed:\n");
+            prescription = scanner.nextLine().trim();
 
-        // Prompt for the prescription status
-        // System.out.print("Enter the prescribed status (e.g., completed, pending): ");
-        // String prescriptionStatus = scanner.nextLine().trim();
+            String[] prescriptionDetails = prescription.split("\\|");
+
+            // Check if the input has exactly 6 parameters
+            if (prescriptionDetails.length == 6) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please enter exactly 6 parameters separated by '|'.");
+            }
+        }
 
         // Prompt for consultation notes
         System.out.print("Enter the consultation notes: ");
@@ -638,11 +682,15 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Changes the pharmacist's password.
+     */
     private void changePassword() {
         System.out.println("Changing password...");
-        System.out.print("Enter new password: ");
-        String newPassword = scanner.nextLine().trim();
-        boolean success = doctor.changePassword(newPassword);
+        String newPassword = ValidationUtils.getValidPassword(scanner);
+
+        doctor.changePassword(newPassword);
+        boolean success = userDB.update(doctor);
         if (success) {
             System.out.println("Password changed successfully.");
         } else {

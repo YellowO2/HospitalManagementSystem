@@ -22,5 +22,4 @@ public class Doctor extends User {
             String emailAddress, String password) {
         super(id, name, "Doctor", password, phoneNumber, emailAddress, dateOfBirth, gender);
     }
-    // Additional methods and properties can be added here for more functionality
 }

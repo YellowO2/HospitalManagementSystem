@@ -13,6 +13,7 @@ import managers.AppointmentManager;
 import managers.InventoryManager;
 import medicine.Medicine;
 import medicine.ReplenishmentRequest;
+import menus.utils.ValidationUtils;
 import users.Administrator;
 import users.Doctor;
 import users.Pharmacist;
@@ -318,9 +319,10 @@ public class AdministratorMenu {
      */
     private void changePassword() {
         System.out.println("Changing password...");
-        System.out.print("Enter new password: ");
-        String newPassword = scanner.nextLine().trim();
-        boolean success = administrator.changePassword(newPassword);
+        String newPassword = ValidationUtils.getValidPassword(scanner);
+
+        administrator.changePassword(newPassword);
+        boolean success = userDB.update(administrator);
         if (success) {
             System.out.println("Password changed successfully.");
         } else {
