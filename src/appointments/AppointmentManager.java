@@ -1,16 +1,15 @@
 package appointments;
 
-import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import database.AppointmentDB;
 import database.DoctorUnavailabilityDB;
 import database.UserDB;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import users.Doctor;
 
 public class AppointmentManager {
@@ -34,6 +33,10 @@ public class AppointmentManager {
             doctorListFormatted.add(doctor.getName() + " - " + doctor.getId());
         }
         return doctorListFormatted;
+    }
+
+    public Doctor getDoctorById(String doctorId) {
+        return (Doctor) userDB.getById(doctorId);
     }
 
     public void showAvailableSlots(String doctorId, LocalDate startDate) {
@@ -105,9 +108,10 @@ public class AppointmentManager {
         List<String> doctorAppointmentsFormatted = new ArrayList<>();
 
         for (Appointment appointment : doctorAppointments) {
-            if (statusFilter.equalsIgnoreCase("All") || 
-                (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending"))||
-                (statusFilter.equalsIgnoreCase("Accepted") && appointment.getStatus().equalsIgnoreCase("Accepted"))){
+            if (statusFilter.equalsIgnoreCase("All") ||
+                    (statusFilter.equalsIgnoreCase("Pending") && appointment.getStatus().equalsIgnoreCase("Pending")) ||
+                    (statusFilter.equalsIgnoreCase("Accepted")
+                            && appointment.getStatus().equalsIgnoreCase("Accepted"))) {
                 doctorAppointmentsFormatted.add(appointment.toString());
             }
         }
@@ -151,6 +155,10 @@ public class AppointmentManager {
         Set<LocalTime> unavailableTimes = getUnavailableTimes(doctorId, date);
         Set<LocalTime> bookedTimes = getBookedTimes(doctorId, date);
 
+        // System.out.println("DEBUG DAY: " + date);
+        // System.out.println("DEBUG unavailable times: " + unavailableTimes);
+        // System.out.println("DEBUG booked times: " + bookedTimes);
+
         // Filter out unavailable and booked times
         List<LocalTime> availableSlots = new ArrayList<>();
         for (LocalTime slot : allPossibleSlots) {
@@ -167,8 +175,8 @@ public class AppointmentManager {
 
         // Use the helper function to get available slots
         List<LocalTime> availableSlots = getAvailableSlotsForDoctor(doctorId, date);
-
-        System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
+        // System.out.println("DEBUG available slots: " + availableSlots);
+        // System.out.println("DEBUG schedule appointment slot index: " + slotIndex);
         if (!validateSlotSelection(slotIndex, availableSlots)) {
             return false;
         }
@@ -177,7 +185,13 @@ public class AppointmentManager {
         String appointmentId = UUID.randomUUID().toString();
         Appointment appointment = new Appointment(appointmentId, doctorId, patientId, date, appointmentTime,
                 "Pending");
-        return appointmentDB.create(appointment);
+        if (appointmentDB.create(appointment)) {
+            System.out.println(
+                    "Appointment scheduled to " + date + " at " + appointmentTime + ".");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Helper method to validate slot selection
@@ -190,25 +204,31 @@ public class AppointmentManager {
     }
 
     // Reschedule an appointment
-    public boolean rescheduleAppointment(String originalAppointmentId,
-            LocalDate newDate, int newSlotIndex) {
-
-        // Find the existing appointment to cancel it first
+    public void rescheduleAppointment(String doctorId, String originalAppointmentId, LocalDate newDate,
+            int newSlotIndex) {
+        // Retrieve the original appointment
         Appointment originalAppointment = appointmentDB.getById(originalAppointmentId);
         if (originalAppointment == null) {
-            System.out.println("Appointment not found.");
-            return false;
-        }
-        String originalDoctorId = originalAppointment.getDoctorId();
-        String originalPatientId = originalAppointment.getPatientId();
-
-        // Cancel the original appointment
-        if (!cancelAppointment(originalAppointmentId)) {
-            System.out.println("Failed to cancel the original appointment.");
-            return false;
+            System.out.println("Error: Appointment with ID " + originalAppointmentId + " not found.");
+            return;
         }
 
-        return scheduleAppointment(originalPatientId, originalDoctorId, newDate, newSlotIndex);
+        String patientId = originalAppointment.getPatientId();
+
+        // Attempt to schedule the new appointment first
+        boolean isNewAppointmentScheduled = scheduleAppointment(patientId, doctorId, newDate, newSlotIndex);
+        if (!isNewAppointmentScheduled) {
+            System.out.println("Error: Failed to schedule the new appointment. Rescheduling aborted.");
+            return;
+        }
+
+        // If new appointment is successfully scheduled, cancel the old appointment
+        boolean isOldAppointmentCancelled = cancelAppointment(originalAppointmentId);
+        if (isOldAppointmentCancelled) {
+            System.out.println("Success: Appointment rescheduled successfully.");
+        } else {
+            System.out.println("Warning: Failed to cancel the original appointment. Please check manually.");
+        }
     }
 
     public boolean cancelAppointment(String appointmentId) {
@@ -247,5 +267,16 @@ public class AppointmentManager {
             return true;
         }
         return false;
+    }
+
+    public List<String> viewAllAppointments() {
+        List<Appointment> allAppointments = appointmentDB.getAll();
+        List<String> allAppointmentsFormatted = new ArrayList<>();
+
+        for (Appointment appointment : allAppointments) {
+            allAppointmentsFormatted.add(appointment.toString());
+        }
+
+        return allAppointmentsFormatted;
     }
 }
