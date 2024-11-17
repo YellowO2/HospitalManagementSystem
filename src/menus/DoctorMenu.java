@@ -22,7 +22,6 @@ import medicalrecords.Diagnosis;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
 import users.Doctor;
-import users.Patient;
 
 public class DoctorMenu {
     private Doctor doctor;

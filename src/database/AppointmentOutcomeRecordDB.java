@@ -105,8 +105,6 @@ public class AppointmentOutcomeRecordDB extends Database<AppointmentOutcomeRecor
                         tokens[5], // prescribed
                         tokens[6] // consultation notes
                 );
-                // System.out.println("DEBUG record: " + record.getAppointmentId() + " " +
-                // record.getPatientId());
                 outcomeRecords.add(record);
             } else {
                 System.out.println("Invalid line in " + filename + ": " + line);

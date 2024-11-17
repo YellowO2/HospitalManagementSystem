@@ -20,12 +20,13 @@ public class PatientMenu {
     private MedicalRecordManager medicalRecordManager;
     private AppointmentManager appointmentManager;
     private AppointmentOutcomeManager appointmentOutcomeManager;
-    private UserDB userDB = new UserDB();
+    private UserDB userDB;
 
     public PatientMenu(Patient patient, MedicalRecordManager medicalRecordManager,
             AppointmentManager appointmentManager, AppointmentOutcomeManager appointmentOutcomeManager,
             UserDB userDB) {
         this.patient = patient;
+        this.userDB = userDB;
         this.scanner = new Scanner(System.in);
         this.medicalRecordManager = medicalRecordManager;
         this.appointmentManager = appointmentManager;
@@ -232,7 +233,6 @@ public class PatientMenu {
             medicalRecordManager.updateContactInfo(patient.getId(), patient.getPhoneNumber(), newEmail);
             patient.setEmailAddress(newEmail);
             System.out.println("Email updated successfully.");
-
         } else if (choice == 2) {
             String newPhoneNo = ValidationUtils.getValidPhoneNumber(scanner);
             medicalRecordManager.updateContactInfo(patient.getId(), newPhoneNo, patient.getEmailAddress());
@@ -246,7 +246,8 @@ public class PatientMenu {
         System.out.println("Changing password...");
         String newPassword = ValidationUtils.getValidPassword(scanner);
 
-        boolean success = patient.changePassword(newPassword);
+        patient.changePassword(newPassword);
+        boolean success = userDB.update(patient);
         if (success) {
             System.out.println("Password changed successfully.");
         } else {
