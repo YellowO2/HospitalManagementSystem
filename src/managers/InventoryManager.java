@@ -2,11 +2,10 @@ package managers;
 
 import database.MedicineDB;
 import database.ReplenishmentDB;
-import medicine.Medicine;
-import medicine.ReplenishmentRequest;
-
 import java.io.IOException;
 import java.util.List;
+import medicine.Medicine;
+import medicine.ReplenishmentRequest;
 
 /**
  * The InventoryManager class provides methods for managing the inventory of
@@ -241,7 +240,6 @@ public class InventoryManager {
         try {
             if (replenishmentDB.delete(medicineId)) {
                 replenishmentDB.save();
-                System.out.println("Replenishment request for medicine ID " + medicineId + " removed.");
                 return true;
             } else {
                 System.out.println("No replenishment request found for medicine ID " + medicineId);
