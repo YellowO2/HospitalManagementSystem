@@ -180,7 +180,6 @@ public class InventoryManager {
     public void saveReplenishmentRequests() {
         try {
             replenishmentDB.save();
-            System.out.println("Replenishment requests saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving replenishment requests: " + e.getMessage());
         }
