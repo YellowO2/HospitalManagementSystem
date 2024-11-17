@@ -3,21 +3,37 @@ package database;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import medicine.ReplenishmentRequest;
 
+/**
+ * A class that manages replenishment requests in the database.
+ * This class provides methods for creating, updating, deleting, retrieving,
+ * saving, and loading replenishment requests from a CSV file.
+ * 
+ * @see ReplenishmentRequest
+ */
 public class ReplenishmentDB extends Database<ReplenishmentRequest> {
-    private List<ReplenishmentRequest> replenishmentRequests;
-    private static final String filename = "csv_data/Replenishment.csv";
-    private static final String header = "MedicineID,Quantity";
+    private List<ReplenishmentRequest> replenishmentRequests; // List to store replenishment requests
+    private static final String filename = "csv_data/Replenishment.csv"; // File path for saving/loading data
+    private static final String header = "MedicineID,Quantity"; // CSV header
 
-    // Constructor
+    /**
+     * Constructor for initializing the ReplenishmentDB with the specified CSV file
+     * path.
+     */
     public ReplenishmentDB() {
-        super(filename);
+        super(filename); // Pass the filename to the parent class
         this.replenishmentRequests = new ArrayList<>();
     }
 
-    // Create a new replenishment request
+    /**
+     * Creates a new replenishment request and adds it to the database.
+     * Automatically saves the data after creation.
+     *
+     * @param request the ReplenishmentRequest object to be added
+     * @return true if the replenishment request was successfully created and saved,
+     *         false otherwise
+     */
     @Override
     public boolean create(ReplenishmentRequest request) {
         if (request != null) {
@@ -32,7 +48,12 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         return false; // Invalid request
     }
 
-    // Get a replenishment request by its medicine ID
+    /**
+     * Retrieves a replenishment request by its medicine ID.
+     *
+     * @param medicineId the ID of the medicine
+     * @return the ReplenishmentRequest object if found, or null if not found
+     */
     @Override
     public ReplenishmentRequest getById(String medicineId) {
         for (ReplenishmentRequest request : replenishmentRequests) {
@@ -43,13 +64,24 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         return null; // Request not found
     }
 
-    // Get all replenishment requests
+    /**
+     * Retrieves all replenishment requests in the database.
+     * 
+     * @return a list of all ReplenishmentRequest objects
+     */
     @Override
     public List<ReplenishmentRequest> getAll() {
         return new ArrayList<>(replenishmentRequests); // Return a copy for safety
     }
 
-    // Update an existing replenishment request
+    /**
+     * Updates an existing replenishment request in the database.
+     * Automatically saves the data after update.
+     *
+     * @param updatedRequest the updated ReplenishmentRequest object
+     * @return true if the replenishment request was successfully updated and saved,
+     *         false otherwise
+     */
     @Override
     public boolean update(ReplenishmentRequest updatedRequest) {
         ReplenishmentRequest existingRequest = getById(updatedRequest.getMedicineId());
@@ -66,7 +98,15 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         return false; // Request not found
     }
 
-    // Delete a replenishment request by its medicine ID
+    /**
+     * Deletes a replenishment request by its medicine ID.
+     * Automatically saves the data after deletion.
+     *
+     * @param medicineId the ID of the medicine whose replenishment request will be
+     *                   deleted
+     * @return true if the replenishment request was successfully deleted and saved,
+     *         false otherwise
+     */
     @Override
     public boolean delete(String medicineId) {
         ReplenishmentRequest existingRequest = getById(medicineId);
@@ -82,19 +122,29 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
         return false; // Request not found
     }
 
-    // Save the current list of replenishment requests to the CSV file
+    /**
+     * Saves the current list of replenishment requests to the CSV file.
+     *
+     * @return true if the data was successfully saved
+     * @throws IOException if an I/O error occurs during saving
+     */
     @Override
     public boolean save() throws IOException {
         saveData(filename, replenishmentRequests, header);
         return true;
     }
 
-    // Load replenishment requests from the CSV file
+    /**
+     * Loads replenishment requests from the CSV file into the database.
+     *
+     * @return true if the data was successfully loaded
+     * @throws IOException if an I/O error occurs during loading
+     */
     @Override
     public boolean load() throws IOException {
-        List<String> lines = readFile(filename);
+        List<String> lines = readFile(filename); // Read the CSV file
         for (String line : lines) {
-            String[] tokens = splitLine(line);
+            String[] tokens = splitLine(line); // Split line into tokens
 
             if (tokens.length == 2) { // Ensure the line has the correct number of tokens
                 try {
@@ -106,12 +156,12 @@ public class ReplenishmentDB extends Database<ReplenishmentRequest> {
                     request.setMedicineId(medicineId);
                     request.setQuantity(quantity);
 
-                    replenishmentRequests.add(request);
+                    replenishmentRequests.add(request); // Add the new request to the list
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }
             } else {
-                System.err.println("Invalid line in " + filename + ": " + line);
+                System.err.println("Invalid line in " + filename + ": " + line); // Invalid line
             }
         }
         return true;
