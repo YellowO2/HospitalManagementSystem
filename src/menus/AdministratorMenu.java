@@ -254,15 +254,25 @@ public class AdministratorMenu {
         System.out.println("\nEnter details for new medication:");
         System.out.print("ID: ");
         String id = scanner.nextLine().trim();
+    
+        // Check if a medicine with this ID already exists
+        Medicine existingMedicine = inventory.getMedicineById(id); // Reuse the existing method
+        if (existingMedicine != null) {
+            System.out.println("Medicine with ID '" + id + "' already exists. Cannot add duplicate.");
+            return; // Exit the method
+        }
+    
+        // Proceed with adding a new medicine
         System.out.print("Name: ");
         String name = scanner.nextLine().trim();
         System.out.print("Dosage: ");
         String dosage = scanner.nextLine().trim();
         int stockLevel = getIntInput("Stock Level: ");
         int lowStockAlertLevel = getIntInput("Low Stock Alert Level: ");
-
+    
         Medicine newMedicine = new Medicine(id, name, dosage, stockLevel, lowStockAlertLevel);
         inventory.addMedicine(newMedicine);
+        System.out.println("New medicine added successfully.");
     }
 
     /**
