@@ -1,3 +1,4 @@
 PatientID,Name,DateOfBirth,Gender,BloodType,PhoneNumber,EmailAddress,Diagnoses,Treatments,Prescriptions
-P1005,Yu Xuan,1980-05-15,Female,O+,11111111,test@gmail,Flu|Mild|2023-10-01|Dr. Smith;Allergy|Severe|2023-09-15|Dr. Brown,Physical Therapy|2023-11-01|Dr. Johnson|10 sessions bi-weekly;Medication Adjustment|2023-10-20|Dr. Lee|Adjusted dosage to 250mg,Medication A|500mg|2 times per day|30|Take after meal|0;Medication B|250mg|1 time per day|15|Take after meals|1
 P1003,Rizz,1990-07-08,Female,A+,11111111,rizz003@example.com,Flu|Mild|2024-11-18|Alladin,Nil|2024-11-18|Alladin|Nil,Paracetamol|500 ml|Twice a day|10|Stay warm and rest well|0
+P1005,Yu Xuan,1980-05-15,Female,O+,88888888,test@gmail,Flu|Mild|2023-10-01|Dr. Smith;Allergy|Severe|2023-09-15|Dr. Brown,Physical Therapy|2023-11-01|Dr. Johnson|10 sessions bi-weekly;Medication Adjustment|2023-10-20|Dr. Lee|Adjusted dosage to 250mg,Medication A|500mg|2 times per day|30|Take after meal|0;Medication B|250mg|1 time per day|15|Take after meals|1
+P1001,Roland,1980-05-14,Male,A+,11111111,roland001@example.com,cancer|mild|2024-11-18|Alladin,Chemotherapy|2024-11-18|Alladin|nil,Nil|Nil|Nil|0|Nil|0
