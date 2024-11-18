@@ -1,8 +1,8 @@
 AppointmentID,PatientId,Date,Service Type,Prescriptions,Prescribed,Consultation Notes
-testappointmentID,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Fulfilled,This patient very good
-b70c8561-503d-44fd-bda2-5c387ed6221c,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Fulfilled,This patient is very good
-a2f8b6e3-7044-4e99-a8a5-2a239f4c212f,P1010,2024-11-15,Dental Cleaning,Ibuprofen|200mg|3 times per day|10|Take with water|1,Fulfilled,Good oral hygiene advised
-c9d3e7d5-b2d6-483c-b849-4d2c7e836f6a,P1022,2024-11-16,Consultation,Amoxicillin|500mg|2 times per day|7|Finish the course|1,Fulfilled,Possible throat infection
+testappointmentID,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Dispensed,This patient very good
+b70c8561-503d-44fd-bda2-5c387ed6221c,P1005,2024-11-13,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Dispensed,This patient is very good
+a2f8b6e3-7044-4e99-a8a5-2a239f4c212f,P1010,2024-11-15,Dental Cleaning,Ibuprofen|200mg|3 times per day|10|Take with water|1,Dispensed,Good oral hygiene advised
+c9d3e7d5-b2d6-483c-b849-4d2c7e836f6a,P1022,2024-11-16,Consultation,Amoxicillin|500mg|2 times per day|7|Finish the course|1,Dispensed,Possible throat infection
 e4b1c947-862f-40c6-b375-61e2f25c19af,P1033,2024-11-17,Vaccination,Panadol|200mg|3 times per day|5|Take after meals|1,Pending,Influenza vaccine administered
 f3d489b8-7c41-4b7d-9aeb-c5b3f9c5e35d,P1044,2024-11-18,Health Checkup,Vitamin D|1000IU|1 time per day|30|Take with meals|1,Pending,Check vitamin D levels in follow-up
 33bb7ea9-3c2e-44e6-a377-497f198534cb,P1001,2024-11-18,Consultation,Paracetamol|250mg|1 time per day|15|Take after meals|1,Dispensed,Nil
