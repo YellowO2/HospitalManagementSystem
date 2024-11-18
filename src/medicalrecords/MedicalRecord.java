@@ -153,7 +153,7 @@ public class MedicalRecord {
             record.append("No prescriptions available.\n");
         } else {
             for (Prescription prescription : prescriptions) {
-                record.append(prescription.getDescriptionDetails()).append("\n\n");
+                record.append(prescription.getDescriptionDetails());
             }
         }
 

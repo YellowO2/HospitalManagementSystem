@@ -59,7 +59,7 @@ public class MedicalRecordManager {
             }
             if (treatment != null) {
                 record.addTreatment(treatment);
-            }
+            }       
             return database.update(record);
         }
         return false;

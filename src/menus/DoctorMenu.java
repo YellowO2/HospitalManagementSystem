@@ -20,6 +20,7 @@ import managers.AppointmentOutcomeManager;
 import managers.MedicalRecordManager;
 import database.UserDB;
 import medicalrecords.Diagnosis;
+import medicalrecords.MedicalRecord;
 import medicalrecords.Prescription;
 import medicalrecords.Treatment;
 import menus.utils.ValidationUtils;
@@ -165,11 +166,11 @@ public class DoctorMenu {
             medicalHistory = medicalRecordManager.getMedicalHistory(patientId);
 
             if (medicalHistory == null) {
-                System.out.println("No medical record found for " + patientId + ":");
+                System.out.println("No medical record found for " + patientId + ".");
             }
 
             else {
-                System.out.println("Viewing medical record for " + patientId + ":");
+                System.out.println("\nViewing medical record for " + patientId + ":");
                 System.out.println(medicalHistory);
             }
         }
@@ -181,6 +182,7 @@ public class DoctorMenu {
      */
     private void updatePatientMedicalRecords() {
         String patientId;
+        boolean updated = false;
 
         System.out.print("Enter the patient ID to update their medical record: ");
         patientId = scanner.nextLine();
@@ -245,6 +247,9 @@ public class DoctorMenu {
             // Create the Prescription object
             prescription = new Prescription(medicationName, dosage, instructions, frequency, amount, status);
         }
+        else {
+            prescription = new Prescription("Nil", "Nil", "Nil", "Nil", 0, 0);
+        }
 
         /* Treatment */
         Treatment treatment = null;
@@ -262,8 +267,20 @@ public class DoctorMenu {
             // diagnosisDate right?
             treatment = new Treatment(treatmentName, diagnosisDate, doctorName, treatmentDetails);
         }
+        else {
+            treatment = new Treatment("Nil", diagnosisDate, doctorName, "Nil");
+        }
 
-        boolean updated = medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
+        if (medicalRecordManager.getMedicalHistory(patientId) != null){
+            updated = medicalRecordManager.updateMedicalRecord(patientId, diagnosis, prescription, treatment);
+        } else {
+            String dateOfBirth = userDB.getById(patientId).getDateOfBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            MedicalRecord medicalRecord = new MedicalRecord(
+                patientId, userDB.getById(patientId).getName(), dateOfBirth, userDB.getById(patientId).getGender(), "A+", userDB.getById(patientId).getPhoneNumber(), 
+                userDB.getById(patientId).getEmailAddress(), diagnosis != null ? diagnosis.toString() : "Nil", treatment.toString(), prescription != null ? prescription.toString() : "Nil");
+            updated = medicalRecordManager.addMedicalRecord(patientId, medicalRecord);
+        }
+
 
         if (updated) {
             System.out.println("Medical record updated successfully.");

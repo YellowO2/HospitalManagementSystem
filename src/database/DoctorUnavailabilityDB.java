@@ -39,6 +39,11 @@ public class DoctorUnavailabilityDB extends Database<DoctorUnavailableSlots> {
     public boolean create(DoctorUnavailableSlots availability) {
         if (availability != null) {
             availabilities.add(availability);
+            try {
+                save(); // Automatically save after creation
+            } catch (IOException e) {
+                System.err.println("Error saving data after creating unavailable slot: " + e.getMessage());
+            }
             return true;
         }
         return false;
